@@ -26,6 +26,10 @@ bld/
 [Bb]in/
 [Oo]bj/
 [Ll]og/
+_site/
+articles/
+api/
+
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
@@ -338,3 +342,12 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+
+#### temporary output from testing
+output_test.budget
+output_test_categories.cats
+output_test_expenses.exps
+newDB.db
+messyDB
+messy.db
+log.txt
