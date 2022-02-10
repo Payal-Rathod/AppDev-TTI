@@ -1,0 +1,224 @@
+{
+  "homepages": [],
+  "source_base_path": "C:/Users/Payal/OneDrive/Documents/AppDev/HomeBudget/HomeBudget",
+  "xrefmap": "xrefmap.yml",
+  "files": [
+    {
+      "type": "Conceptual",
+      "source_relative_path": "api/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "api/index.html",
+          "hash": "sEaXMGVKtspfDYqniaZKCm3bH+Sz881hzgUCx4SLwOI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/intro.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/intro.html",
+          "hash": "TU/IVaF9VAxuJDXB1WtpD58KyArqJpA7aekLRVoXWq8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "index.md",
+      "output": {
+        ".html": {
+          "relative_path": "index.html",
+          "hash": "FBLhwNIGE4dE8F5PLvEXTBKWnVg7Tkx9k/xfb0Gddlg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/Budget.BudgetFiles.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Budget.BudgetFiles.html",
+          "hash": "SMp8mmfjVKeGPcWgk4R+pnlGR3RqKJbb3MRd196HCAU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/Budget.BudgetItem.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Budget.BudgetItem.html",
+          "hash": "dgiyLYRxLbcJSgUrobr/KGqGAp6I4hFHoLcnV6r/UTA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/Budget.BudgetItemsByCategory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Budget.BudgetItemsByCategory.html",
+          "hash": "+LKDC6fW8R17OdPVxQ+AW/qSIuAckpQXHd6wjw9/DoI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/Budget.BudgetItemsByMonth.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Budget.BudgetItemsByMonth.html",
+          "hash": "yX2v5O0FF44ec4JsLBYBJDaQgW4smfM070Z5R0Jh/Qc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/Budget.Categories.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Budget.Categories.html",
+          "hash": "dgPswvtzF3k7DEY5ysJOfEhIemmR3PH7d2zJz0KGVtA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/Budget.Category.CategoryType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Budget.Category.CategoryType.html",
+          "hash": "cHMlIhGV2F/ECAJXYIh7MfoxPSbDWq0TACr6IUkiio8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/Budget.Category.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Budget.Category.html",
+          "hash": "S8qRPsyHZib0/v2jz6UmFT1vaZM6qk4eMMpLMtQTSu8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/Budget.Expense.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Budget.Expense.html",
+          "hash": "tqM+6pWELmh9eiT+EM3NoAzYnK/JkhnTo3VEY4J50Aw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/Budget.Expenses.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Budget.Expenses.html",
+          "hash": "UtLiTSKxKjaO4Jun6XqDtyKMXgsM9VT31f18sgDAoYk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/Budget.HomeBudget.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Budget.HomeBudget.html",
+          "hash": "xD8mpJyLFs4LFn4giYa7cO05+Y2Y3/mdTZ4JP8tsj9A="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/Budget.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Budget.html",
+          "hash": "tuhUiKdYYi8FoKn7817vBMcrtc1RSOrp+Wf8/SYJTMo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    }
+  ],
+  "incremental_info": [
+    {
+      "status": {
+        "can_incremental": false,
+        "details": "Disable incremental build by force rebuild option.",
+        "incrementalPhase": "build",
+        "total_file_count": 0,
+        "skipped_file_count": 0,
+        "full_build_reason_code": "ForceRebuild"
+      },
+      "processors": {
+        "ConceptualDocumentProcessor": {
+          "can_incremental": false,
+          "incrementalPhase": "build",
+          "total_file_count": 3,
+          "skipped_file_count": 0
+        },
+        "ManagedReferenceDocumentProcessor": {
+          "can_incremental": false,
+          "incrementalPhase": "build",
+          "total_file_count": 11,
+          "skipped_file_count": 0
+        },
+        "TocDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build",
+          "total_file_count": 0,
+          "skipped_file_count": 0
+        }
+      }
+    },
+    {
+      "status": {
+        "can_incremental": false,
+        "details": "Cannot support incremental post processing, the reason is: it's disabled.",
+        "incrementalPhase": "postProcessing",
+        "total_file_count": 0,
+        "skipped_file_count": 0
+      },
+      "processors": {}
+    }
+  ],
+  "version_info": {},
+  "groups": [
+    {
+      "xrefmap": "xrefmap.yml"
+    }
+  ]
+}
