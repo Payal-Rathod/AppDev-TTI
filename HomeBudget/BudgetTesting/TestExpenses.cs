@@ -6,6 +6,7 @@ using Budget;
 
 namespace BudgetCodeTests
 {
+    [Collection("Sequential")]
     public class TestExpenses
     {
         int numberOfExpensesInFile = TestConstants.numberOfExpensesInFile;
@@ -290,11 +291,6 @@ namespace BudgetCodeTests
 
             // this is valid for C# .Net Foundation (not for C# .Net Core)
             return Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..\\..\\..\\"));
-        }
-
-        public string TestDBInputFile
-        {
-            get;
         }
 
         // source taken from: https://www.dotnetperls.com/file-equals

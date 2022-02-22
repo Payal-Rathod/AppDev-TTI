@@ -6,10 +6,12 @@ using Budget;
 using System.Data.SQLite;
 
 
-namespace BudgetCodeTest
+namespace BudgetCodeTests
 {
+    [Collection("Sequential")]
     public class TestDatabase
     {
+
 
         [Fact]
         public void SQLite_TestNewDatabase_TablesCreated_newDBDoesNotExist()
