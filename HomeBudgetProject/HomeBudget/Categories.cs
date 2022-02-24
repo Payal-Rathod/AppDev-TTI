@@ -75,8 +75,8 @@ namespace Budget
                 cmd.Parameters.AddWithValue("@Description", "Credit");
                 cmd.Prepare();
                 cmd.ExecuteNonQuery();
-
                 cmd.Dispose();
+
                 SetCategoriesToDefaults();
             }
             else
@@ -118,7 +118,7 @@ namespace Budget
                 descr = rdr.GetString(1);
                 type = rdr.GetInt32(2);
             }
-            Category c = new Category(id, descr, (Category.CategoryType)type);
+            Category c = new Category(id, descr, (Category.CategoryType)type - 1);
 
             cmd.Dispose();
 
@@ -160,8 +160,7 @@ namespace Budget
 
             cmd.CommandText = "DELETE FROM categories";
             cmd.ExecuteNonQuery();
-            //_Cats.Clear();
-
+            cmd.Dispose();
 
             // ---------------------------------------------------------------
             // Add Defaults
@@ -314,7 +313,7 @@ namespace Budget
                 int id = rdr.GetInt32(0);
                 string descr = rdr.GetString(1);
                 int type = rdr.GetInt32(2);
-                newList.Add(new Category(id, descr, (Category.CategoryType)type));
+                newList.Add(new Category(id, descr, (Category.CategoryType)(type - 1)));
 
             }
             
