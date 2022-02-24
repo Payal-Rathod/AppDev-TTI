@@ -89,15 +89,6 @@ namespace Budget
         // Constructor (new... default categories, no expenses)
         // -------------------------------------------------------------------
 
-        /// <summary>
-        /// Default constructor that initializes the private data fields.
-        /// </summary>
-        public HomeBudget()
-        {
-            _categories = new Categories();
-            _expenses = new Expenses();
-        }
-
         // -------------------------------------------------------------------
         // Constructor (existing budget ... must specify file)
         // -------------------------------------------------------------------
