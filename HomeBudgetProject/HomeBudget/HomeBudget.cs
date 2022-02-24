@@ -369,7 +369,7 @@ namespace Budget
             var query =  from c in _categories.List()
                         join e in _expenses.List() on c.Id equals e.Category
                         where e.Date >= Start && e.Date <= End
-                        select new { CatId = c.Id, ExpId = e.Id, e.Date, Category = c.Description, e.Description, e.Amount };
+                        select new { CatId = c.Id, ExpId = e.Id, e.Date, Category = c.Description, e.Description, Amount = -e.Amount};
 
             // ------------------------------------------------------------------------
             // create a BudgetItem list with totals,
