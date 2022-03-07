@@ -76,15 +76,6 @@ namespace Budget
             Description TEXT, Amount DOUBLE, CategoryId INTEGER, FOREIGN KEY(CategoryId) REFERENCES categories(Id))";
             cmd.ExecuteNonQuery();
 
-            //cmd.CommandText = "INSERT INTO categoryTypes(Id, Description) VALUES(@Id, @Description)";
-            //cmd.ExecuteNonQuery();
-
-            //cmd.CommandText = "INSERT INTO categories(Id, Description, TypeId) VALUES(@Id, @Description, @TypeId)";
-            //cmd.ExecuteNonQuery();
-
-            //cmd.CommandText = "INSERT INTO expenses(Id, Date, Description, Amount, CategoryId) VALUES(@Id, @Date, @Description, @Amount, @CategoryId)";
-            //cmd.ExecuteNonQuery();
-
             cmd.Dispose();
 
             // DO NOT FORGET TO BIND PARAMETERS/VALUES OR IT'S A 0.

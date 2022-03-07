@@ -101,7 +101,7 @@ namespace Budget
         public HomeBudget(String budgetFileName)
         {
             _categories = new Categories();
-            _expenses = new Expenses();
+            //_expenses = new Expenses();
             ReadFromFile(budgetFileName);
         }
 
@@ -121,8 +121,8 @@ namespace Budget
             // create the category object
             _categories = new Categories(Database.dbConnection, newDB);
             // create the _expenses course
-            _expenses = new Expenses();
-            _expenses.ReadFromFile(expensesXMLFile);
+            _expenses = new Expenses(Database.dbConnection);
+            //_expenses.ReadFromFile(expensesXMLFile);
         }
 
         #region OpenNewAndSave
@@ -178,7 +178,7 @@ namespace Budget
 
                 // read the expenses and categories from their respective files
                 //_categories.ReadFromFile(folder + "\\" + filenames[0]);
-                _expenses.ReadFromFile(folder + "\\" + filenames[1]);
+                //_expenses.ReadFromFile(folder + "\\" + filenames[1]);
 
                 // Save information about budget file
                 _DirName = Path.GetDirectoryName(budgetFileName);
@@ -249,7 +249,7 @@ namespace Budget
             // ---------------------------------------------------------------
             // save the expenses and budgets into their own files
             // ---------------------------------------------------------------
-            _expenses.SaveToFile(expensepath);
+            //_expenses.SaveToFile(expensepath);
            // _categories.SaveToFile(categorypath);
 
             // ---------------------------------------------------------------

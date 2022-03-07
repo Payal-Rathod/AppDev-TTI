@@ -157,36 +157,42 @@ namespace Budget
         /// </example>
         public void SetCategoriesToDefaults()
         {
+            try
+            {
+                counterId = 0;
+                // ---------------------------------------------------------------
+                // reset any current categories,
+                // ---------------------------------------------------------------
+                var cmd = new SQLiteCommand(db);
 
-            counterId = 0;
-            // ---------------------------------------------------------------
-            // reset any current categories,
-            // ---------------------------------------------------------------
-            var cmd = new SQLiteCommand(db);
+                cmd.CommandText = "DELETE FROM categories";
+                cmd.ExecuteNonQuery();
+                cmd.Dispose();
 
-            cmd.CommandText = "DELETE FROM categories";
-            cmd.ExecuteNonQuery();
-            cmd.Dispose();
-
-            // ---------------------------------------------------------------
-            // Add Defaults
-            // ---------------------------------------------------------------
-            Add("Utilities", Category.CategoryType.Expense);
-            Add("Rent", Category.CategoryType.Expense);
-            Add("Food", Category.CategoryType.Expense);
-            Add("Entertainment", Category.CategoryType.Expense);
-            Add("Education", Category.CategoryType.Expense);
-            Add("Miscellaneous", Category.CategoryType.Expense);
-            Add("Medical Expenses", Category.CategoryType.Expense);
-            Add("Vacation", Category.CategoryType.Expense);
-            Add("Credit Card", Category.CategoryType.Credit);
-            Add("Clothes", Category.CategoryType.Expense);
-            Add("Gifts", Category.CategoryType.Expense);
-            Add("Insurance", Category.CategoryType.Expense);
-            Add("Transportation", Category.CategoryType.Expense);
-            Add("Eating Out", Category.CategoryType.Expense);
-            Add("Savings", Category.CategoryType.Savings);
-            Add("Income", Category.CategoryType.Income);
+                // ---------------------------------------------------------------
+                // Add Defaults
+                // ---------------------------------------------------------------
+                Add("Utilities", Category.CategoryType.Expense);
+                Add("Rent", Category.CategoryType.Expense);
+                Add("Food", Category.CategoryType.Expense);
+                Add("Entertainment", Category.CategoryType.Expense);
+                Add("Education", Category.CategoryType.Expense);
+                Add("Miscellaneous", Category.CategoryType.Expense);
+                Add("Medical Expenses", Category.CategoryType.Expense);
+                Add("Vacation", Category.CategoryType.Expense);
+                Add("Credit Card", Category.CategoryType.Credit);
+                Add("Clothes", Category.CategoryType.Expense);
+                Add("Gifts", Category.CategoryType.Expense);
+                Add("Insurance", Category.CategoryType.Expense);
+                Add("Transportation", Category.CategoryType.Expense);
+                Add("Eating Out", Category.CategoryType.Expense);
+                Add("Savings", Category.CategoryType.Savings);
+                Add("Income", Category.CategoryType.Income);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
 
         }
 

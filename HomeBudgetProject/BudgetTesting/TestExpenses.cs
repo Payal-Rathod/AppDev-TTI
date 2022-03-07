@@ -3,6 +3,7 @@ using Xunit;
 using System.IO;
 using System.Collections.Generic;
 using Budget;
+using System.Data.SQLite;
 
 namespace BudgetCodeTests
 {
@@ -21,19 +22,68 @@ namespace BudgetCodeTests
         public void ExpensesObject_New()
         {
             // Arrange
+            String folder = TestConstants.GetSolutionDir();
+            String newDB = $"{folder}\\newDB.db";
+            Database.newDatabase(newDB);
+            SQLiteConnection conn = Database.dbConnection;
+
 
             // Act
-            Expenses expenses = new Expenses();
+            Categories categories = new Categories(conn, true);
+            Expenses expenses = new Expenses(conn);
 
             // Assert 
             Assert.IsType<Expenses>(expenses);
 
-            Assert.True(typeof(Expenses).GetProperty("FileName").CanWrite == false);
-            Assert.True(typeof(Expenses).GetProperty("DirName").CanWrite == false);
+        }
+
+        //==========================================================================
+
+        [Fact]
+        public void ExpensesMethod_ReadFromDatabase_ValidateCorrectDataWasRead()
+        {
+            // Arrange
+            String folder = TestConstants.GetSolutionDir();
+            String goodDB = $"{folder}\\{TestConstants.testDBInputFile}";
+            String messyDB = $"{folder}\\messy.db";
+            System.IO.File.Copy(goodDB, messyDB, true);
+            Database.existingDatabase(messyDB);
+            SQLiteConnection conn = Database.dbConnection;
+
+
+            // Act
+            Categories categories = new Categories(conn, false);
+            Expenses expenses = new Expenses(conn);
+            List<Expense> list = expenses.List();
+            Expense firstExpense = list[0];
+
+            // Assert
+            Assert.Equal(numberOfExpensesInFile, list.Count);
+            Assert.Equal(firstExpenseInFile.Id, firstExpense.Id);
+            Assert.Equal(firstExpenseInFile.Description, firstExpense.Description);
 
         }
 
+        // ========================================================================
 
+        [Fact]
+        public void CategoriesMethod_List_ReturnsListOfCategories()
+        {
+            // Arrange
+            String folder = TestConstants.GetSolutionDir();
+            String newDB = $"{folder}\\{TestConstants.testDBInputFile}";
+            Database.existingDatabase(newDB);
+            SQLiteConnection conn = Database.dbConnection;
+            Categories categories = new Categories(conn, false);
+
+            // Act
+            List<Category> list = categories.List();
+
+            // Assert
+            //Assert.Equal(numberOfCategoriesInFile, list.Count);
+
+        }
+        /*
         // ========================================================================
 
         [Fact]
@@ -312,6 +362,7 @@ namespace BudgetCodeTests
             }
             return false;
         }
+        */
     }
 }
 
