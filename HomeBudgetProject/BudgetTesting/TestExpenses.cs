@@ -67,7 +67,7 @@ namespace BudgetCodeTests
         // ========================================================================
 
         [Fact]
-        public void CategoriesMethod_List_ReturnsListOfCategories()
+        public void ExpensesMethod_List_ReturnsListOfExpenses()
         {
             // Arrange
             String folder = TestConstants.GetSolutionDir();
@@ -75,65 +75,7 @@ namespace BudgetCodeTests
             Database.existingDatabase(newDB);
             SQLiteConnection conn = Database.dbConnection;
             Categories categories = new Categories(conn, false);
-
-            // Act
-            List<Category> list = categories.List();
-
-            // Assert
-            //Assert.Equal(numberOfCategoriesInFile, list.Count);
-
-        }
-        /*
-        // ========================================================================
-
-        [Fact]
-        public void ExpensesMethod_ReadFromFile_NotExist_ThrowsException()
-        {
-            // Arrange
-            String badFile = "abc.txt";
-            Expenses expenses = new Expenses();
-
-            // Act and Assert
-            Assert.Throws<System.IO.FileNotFoundException>(() => expenses.ReadFromFile(badFile));
-
-        }
-
-        // ========================================================================
-
-        [Fact]
-        public void ExpensesMethod_ReadFromFile_ValidateCorrectDataWasRead()
-        {
-            // Arrange
-            String dir = GetSolutionDir();
-            Expenses expenses = new Expenses();
-
-            // Act
-            expenses.ReadFromFile(dir + "\\" + testInputFile);
-            List<Expense> list = expenses.List();
-            Expense firstExpense = list[0];
-
-            // Assert
-            Assert.Equal(numberOfExpensesInFile, list.Count);
-            Assert.Equal(firstExpenseInFile.Id, firstExpense.Id);
-            Assert.Equal(firstExpenseInFile.Amount, firstExpense.Amount);
-            Assert.Equal(firstExpenseInFile.Description, firstExpense.Description);
-            Assert.Equal(firstExpenseInFile.Category, firstExpense.Category);
-
-            String fileDir = Path.GetFullPath(Path.Combine(expenses.DirName, ".\\"));
-            Assert.Equal(dir, fileDir);
-            Assert.Equal(testInputFile, expenses.FileName);
-
-        }
-
-        // ========================================================================
-
-        [Fact]
-        public void ExpensesMethod_List_ReturnsListOfExpenses()
-        {
-            // Arrange
-            String dir = GetSolutionDir();
-            Expenses expenses = new Expenses();
-            expenses.ReadFromFile(dir + "\\" + testInputFile);
+            Expenses expenses = new Expenses(conn);
 
             // Act
             List<Expense> list = expenses.List();
@@ -142,47 +84,32 @@ namespace BudgetCodeTests
             Assert.Equal(numberOfExpensesInFile, list.Count);
 
         }
-
-        // ========================================================================
-
-        [Fact]
-        public void ExpensesMethod_List_ModifyListDoesNotModifyExpensesInstance()
-        {
-            // Arrange
-            String dir = GetSolutionDir();
-            Expenses expenses = new Expenses();
-            expenses.ReadFromFile(dir + "\\" + testInputFile);
-            List<Expense> list = expenses.List();
-
-            // Act
-            list[0].Amount = list[0].Amount + 21.03; 
-
-            // Assert
-            Assert.NotEqual(list[0].Amount, expenses.List()[0].Amount);
-
-        }
-
-        // ========================================================================
 
         [Fact]
         public void ExpensesMethod_Add()
         {
             // Arrange
-            String dir = GetSolutionDir();
-            Expenses expenses = new Expenses();
-            expenses.ReadFromFile(dir + "\\" + testInputFile);
-            int category = 57;
-            double amount = 98.1;
+            String folder = TestConstants.GetSolutionDir();
+            String goodDB = $"{folder}\\{TestConstants.testDBInputFile}";
+            String messyDB = $"{folder}\\messy.db";
+            System.IO.File.Copy(goodDB, messyDB, true);
+            Database.existingDatabase(messyDB);
+            SQLiteConnection conn = Database.dbConnection;
+            Categories categories = new Categories(conn, false);
+            Expenses expenses = new Expenses(conn);
+            string descr = "New Expense";
+            int type = 2;
+            double amount = 20;
+            DateTime date = DateTime.Now;
 
             // Act
-            expenses.Add(DateTime.Now,category,amount,"new expense");
+            expenses.Add(date, type, amount, descr);
             List<Expense> expensesList = expenses.List();
             int sizeOfList = expenses.List().Count;
 
             // Assert
-            Assert.Equal(numberOfExpensesInFile+1, sizeOfList);
-            Assert.Equal(maxIDInExpenseFile + 1, expensesList[sizeOfList - 1].Id);
-            Assert.Equal(amount, expensesList[sizeOfList - 1].Amount);
+            Assert.Equal(numberOfExpensesInFile + 1, sizeOfList);
+            Assert.Equal(descr, expensesList[sizeOfList - 1].Description);
 
         }
 
@@ -192,9 +119,14 @@ namespace BudgetCodeTests
         public void ExpensesMethod_Delete()
         {
             // Arrange
-            String dir = GetSolutionDir();
-            Expenses expenses = new Expenses();
-            expenses.ReadFromFile(dir + "\\" + testInputFile);
+            String folder = TestConstants.GetSolutionDir();
+            String goodDB = $"{folder}\\{TestConstants.testDBInputFile}";
+            String messyDB = $"{folder}\\messy.db";
+            System.IO.File.Copy(goodDB, messyDB, true);
+            Database.existingDatabase(messyDB);
+            SQLiteConnection conn = Database.dbConnection;
+            Categories categories = new Categories(conn, false);
+            Expenses expenses = new Expenses(conn);
             int IdToDelete = 3;
 
             // Act
@@ -204,10 +136,39 @@ namespace BudgetCodeTests
 
             // Assert
             Assert.Equal(numberOfExpensesInFile - 1, sizeOfList);
-            Assert.False(expensesList.Exists(e => e.Id == IdToDelete), "correct expense item deleted");
+            Assert.False(expensesList.Exists(e => e.Id == IdToDelete), "correct Expense item deleted");
 
         }
 
+        [Fact]
+        public void ExpensesMethod_Delete_InvalidIDDoesntCrash()
+        {
+            // Arrange
+            String folder = TestConstants.GetSolutionDir();
+            String goodDB = $"{folder}\\{TestConstants.testDBInputFile}";
+            String messyDB = $"{folder}\\messyDB";
+            System.IO.File.Copy(goodDB, messyDB, true);
+            Database.existingDatabase(messyDB);
+            SQLiteConnection conn = Database.dbConnection;
+            Categories categories = new Categories(conn, false);
+            Expenses expenses = new Expenses(conn);
+            int IdToDelete = 9999;
+            int sizeOfList = expenses.List().Count;
+
+            // Act
+            try
+            {
+                expenses.Delete(IdToDelete);
+                Assert.Equal(sizeOfList, expenses.List().Count);
+            }
+
+            // Assert
+            catch
+            {
+                Assert.True(false, "Invalid ID causes Delete to break");
+            }
+        }
+        /*
         // ========================================================================
 
         [Fact]

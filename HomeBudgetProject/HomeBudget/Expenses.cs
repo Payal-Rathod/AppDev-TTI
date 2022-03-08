@@ -26,14 +26,24 @@ namespace Budget
     /// </summary>
     public class Expenses
     {
-        private int counterId = 0;
-
+        private int counterId = 1;
+    
         private SQLiteConnection db;
 
         public Expenses(SQLiteConnection con)
         {
             db = con;
 
+            var cmd = new SQLiteCommand(db);
+            cmd.CommandText = "Select Id, Date, Description, Amount, CategoryId from expenses";
+            var checkDB = cmd.ExecuteScalar();
+            if (checkDB != null)
+            {
+                cmd = new SQLiteCommand("Select MAX(Id) from expenses", db);
+                int count = Convert.ToInt32(cmd.ExecuteScalar());
+                cmd.Dispose();
+                counterId = count+1;
+            }
         }
 
 
@@ -114,9 +124,17 @@ namespace Budget
         /// </example>
         public void Delete(int Id)
         {
-            if (Id < counterId)
+            var cmd = new SQLiteCommand(db);
+            cmd.CommandText = "Select Id from expenses where Id = @Id";
+            cmd.Parameters.AddWithValue("@Id", Id);
+            cmd.Prepare();
+            cmd.ExecuteNonQuery();
+
+            var checkDB = cmd.ExecuteScalar();
+
+            if (checkDB != null)
             {
-                var cmd = new SQLiteCommand(db);
+                cmd = new SQLiteCommand(db);
 
                 cmd.CommandText = "DELETE FROM expenses WHERE Id = @Id";
                 cmd.Parameters.AddWithValue("@Id", Id);
