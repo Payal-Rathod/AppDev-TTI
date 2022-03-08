@@ -25,25 +25,23 @@ namespace Budget
     /// Expenses class that is used to manage a list of Expense objects.
     /// </summary>
     public class Expenses
-    {
-        private int counterId = 1;
-    
+    {    
         private SQLiteConnection db;
 
         public Expenses(SQLiteConnection con)
         {
             db = con;
 
-            var cmd = new SQLiteCommand(db);
-            cmd.CommandText = "Select Id, Date, Description, Amount, CategoryId from expenses";
-            var checkDB = cmd.ExecuteScalar();
-            if (checkDB != null)
-            {
-                cmd = new SQLiteCommand("Select MAX(Id) from expenses", db);
-                int count = Convert.ToInt32(cmd.ExecuteScalar());
-                cmd.Dispose();
-                counterId = count+1;
-            }
+            //var cmd = new SQLiteCommand(db);
+            //cmd.CommandText = "Select Id, Date, Description, Amount, CategoryId from expenses";
+            //var checkDB = cmd.ExecuteScalar();
+            //if (checkDB != null)
+            //{
+            //    cmd = new SQLiteCommand("Select MAX(Id) from expenses", db);
+            //    int count = Convert.ToInt32(cmd.ExecuteScalar());
+            //    cmd.Dispose();
+            //    counterId = count+1;
+            //}
         }
 
 
@@ -79,12 +77,21 @@ namespace Budget
         /// </example>
         public void Add(DateTime date, int category, Double amount, String description)
         {
+            int count=0;
             var cmd = new SQLiteCommand(db);
 
+            cmd.CommandText = "Select Id, Date, Description, Amount, CategoryId from expenses";
+            var checkDB = cmd.ExecuteScalar();
+
+            if (checkDB != null)
+            {
+                cmd = new SQLiteCommand("Select MAX(Id) from expenses", db);
+                count = Convert.ToInt32(cmd.ExecuteScalar());
+            }
 
             cmd.CommandText = "INSERT INTO expenses(Id, Date, Description, Amount, CategoryId) VALUES (@Id, @Date, @Description, @Amount, @CategoryId)";
 
-            cmd.Parameters.AddWithValue("@Id", counterId++);
+            cmd.Parameters.AddWithValue("@Id", count+1);
             cmd.Parameters.AddWithValue("@Date", date);
             cmd.Parameters.AddWithValue("@Description", description);
             cmd.Parameters.AddWithValue("@Amount", amount);
@@ -193,6 +200,27 @@ namespace Budget
 
             return newList;
         }
+
+        public void UpdateProperties(int id, DateTime date, string desc, double amount, int category)
+        {
+            var cmd = new SQLiteCommand(db);
+
+            cmd.CommandText = "SELECT Id, Date, Description, Amount, CategoryId from expenses where Id = @Id";
+            cmd.Parameters.AddWithValue("@Id", id);
+            cmd.Prepare();
+            cmd.ExecuteNonQuery();
+
+            cmd.CommandText = "UPDATE expenses SET Date= @Date, Description = @Description, Amount = @Amount, CategoryId = @CategoryId WHERE Id = @Id";
+            cmd.Parameters.AddWithValue("@Description", desc);
+            cmd.Parameters.AddWithValue("@Date",date);
+            cmd.Parameters.AddWithValue("@Amount", amount);
+            cmd.Parameters.AddWithValue("@CategoryId", category);
+            cmd.Prepare();
+            cmd.ExecuteNonQuery();
+
+            cmd.Dispose();
+        }
+
     }
 }
 

@@ -12,7 +12,7 @@ namespace BudgetCodeTests
     public class TestDatabase
     {
 
-
+        
         [Fact]
         public void SQLite_TestNewDatabase_TablesCreated_newDBDoesNotExist()
         {
@@ -338,6 +338,6 @@ namespace BudgetCodeTests
 
         }
 
-
+       
     }
 }
