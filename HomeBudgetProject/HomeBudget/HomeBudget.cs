@@ -317,6 +317,8 @@ namespace Budget
         /// </example>
         public List<BudgetItemsByMonth> GetBudgetItemsByMonth(DateTime? Start, DateTime? End, bool FilterFlag, int CategoryID)
         {
+            Start = Start ?? new DateTime(1900, 1, 1);
+            End = End ?? new DateTime(2500, 1, 1);
             // -----------------------------------------------------------------------
             // get all items first
             // -----------------------------------------------------------------------
@@ -328,29 +330,36 @@ namespace Budget
 
             var cmd = new SQLiteCommand(db);
 
-            cmd.CommandText = "Select c.Id, e.Id, e.Date, c.Description, e.Description, e.Amount, substr(Date, 1, 7) from categories c inner join expenses e on c.Id = e.CategoryId group by substr(Date, 1, 7)";
-
+            cmd.CommandText = "Select c.Id, e.Id, e.Date, c.Description, e.Description, e.Amount, substr(Date, 1, 7) from categories c inner join expenses e on c.Id = e.CategoryId  where e.Date >= @Start and e.Date <= @End group by substr(Date, 1, 7)";
+            cmd.Parameters.AddWithValue("@Start", Start);
+            cmd.Parameters.AddWithValue("@End", End);
+            cmd.Prepare();
             cmd.ExecuteNonQuery();
 
             var rdr = cmd.ExecuteReader();
 
-            var details = new List<BudgetItem>();
-
-            var summary = new List<BudgetItemsByMonth>();
+            List<BudgetItemsByMonth> summary = new List<BudgetItemsByMonth>();
 
             while (rdr.Read())
             {
                 var cmd2 = new SQLiteCommand(db);
-                cmd2.CommandText = "Select c.Id, e.Id, e.Date, c.Description, e.Description, e.Amount from categories c inner join expenses e on c.Id = e.CategoryId where  substr(Date,1,7) = @Month";
-                cmd2.Parameters.AddWithValue("@Month", rdr.GetDateTime(2));
+                cmd2.CommandText = "Select c.Id, e.Id, e.Date, c.Description, e.Description, e.Amount, substr(Date, 1, 7) from categories c inner join expenses e on c.Id = e.CategoryId where  substr(Date,1,7) = @Month";
+                cmd2.Parameters.AddWithValue("@Month", rdr.GetString(6));
                 cmd2.Prepare();
                 cmd2.ExecuteNonQuery();
                 
                 var rdr2 = cmd2.ExecuteReader();
                 double total = 0;
 
+                List<BudgetItem> details = new List<BudgetItem>();
+
                 while (rdr2.Read())
                 {
+                    if (FilterFlag && CategoryID != rdr2.GetInt32(0))
+                    {
+                        continue;
+                    }
+
                     total += rdr2.GetDouble(5);
 
                     details.Add(new BudgetItem
@@ -365,13 +374,15 @@ namespace Budget
                     });
                 }
 
-                summary.Add(new BudgetItemsByMonth
+                if (details.Count != 0)
                 {
-                    Month = rdr.GetString(6),
-                    Details = details,
-                    Total = total
-                }) ;
-
+                    summary.Add(new BudgetItemsByMonth
+                    {
+                        Month = rdr.GetString(2).Split('-')[0] + "/" + rdr.GetString(2).Split('-')[1],
+                        Details = details,
+                        Total = total
+                    });
+                }
 
             }
 
@@ -446,38 +457,75 @@ namespace Budget
         /// </example>
         public List<BudgetItemsByCategory> GeBudgetItemsByCategory(DateTime? Start, DateTime? End, bool FilterFlag, int CategoryID)
         {
+            Start = Start ?? new DateTime(1900, 1, 1);
+            End = End ?? new DateTime(2500, 1, 1);
             // -----------------------------------------------------------------------
             // get all items first
             // -----------------------------------------------------------------------
             List<BudgetItem> items = GetBudgetItems(Start, End, FilterFlag, CategoryID);
 
             // -----------------------------------------------------------------------
-            // Group by Category
+            // Group by year/month
             // -----------------------------------------------------------------------
-            var GroupedByCategory = items.GroupBy(c => c.Category);
 
-            // -----------------------------------------------------------------------
-            // create new list
-            // -----------------------------------------------------------------------
-            var summary = new List<BudgetItemsByCategory>();
-            foreach (var CategoryGroup in GroupedByCategory.OrderBy(g => g.Key))
+            var cmd = new SQLiteCommand(db);
+
+            cmd.CommandText = "Select c.Id, e.Id, e.Date, c.Description, e.Description, e.Amount, substr(Date, 1, 7) from categories c inner join expenses e on c.Id = e.CategoryId  where e.Date >= @Start and e.Date <= @End group by c.Id order by c.Description";
+            cmd.Parameters.AddWithValue("@Start", Start);
+            cmd.Parameters.AddWithValue("@End", End);
+            cmd.Prepare();
+            cmd.ExecuteNonQuery();
+
+            var rdr = cmd.ExecuteReader();
+
+            List<BudgetItemsByCategory> summary = new List<BudgetItemsByCategory>();
+
+            while (rdr.Read())
             {
-                // calculate total for this category, and create list of details
+                var cmd2 = new SQLiteCommand(db);
+                cmd2.CommandText = "Select c.Id, e.Id, e.Date, c.Description, e.Description, e.Amount, substr(Date, 1, 7) from categories c inner join expenses e on c.Id = e.CategoryId where c.Id = @Category and e.Date >= @Start and e.Date <= @End";
+                cmd2.Parameters.AddWithValue("@Category", rdr.GetInt32(0));
+                cmd2.Parameters.AddWithValue("@Start", Start);
+                cmd2.Parameters.AddWithValue("@End", End);
+                cmd2.Prepare();
+                cmd2.ExecuteNonQuery();
+
+                var rdr2 = cmd2.ExecuteReader();
                 double total = 0;
-                var details = new List<BudgetItem>();
-                foreach (var item in CategoryGroup)
+
+                List<BudgetItem> details = new List<BudgetItem>();
+
+                while (rdr2.Read())
                 {
-                    total = total + item.Amount;
-                    details.Add(item);
+                    if (FilterFlag && CategoryID != rdr2.GetInt32(0))
+                    {
+                        continue;
+                    }
+
+                    total += rdr2.GetDouble(5);
+
+                    details.Add(new BudgetItem
+                    {
+                        CategoryID = rdr2.GetInt32(0),
+                        ExpenseID = rdr2.GetInt32(1),
+                        ShortDescription = rdr2.GetString(4),
+                        Date = rdr2.GetDateTime(2),
+                        Amount = rdr2.GetDouble(5),
+                        Category = rdr2.GetString(3),
+                        Balance = total
+                    });
                 }
 
-                // Add new BudgetItemsByCategory to our list
-                summary.Add(new BudgetItemsByCategory
+                if (details.Count != 0)
                 {
-                    Category = CategoryGroup.Key,
-                    Details = details,
-                    Total = total
-                });
+                    summary.Add(new BudgetItemsByCategory
+                    {
+                        Category = rdr.GetString(3),
+                        Details = details,
+                        Total = total
+                    });
+                }
+
             }
 
             return summary;
