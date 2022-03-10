@@ -27,8 +27,6 @@ namespace Budget
     /// </summary>
     public class HomeBudget
     {
-        private string _FileName;
-        private string _DirName;
         private Categories _categories;
         private Expenses _expenses;
         private SQLiteConnection db;
@@ -36,40 +34,6 @@ namespace Budget
         // ====================================================================
         // Properties
         // ===================================================================
-
-        // Properties (location of files etc)
-
-        /// <summary>
-        /// Property to store and access the file name.
-        /// </summary>
-        /// <value>The <c>FileName</c> property represents the name of the file.</value>
-        public String FileName { get { return _FileName; } }
-
-        /// <summary>
-        /// Property to store and access the directory name.
-        /// </summary>
-        /// <value>The <c>DirName</c> property represents the name of the directory.</value>
-        public String DirName { get { return _DirName; } }
-
-        /// <summary>
-        /// Getter property that returns a path which includes a directory name and file name. If either of those 2 properties are null,
-        /// this property will also return null.
-        /// </summary>
-        /// <value>The <c>PathName</c> property represents a filepath according to the file name and directory name</value>
-        public String PathName
-        {
-            get
-            {
-                if (_FileName != null && _DirName != null)
-                {
-                    return Path.GetFullPath(_DirName + "\\" + _FileName);
-                }
-                else
-                {
-                    return null;
-                }
-            }
-        }
 
         // Properties (categories and expenses object)
 
@@ -88,7 +52,7 @@ namespace Budget
         public Expenses expenses { get { return _expenses; } }
 
 
-        public HomeBudget(String databaseFile, String expensesXMLFile, bool newDB = false)
+        public HomeBudget(String databaseFile, String XMLFile, bool newDB = false)
         {
 
             // if database exists, and user doesn't want a new database, open existing DB
@@ -104,7 +68,7 @@ namespace Budget
             }
             // create the category object
             _categories = new Categories(Database.dbConnection, newDB);
-            // create the _expenses course
+            // create the _expense object
             _expenses = new Expenses(Database.dbConnection);
 
             db = Database.dbConnection;
@@ -155,18 +119,34 @@ namespace Budget
         /// 
         /// <code>
         /// <![CDATA[
-        ///  HomeBudget budget = new HomeBudget();
-        ///  
-        /// //Reads from the budget file.
-        ///  budget.ReadFromFile(filename);
-        ///  
-        ///  // Get a list of all budget items
-        ///  var budgetItems = budget.GetBudgetItems(null, null, false, 0);
+        /// //Connections to a database and fills the tables for categories, categorytypes and expenses
+        /// string folder = TestConstants.GetSolutionDir();
+        /// string inFile = TestConstants.GetSolutionDir() + "\\" + testInputFile;
+        /// String goodDB = $"{folder}\\{TestConstants.testDBInputFile}";
+        /// String messyDB = $"{folder}\\messy.db";
+        /// System.IO.File.Copy(goodDB, messyDB, true);
+        /// HomeBudget homeBudget = new HomeBudget(messyDB, inFile, false);
+        /// List<Expense> listExpenses = homeBudget.expenses.List();
+        /// List<Category> listCategories = homeBudget.categories.List();
+        /// 
+        /// //Calls function
+        /// List<BudgetItem> budgetItems =  homeBudget.GetBudgetItems(null,null,false,9);
+        ///
+        /// //print important information
+        /// foreach (var bi in budgetItems)
+        ///    {
+        ///      Console.WriteLine(
+        ///         String.Format("{0} {1,-20}  {2,8:C}", 
+        ///             bi.Category.ToString(),
+        ///              bi.Details[0].Date,
+        ///              bi.Total)
+        ///       );
+        /// }
         ///            
-        ///  // print important information
-        ///  foreach (var bi in budgetItems)
+        /// // print important information
+        /// foreach (var bi in budgetItems)
         ///  {
-        ///      Console.WRiteLine ( 
+        ///      Console.WriteLine ( 
         ///          String.Format("{0} {1,-20}  {2,8:C} {3,12:C}", 
         ///             bi.Date.ToString("yyyy/MMM/dd"),
         ///             bi.ShortDescription,
@@ -198,14 +178,17 @@ namespace Budget
             // ------------------------------------------------------------------------
             // return joined list within time frame
             // ------------------------------------------------------------------------
-            Start = Start ?? new DateTime(1900, 1, 1);
-            End = End ?? new DateTime(2500, 1, 1);
+            DateTime realStart = Start ?? new DateTime(1900, 1, 1);
+            DateTime realEnd = End ?? new DateTime(2500, 1, 1);
+
+            String startString = realStart.ToString("yyyy-MM-dd");
+            String endString = realEnd.ToString("yyyy-MM-dd");
 
             var cmd = new SQLiteCommand(db);
 
             cmd.CommandText = "Select c.Id, e.Id, e.Date, c.Description, e.Description, e.Amount from categories c inner join expenses e on c.Id = e.CategoryId where e.Date >= @Start and e.Date <= @End";
-            cmd.Parameters.AddWithValue("@Start", Start);
-            cmd.Parameters.AddWithValue("@End", End);
+            cmd.Parameters.AddWithValue("@Start", startString);
+            cmd.Parameters.AddWithValue("@End", endString);
             cmd.Prepare();
             cmd.ExecuteNonQuery(); 
 
@@ -283,16 +266,19 @@ namespace Budget
         /// 
         /// <code>
         /// <![CDATA[
-        ///  HomeBudget budget = new HomeBudget();
-        ///  
-        /// //Reads from the budget file.
-        ///  budget.ReadFromFile(filename);
-        ///  
-        /// //Get a list of all budget items
-        ///  var budgetItems = budget.GetBudgetItemsByMonth(null, null, false, 0);
+        /// string folder = TestConstants.GetSolutionDir();
+        /// string inFile = TestConstants.GetSolutionDir() + "\\" + testInputFile;
+        /// String goodDB = $"{folder}\\{TestConstants.testDBInputFile}";
+        /// String messyDB = $"{folder}\\messy.db";
+        /// System.IO.File.Copy(goodDB, messyDB, true);
+        /// HomeBudget homeBudget = new HomeBudget(messyDB, inFile, false);
+        ///
+        /// //Calls function
+        /// List<BudgetItemsByMonth> budgetItemsByMonth = homeBudget.GetBudgetItemsByMonth(null, null, false, 9);
+        ///
         ///     
         /// //print important information
-        /// foreach (var bi in budgetItems)
+        /// foreach (var bi in budgetItemsByMonth)
         ///    {
         ///      Console.WriteLine(
         ///         String.Format("{0} {1,-20}  {2,8:C}", 
@@ -317,12 +303,11 @@ namespace Budget
         /// </example>
         public List<BudgetItemsByMonth> GetBudgetItemsByMonth(DateTime? Start, DateTime? End, bool FilterFlag, int CategoryID)
         {
-            Start = Start ?? new DateTime(1900, 1, 1);
-            End = End ?? new DateTime(2500, 1, 1);
-            // -----------------------------------------------------------------------
-            // get all items first
-            // -----------------------------------------------------------------------
-            List<BudgetItem> items = GetBudgetItems(Start, End, FilterFlag, CategoryID);
+            DateTime realStart = Start ?? new DateTime(1900, 1, 1);
+            DateTime realEnd = End ?? new DateTime(2500, 1, 1);
+
+            String startString = realStart.ToString("yyyy-MM-dd");
+            String endString = realEnd.ToString("yyyy-MM-dd");
 
             // -----------------------------------------------------------------------
             // Group by year/month
@@ -331,8 +316,8 @@ namespace Budget
             var cmd = new SQLiteCommand(db);
 
             cmd.CommandText = "Select c.Id, e.Id, e.Date, c.Description, e.Description, e.Amount, substr(Date, 1, 7) from categories c inner join expenses e on c.Id = e.CategoryId  where e.Date >= @Start and e.Date <= @End group by substr(Date, 1, 7)";
-            cmd.Parameters.AddWithValue("@Start", Start);
-            cmd.Parameters.AddWithValue("@End", End);
+            cmd.Parameters.AddWithValue("@Start", startString);
+            cmd.Parameters.AddWithValue("@End", endString);
             cmd.Prepare();
             cmd.ExecuteNonQuery();
 
@@ -426,13 +411,17 @@ namespace Budget
         /// <b>Getting a list of budget items by CATEGORY</b>
         /// <code>
         /// <![CDATA[
-        ///  HomeBudget budget = new HomeBudget();
-        ///  
-        /// //Reads from the budget file.
-        ///  budget.ReadFromFile(filename);
-        ///  
-        /// //Get a list of all budget items
-        ///  var budgetItems = budget.GetBudgetItemsByCategory(null, null, false, 0);
+        /// string folder = TestConstants.GetSolutionDir();
+        /// string inFile = TestConstants.GetSolutionDir() + "\\" + testInputFile;
+        /// String goodDB = $"{folder}\\{TestConstants.testDBInputFile}";
+        /// String messyDB = $"{folder}\\messy.db";
+        /// System.IO.File.Copy(goodDB, messyDB, true);
+        /// HomeBudget homeBudget = new HomeBudget(messyDB, inFile, false);
+        /// int maxRecords = TestConstants.budgetItemsByCategory_MaxRecords;
+        /// BudgetItemsByCategory firstRecord = TestConstants.budgetItemsByCategory_FirstRecord;
+        /// 
+        /// //Calls function
+        /// List<BudgetItemsByCategory> budgetItemsByCategory = homeBudget.GeBudgetItemsByCategory(null, null, false, 9);
         ///     
         /// //print important information
         /// foreach (var bi in budgetItems)
@@ -457,22 +446,22 @@ namespace Budget
         /// </example>
         public List<BudgetItemsByCategory> GeBudgetItemsByCategory(DateTime? Start, DateTime? End, bool FilterFlag, int CategoryID)
         {
-            Start = Start ?? new DateTime(1900, 1, 1);
-            End = End ?? new DateTime(2500, 1, 1);
-            // -----------------------------------------------------------------------
-            // get all items first
-            // -----------------------------------------------------------------------
-            List<BudgetItem> items = GetBudgetItems(Start, End, FilterFlag, CategoryID);
+            DateTime realStart = Start ?? new DateTime(1900, 1, 1);
+            DateTime realEnd = End ?? new DateTime(2500, 1, 1);
+
+            String startString = realStart.ToString("yyyy-MM-dd");
+            String endString = realEnd.ToString("yyyy-MM-dd");
+
 
             // -----------------------------------------------------------------------
-            // Group by year/month
+            // Group by category
             // -----------------------------------------------------------------------
 
             var cmd = new SQLiteCommand(db);
 
             cmd.CommandText = "Select c.Id, e.Id, e.Date, c.Description, e.Description, e.Amount, substr(Date, 1, 7) from categories c inner join expenses e on c.Id = e.CategoryId  where e.Date >= @Start and e.Date <= @End group by c.Id order by c.Description";
-            cmd.Parameters.AddWithValue("@Start", Start);
-            cmd.Parameters.AddWithValue("@End", End);
+            cmd.Parameters.AddWithValue("@Start", startString);
+            cmd.Parameters.AddWithValue("@End", endString);
             cmd.Prepare();
             cmd.ExecuteNonQuery();
 
@@ -485,8 +474,8 @@ namespace Budget
                 var cmd2 = new SQLiteCommand(db);
                 cmd2.CommandText = "Select c.Id, e.Id, e.Date, c.Description, e.Description, e.Amount, substr(Date, 1, 7) from categories c inner join expenses e on c.Id = e.CategoryId where c.Id = @Category and e.Date >= @Start and e.Date <= @End";
                 cmd2.Parameters.AddWithValue("@Category", rdr.GetInt32(0));
-                cmd2.Parameters.AddWithValue("@Start", Start);
-                cmd2.Parameters.AddWithValue("@End", End);
+                cmd2.Parameters.AddWithValue("@Start", startString);
+                cmd2.Parameters.AddWithValue("@End", endString);
                 cmd2.Prepare();
                 cmd2.ExecuteNonQuery();
 

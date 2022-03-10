@@ -85,6 +85,8 @@ namespace BudgetCodeTests
 
         }
 
+        // ========================================================================
+
         [Fact]
         public void ExpensesMethod_Add()
         {
@@ -99,7 +101,7 @@ namespace BudgetCodeTests
             Expenses expenses = new Expenses(conn);
             string descr = "New Expense";
             int type = 2;
-            double amount = 20;
+            double amount = -20;
             DateTime date = DateTime.Now;
 
             // Act
@@ -110,7 +112,9 @@ namespace BudgetCodeTests
             // Assert
             Assert.Equal(numberOfExpensesInFile + 1, sizeOfList);
             Assert.Equal(descr, expensesList[sizeOfList - 1].Description);
-
+            Assert.Equal(type, expensesList[sizeOfList - 1].Category);
+            Assert.Equal(amount, expensesList[sizeOfList - 1].Amount);
+            Assert.Equal(date, expensesList[sizeOfList - 1].Date);
         }
 
         // ========================================================================
@@ -139,6 +143,8 @@ namespace BudgetCodeTests
             Assert.False(expensesList.Exists(e => e.Id == IdToDelete), "correct Expense item deleted");
 
         }
+
+        // ========================================================================
 
         [Fact]
         public void ExpensesMethod_Delete_InvalidIDDoesntCrash()
@@ -169,6 +175,8 @@ namespace BudgetCodeTests
             }
         }
 
+        // ========================================================================
+
         [Fact]
         public void ExpensesMethod_UpdateExpenses()
         {
@@ -182,7 +190,7 @@ namespace BudgetCodeTests
             Categories categories = new Categories(conn, false);
             Expenses expenses = new Expenses(conn);
             String newDescr = "Presents";
-            double newAmount = 10;
+            double newAmount = -10;
             DateTime newDate = DateTime.MinValue;
             int newCategory = 2;
             int id = 3;

@@ -28,20 +28,15 @@ namespace Budget
     {    
         private SQLiteConnection db;
 
+
+        /// <summary>
+        /// Constrcutor that connects to a database connection given.
+        /// </summary>
+        /// <param name="con">The database connection that will be used to perform queries.</param>
         public Expenses(SQLiteConnection con)
         {
             db = con;
 
-            //var cmd = new SQLiteCommand(db);
-            //cmd.CommandText = "Select Id, Date, Description, Amount, CategoryId from expenses";
-            //var checkDB = cmd.ExecuteScalar();
-            //if (checkDB != null)
-            //{
-            //    cmd = new SQLiteCommand("Select MAX(Id) from expenses", db);
-            //    int count = Convert.ToInt32(cmd.ExecuteScalar());
-            //    cmd.Dispose();
-            //    counterId = count+1;
-            //}
         }
 
 
@@ -201,6 +196,14 @@ namespace Budget
             return newList;
         }
 
+        /// <summary>
+        /// Updates an expense with a specific id by changing its date, description, amount and cateoryId as needed.
+        /// </summary>
+        /// <param name="id">The Id of the expense</param>
+        /// <param name="date">The new date of the expense</param>
+        /// <param name="desc">The new description of the expens</param>
+        /// <param name="amount">The new amount of the expens</param>
+        /// <param name="category">The new category of the expens</param>
         public void UpdateProperties(int id, DateTime date, string desc, double amount, int category)
         {
             var cmd = new SQLiteCommand(db);
