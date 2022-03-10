@@ -21,7 +21,6 @@ namespace Budget
     /// </summary>
     public class Expense
     {
-        private Double amount;
         // ====================================================================
         // Properties
         // ====================================================================
@@ -38,11 +37,24 @@ namespace Budget
         /// <value>The <c>Date</c> property represents the date when the expense was made.</value>
         public DateTime Date { get;  }
 
+        private double amount;
+
         /// <summary>
-        /// Automatically implemented property of the amounts of the expense.
+        /// Property of the amounts of the expense.
         /// </summary>
         /// <value>The <c>Amount</c> property represents the amount of money spent on this expense.</value>
-        public Double Amount { get; set; }
+        public Double Amount
+        {
+            get { return amount; }
+            set
+            {
+                if (value > 0)
+                {
+                    amount = -amount;
+                }
+                amount = value;
+            }
+        }
 
         /// <summary>
         /// Automatically implemented property of the description of the expense.
