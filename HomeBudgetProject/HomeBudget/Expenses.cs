@@ -36,7 +36,6 @@ namespace Budget
         public Expenses(SQLiteConnection con)
         {
             db = con;
-
         }
 
 
@@ -72,28 +71,36 @@ namespace Budget
         /// </example>
         public void Add(DateTime date, int category, Double amount, String description)
         {
-            int count=0;
-            var cmd = new SQLiteCommand(db);
-
-            cmd.CommandText = "Select Id, Date, Description, Amount, CategoryId from expenses";
-            var checkDB = cmd.ExecuteScalar();
-
-            if (checkDB != null)
+            try
             {
-                cmd = new SQLiteCommand("Select MAX(Id) from expenses", db);
-                count = Convert.ToInt32(cmd.ExecuteScalar());
+
+
+                int count  =  0;
+                    var cmd = new SQLiteCommand(db);
+
+                    cmd.CommandText = "Select Id, Date, Description, Amount, CategoryId from expenses";
+                    var checkDB = cmd.ExecuteScalar();
+
+                    if (checkDB != null)
+                    {
+                        cmd = new SQLiteCommand("Select MAX(Id) from expenses", db);
+                        count = Convert.ToInt32(cmd.ExecuteScalar());
+                    }
+
+                    cmd.CommandText = "INSERT INTO expenses(Id, Date, Description, Amount, CategoryId) VALUES (@Id, @Date, @Description, @Amount, @CategoryId)";
+
+                    cmd.Parameters.AddWithValue("@Id", count  +  1);
+                    cmd.Parameters.AddWithValue("@Date", date);
+                    cmd.Parameters.AddWithValue("@Description", description);
+                    cmd.Parameters.AddWithValue("@Amount", amount);
+                    cmd.Parameters.AddWithValue("@CategoryId", category);
+
+                    cmd.Prepare();
+                    cmd.ExecuteNonQuery();
+            }catch(Exception e)
+            {
+                throw e;
             }
-
-            cmd.CommandText = "INSERT INTO expenses(Id, Date, Description, Amount, CategoryId) VALUES (@Id, @Date, @Description, @Amount, @CategoryId)";
-
-            cmd.Parameters.AddWithValue("@Id", count+1);
-            cmd.Parameters.AddWithValue("@Date", date);
-            cmd.Parameters.AddWithValue("@Description", description);
-            cmd.Parameters.AddWithValue("@Amount", amount);
-            cmd.Parameters.AddWithValue("@CategoryId", category);
-
-            cmd.Prepare();
-            cmd.ExecuteNonQuery();
 
         }
 
@@ -126,22 +133,30 @@ namespace Budget
         /// </example>
         public void Delete(int Id)
         {
-            var cmd = new SQLiteCommand(db);
-            cmd.CommandText = "Select Id from expenses where Id = @Id";
-            cmd.Parameters.AddWithValue("@Id", Id);
-            cmd.Prepare();
-            cmd.ExecuteNonQuery();
-
-            var checkDB = cmd.ExecuteScalar();
-
-            if (checkDB != null)
+            try
             {
-                cmd = new SQLiteCommand(db);
-
-                cmd.CommandText = "DELETE FROM expenses WHERE Id = @Id";
+                var cmd = new SQLiteCommand(db);
+                cmd.CommandText = "Select Id from expenses where Id = @Id";
                 cmd.Parameters.AddWithValue("@Id", Id);
                 cmd.Prepare();
                 cmd.ExecuteNonQuery();
+
+                var checkDB = cmd.ExecuteScalar();
+
+                if (checkDB != null)
+                {
+                    cmd = new SQLiteCommand(db);
+
+                    cmd.CommandText = "DELETE FROM expenses WHERE Id = @Id";
+                    cmd.Parameters.AddWithValue("@Id", Id);
+                    cmd.Prepare();
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            catch (Exception e)
+            {
+
+                throw e;
             }
 
         }
@@ -176,22 +191,32 @@ namespace Budget
             List<Expense> newList = new List<Expense>();
             var cmd = new SQLiteCommand(db);
 
-
-            cmd.CommandText = "Select Id, Date, Description, Amount, CategoryId from expenses";
-            var rdr = cmd.ExecuteReader();
-
-            // loop
-            while (rdr.Read())
+            try
             {
-                int id = rdr.GetInt32(0);
-                DateTime date = rdr.GetDateTime(1);
-                string descr = rdr.GetString(2);
-                double amount = rdr.GetDouble(3);
-                int categoryId = rdr.GetInt32(4);
-                newList.Add(new Expense(id, date, categoryId, amount, descr));
-            }
 
-            cmd.Dispose();
+
+                cmd.CommandText = "Select Id, Date, Description, Amount, CategoryId from expenses";
+                var rdr = cmd.ExecuteReader();
+
+                // loop
+                while (rdr.Read())
+                {
+                    int id = rdr.GetInt32(0);
+                    DateTime date = rdr.GetDateTime(1);
+                    string descr = rdr.GetString(2);
+                    double amount = rdr.GetDouble(3);
+                    int categoryId = rdr.GetInt32(4);
+                    newList.Add(new Expense(id, date, categoryId, amount, descr));
+                }
+
+                cmd.Dispose();
+
+                newList.OrderBy(idSort => idSort.Id);
+            }
+            catch  (Exception e)
+            {
+                throw e;
+            }
 
             return newList;
         }
@@ -207,21 +232,42 @@ namespace Budget
         public void UpdateProperties(int id, DateTime date, string desc, double amount, int category)
         {
             var cmd = new SQLiteCommand(db);
+            try
+            {
 
-            cmd.CommandText = "SELECT Id, Date, Description, Amount, CategoryId from expenses where Id = @Id";
-            cmd.Parameters.AddWithValue("@Id", id);
-            cmd.Prepare();
-            cmd.ExecuteNonQuery();
 
-            cmd.CommandText = "UPDATE expenses SET Date= @Date, Description = @Description, Amount = @Amount, CategoryId = @CategoryId WHERE Id = @Id";
-            cmd.Parameters.AddWithValue("@Description", desc);
-            cmd.Parameters.AddWithValue("@Date",date);
-            cmd.Parameters.AddWithValue("@Amount", amount);
-            cmd.Parameters.AddWithValue("@CategoryId", category);
-            cmd.Prepare();
-            cmd.ExecuteNonQuery();
+                cmd.CommandText = "Select Id from expenses where Id = @Id";
+                    cmd.Parameters.AddWithValue("@Id", id);
+                    cmd.Prepare();
+                    cmd.ExecuteNonQuery();
 
-            cmd.Dispose();
+                    var checkDB = cmd.ExecuteScalar();
+
+                    if (checkDB == null)
+                    {
+                        throw new Exception("Invalid id: id " + id + " does not exist");
+                    }
+
+
+                cmd.CommandText = "SELECT Id, Date, Description, Amount, CategoryId from expenses where Id = @Id";
+                    cmd.Parameters.AddWithValue("@Id", id);
+                    cmd.Prepare();
+                    cmd.ExecuteNonQuery();
+
+                    cmd.CommandText = "UPDATE expenses SET Date= @Date, Description = @Description, Amount = @Amount, CategoryId = @CategoryId WHERE Id = @Id";
+                    cmd.Parameters.AddWithValue("@Description", desc);
+                    cmd.Parameters.AddWithValue("@Date",  date);
+                    cmd.Parameters.AddWithValue("@Amount", amount);
+                    cmd.Parameters.AddWithValue("@CategoryId", category);
+                    cmd.Prepare();
+                    cmd.ExecuteNonQuery();
+
+                    cmd.Dispose();
+            }
+            catch(Exception e)
+            {
+                throw e;
+            }
         }
 
     }

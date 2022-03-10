@@ -78,9 +78,6 @@ namespace Budget
 
             cmd.Dispose();
 
-            // DO NOT FORGET TO BIND PARAMETERS/VALUES OR IT'S A 0.
-            // after each commadn, execute3 query and dispose of it to "clean". explanations are given by Sandy in comments ^.
-
         }
 
        // ===================================================================
