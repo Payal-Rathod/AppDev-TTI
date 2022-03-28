@@ -366,7 +366,7 @@ namespace Budget
                         cmd2.Prepare();
                         cmd2.ExecuteNonQuery();
 
-                    var rdr2 = cmd2.ExecuteReader();
+                        var rdr2 = cmd2.ExecuteReader();
                         double total = 0;
 
                         List<BudgetItem> details = new List<BudgetItem>();

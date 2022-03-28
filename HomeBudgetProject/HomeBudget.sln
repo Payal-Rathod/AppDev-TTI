@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.31911.196
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeBudget", "HomeBudget\HomeBudget.csproj", "{D255A6ED-CDCB-4F6C-A2E3-AD955792A0A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BudgetTesting", "BudgetTesting\BudgetTesting.csproj", "{BE8B850F-8D4D-4097-8564-4F3528098A7D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BudgetTesting", "BudgetTesting\BudgetTesting.csproj", "{BE8B850F-8D4D-4097-8564-4F3528098A7D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeBudgetGUI", "HomeBudgetGUI\HomeBudgetGUI.csproj", "{7120D610-5659-4F0A-A56F-D97E5916EC85}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{BE8B850F-8D4D-4097-8564-4F3528098A7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE8B850F-8D4D-4097-8564-4F3528098A7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE8B850F-8D4D-4097-8564-4F3528098A7D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7120D610-5659-4F0A-A56F-D97E5916EC85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7120D610-5659-4F0A-A56F-D97E5916EC85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7120D610-5659-4F0A-A56F-D97E5916EC85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7120D610-5659-4F0A-A56F-D97E5916EC85}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

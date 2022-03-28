@@ -3,15 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Budget;
 
-namespace Budget
+namespace HomeBudgetWPF
 {
-    class Program
+    class Presenter
     {
-        static void Main(string[] args)
-        {
-
-
-        }
     }
 }
