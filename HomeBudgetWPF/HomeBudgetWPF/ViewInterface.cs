@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HomeBudgetWPF
 {
-    interface ViewInterface
+    public interface ViewInterface
     {
         void ShowError(string msg);
         void Refresh();
@@ -16,7 +16,7 @@ namespace HomeBudgetWPF
         void ShowUserHistory();
         void RecentlyOpened();
         void ShowDatabase();
-        void AddCategory();
+        //void AddCategory();
         void ShowCategories();
         void Cancel();
     }

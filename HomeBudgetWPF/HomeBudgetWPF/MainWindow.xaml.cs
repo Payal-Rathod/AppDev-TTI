@@ -18,11 +18,87 @@ namespace HomeBudgetWPF
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, ViewInterface
     {
+        Presenter presenter;
+        string filename;
+        bool newDb;
+
         public MainWindow()
         {
             InitializeComponent();
+            presenter = new Presenter(this) ;
+        }
+        private void openFile_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFile();
+        }
+
+        public void Cancel()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CloseFile()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OpenFile()
+        {
+            Microsoft.Win32.OpenFileDialog openFileDlg = new Microsoft.Win32.OpenFileDialog();
+            openFileDlg.Filter = "Database file (.db)|*.db";
+            Nullable<bool> result = openFileDlg.ShowDialog();
+            if (result == true)
+            {
+                FileNameTextBox.Text = openFileDlg.FileName;
+                filename = FileNameTextBox.Text;
+            }
+
+            presenter.openDatabase(filename, newDb = true);
+
+
+           // Budget.HomeBudget homeBudget = new Budget.HomeBudget(openFileDlg.FileName);
+        }
+
+        public void RecentlyOpened()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Refresh()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ShowAdded()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ShowCategories()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ShowDatabase()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ShowError(string msg)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ShowUserHistory()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
     }
 }
