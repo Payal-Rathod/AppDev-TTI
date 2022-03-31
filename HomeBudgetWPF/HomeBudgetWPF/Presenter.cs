@@ -10,7 +10,9 @@ namespace HomeBudgetWPF
     public class Presenter
     {
         private readonly ViewInterface view;
-        private  HomeBudget homeBudget;
+        private HomeBudget homeBudget;
+        private Categories cats;
+        private Expenses expenses;
         public Presenter(ViewInterface v)
         {
             view = v;
@@ -18,10 +20,8 @@ namespace HomeBudgetWPF
         public void openDatabase(string filename, bool newDb)
         {
             homeBudget = new HomeBudget(filename, "", newDb);
-            Categories cats = homeBudget.categories;
-
-
-            cats.Add("test", Budget.Category.CategoryType.Credit);
+            cats = homeBudget.categories;
+            expenses = homeBudget.expenses;
         }
     }
 }

@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Budget;
 
 namespace HomeBudgetWPF
 {
@@ -23,11 +24,19 @@ namespace HomeBudgetWPF
         Presenter presenter;
         string filename;
         bool newDb;
+        private List<Category> categoriesList = new List<Category>();
 
         public MainWindow()
         {
             InitializeComponent();
-            presenter = new Presenter(this) ;
+            presenter = new Presenter(this);
+
+            foreach (Category c in categoriesList)
+            {
+                
+            }
+            
+
         }
         private void openFile_Click(object sender, RoutedEventArgs e)
         {
