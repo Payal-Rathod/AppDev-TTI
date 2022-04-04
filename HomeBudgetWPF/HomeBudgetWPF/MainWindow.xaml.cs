@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -25,7 +26,7 @@ namespace HomeBudgetWPF
         string filename;
         bool newDb;
 
-        private List<Budget.Category.CategoryType> categoriesList = new List<Budget.Category.CategoryType>();
+        private List<Budget.Category> categoriesList = new List<Budget.Category>();
 
         public MainWindow()
         {
@@ -34,6 +35,7 @@ namespace HomeBudgetWPF
             this.DataContext = this;
 
             presenter = new Presenter(this);
+           
 
             // NO BINDING.          
 
@@ -41,6 +43,29 @@ namespace HomeBudgetWPF
         private void openFile_Click(object sender, RoutedEventArgs e)
         {
             OpenFile();
+            List<Budget.Category> catsList = presenter.getCategoriesList();
+            foreach (Budget.Category c in catsList)
+            {
+                CategoriesDropDown.Items.Add(c);
+            }
+        }
+
+        private void AddExpenses_Click(object sender, RoutedEventArgs e)
+        {
+            DateTime date = DateTimePicker1.SelectedDate.Value;
+
+            int amount = Int32.Parse(Amount.Text);
+
+            string desc = Desc.Text;
+
+            string category = CategoriesDropDown.SelectedItem.ToString().Split(':')[1];
+
+            presenter.addExpenses(date, category, amount, desc);
+
+            MessageBox.Show(date.ToString("yyyy-MM-dd") +"\n"+ amount + "\n" + desc + "\n" + category);
+
+
+
         }
 
         public void Cancel()
@@ -65,9 +90,6 @@ namespace HomeBudgetWPF
             }
 
             presenter.openDatabase(filename, newDb = true);
-
-
-           // Budget.HomeBudget homeBudget = new Budget.HomeBudget(openFileDlg.FileName);
         }
 
         public void RecentlyOpened()
@@ -115,6 +137,25 @@ namespace HomeBudgetWPF
             Category window = new Category();
             window.Show();
 
+        }
+
+        private void Amount_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            Regex regex = new Regex("[^0-9]+");
+            e.Handled = regex.IsMatch(e.Text);
+        }
+
+        private void CategoriesDropDown_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            int selectedIndex = CategoriesDropDown.SelectedIndex;
+            Budget.Category selectedItem = CategoriesDropDown.SelectedItem as Budget.Category;
+            ComboBoxItem desc = new ComboBoxItem();
+            desc.Content = selectedItem.Description;
+            
+
+            ComboBoxItem cbi = desc;
+
+            string selectedtext = cbi.Content.ToString();
         }
     }
 }
