@@ -24,18 +24,18 @@ namespace HomeBudgetWPF
         Presenter presenter;
         string filename;
         bool newDb;
-        private List<Category> categoriesList = new List<Category>();
+
+        private List<Budget.Category.CategoryType> categoriesList = new List<Budget.Category.CategoryType>();
 
         public MainWindow()
         {
             InitializeComponent();
+
+            this.DataContext = this;
+
             presenter = new Presenter(this);
 
-            foreach (Category c in categoriesList)
-            {
-                
-            }
-            
+            // NO BINDING.          
 
         }
         private void openFile_Click(object sender, RoutedEventArgs e)
@@ -108,6 +108,13 @@ namespace HomeBudgetWPF
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
             Close();
+        }
+
+        private void Open_Category_Window(object sender, RoutedEventArgs e)
+        {
+            Category window = new Category();
+            window.Show();
+
         }
     }
 }
