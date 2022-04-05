@@ -86,7 +86,20 @@ namespace HomeBudgetWPF
 
                 string category = CategoriesDropDown.SelectedItem.ToString();
 
-                //presenter.addExpenses(date, category, amount, desc);
+                catsList = presenter.getCategoriesList();
+                int index;
+
+                for (int i = 0; i < catsList.Count(); i++)
+                {
+                    if (catsList[i].Description == category)
+                    {
+                        index = i;
+                        presenter.addExpenses(date, index, amount, desc);
+                    }
+                }
+
+
+                
 
                 MessageBox.Show(date.ToString("yyyy-MM-dd") + "\n" + amount + "\n" + desc + "\n" + category);
 

@@ -26,23 +26,9 @@ namespace HomeBudgetWPF
             expenses = homeBudget.expenses;
         }
 
-        public void addExpenses(DateTime date, string category, Double amount, String description) {
-            // Get id of category?
-            // Not sure how to get the connection or if we have to query.
-            var cmd = new SQLiteCommand();
-
-            cmd.CommandText = "SELECT Id from categories WHERE Description = @Description";
-            cmd.Parameters.AddWithValue("@Description", description);
-            cmd.Prepare();
-            cmd.ExecuteNonQuery();
-            expenses.List();
-            var rdr = cmd.ExecuteReader();
-            while (rdr.Read())
-            {
-                expenses.Add(date, rdr.GetInt32(0), amount, description);
-            }
-
-            cmd.Dispose();
+        public void addExpenses(DateTime date, int category, Double amount, String description) 
+        {
+            expenses.Add(date, category, amount, description);
                 
         }
 
