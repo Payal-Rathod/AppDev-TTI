@@ -61,17 +61,17 @@ namespace HomeBudgetWPF
                 MessageBox.Show("Please select a date!");
             }
 
-            else if (Amount.Text == "")
+            else if (Amount.Text == "" || Amount.Text == "Amount")
             {
                 MessageBox.Show("Please enter an amount!");
             }
 
-            else if (Desc.Text == "")
+            else if (Desc.Text == "" || Desc.Text == "Description")
             {
                 MessageBox.Show("Please enter a description!");
             }
 
-            else if (CategoriesDropDown.SelectedItem == null)
+            else if (CategoriesDropDown.SelectedIndex == -1)
             {
                 MessageBox.Show("Please enter a category from the list, or create a new one!");
             }
@@ -96,10 +96,7 @@ namespace HomeBudgetWPF
                         index = i;
                         presenter.addExpenses(date, index, amount, desc);
                     }
-                }
-
-
-                
+                }             
 
                 MessageBox.Show(date.ToString("yyyy-MM-dd") + "\n" + amount + "\n" + desc + "\n" + category);
 
@@ -153,7 +150,9 @@ namespace HomeBudgetWPF
 
         public void ShowAdded()
         {
-            throw new NotImplementedException();
+            catsList = presenter.getCategoriesList();
+
+            MessageBox.Show("Added " + catsList.Last(), "Configuration", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         public void ShowCategories()
