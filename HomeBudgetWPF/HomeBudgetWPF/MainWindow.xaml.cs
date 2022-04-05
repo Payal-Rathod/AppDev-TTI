@@ -54,7 +54,7 @@ namespace HomeBudgetWPF
         private void AddExpenses_Click(object sender, RoutedEventArgs e)
         {
             // Input validation.
-            if (DateTimePicker1.SelectedDate.Value == null)
+            if (DateTimePicker1.SelectedDate.HasValue == false)
             {
                 ShowError("Please select a date!");
             }
@@ -97,12 +97,7 @@ namespace HomeBudgetWPF
 
                 }
 
-                ShowAdded(date, amount, desc, category);
-
-
-
-                MessageBox.Show(date.ToString("yyyy-MM-dd") + "\n" + amount + "\n" + desc + "\n" + category);
-
+                ShowAdded();
 
                 // Clear fields except Category and Date.
                 Refresh();
@@ -160,11 +155,8 @@ namespace HomeBudgetWPF
             Desc.Text = "Enter description";
         }
 
-        public void ShowAdded(DateTime date, int amount, string desc, string category)
+        public void ShowAdded()
         {
-
-            MessageBox.Show(date.ToString("yyyy-MM-dd") + "\n" + amount + "\n" + desc + "\n" + category);
-
             catsList = presenter.getCategoriesList();
 
             MessageBox.Show("Added " + catsList.Last(), "Configuration", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -183,7 +175,7 @@ namespace HomeBudgetWPF
 
         public void ShowError(string msg)
         {
-            MessageBox.Show("Error! " +msg);
+            MessageBox.Show("Error: " +msg);
         }
 
         public void ShowUserHistory()
@@ -241,16 +233,6 @@ namespace HomeBudgetWPF
             {
                 Desc.Text = "";
             }            
-        }
-
-
-        private void newFile_Click(object sender, RoutedEventArgs e)
-        {
-            OpenFileDialog dialog = new OpenFileDialog();
-            if (DialogResult.HasValue == dialog.ShowDialog())
-            {
-                fileName = dialog.FileName;
-            }
         }
     private void cancelExpenses_Click(object sender, RoutedEventArgs e)
     {
