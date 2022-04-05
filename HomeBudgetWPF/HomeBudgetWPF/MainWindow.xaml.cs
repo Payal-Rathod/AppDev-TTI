@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Budget;
+using Microsoft.Win32;
 
 namespace HomeBudgetWPF
 {
@@ -25,6 +26,8 @@ namespace HomeBudgetWPF
         Presenter presenter;
         string filename;
         bool newDb;
+        Category window;
+        List<Budget.Category> catsList;
 
         private List<Budget.Category> categoriesList = new List<Budget.Category>();
 
@@ -43,7 +46,7 @@ namespace HomeBudgetWPF
         private void openFile_Click(object sender, RoutedEventArgs e)
         {
             OpenFile();
-            List<Budget.Category> catsList = presenter.getCategoriesList();
+            catsList = presenter.getCategoriesList();
             foreach (Budget.Category c in catsList)
             {
                 CategoriesDropDown.Items.Add(c);
@@ -52,25 +55,52 @@ namespace HomeBudgetWPF
 
         private void AddExpenses_Click(object sender, RoutedEventArgs e)
         {
-            DateTime date = DateTimePicker1.SelectedDate.Value;
+            // Input validation.
+            if (DateTimePicker1.SelectedDate.Value == null)
+            {
+                MessageBox.Show("Please select a date!");
+            }
 
-            int amount = Int32.Parse(Amount.Text);
+            else if (Amount.Text == "")
+            {
+                MessageBox.Show("Please enter an amount!");
+            }
 
-            string desc = Desc.Text;
+            else if (Desc.Text == "")
+            {
+                MessageBox.Show("Please enter a description!");
+            }
 
-            string category = CategoriesDropDown.SelectedItem.ToString().Split(':')[1];
+            else if (CategoriesDropDown.SelectedItem == null)
+            {
+                MessageBox.Show("Please enter a category from the list, or create a new one!");
+            }
 
-            presenter.addExpenses(date, category, amount, desc);
+            else
+            {
+                DateTime date = DateTimePicker1.SelectedDate.Value;
 
-            MessageBox.Show(date.ToString("yyyy-MM-dd") +"\n"+ amount + "\n" + desc + "\n" + category);
+                int amount = Int32.Parse(Amount.Text);
 
+                string desc = Desc.Text;
 
+                string category = CategoriesDropDown.SelectedItem.ToString();
 
+                //presenter.addExpenses(date, category, amount, desc);
+
+                MessageBox.Show(date.ToString("yyyy-MM-dd") + "\n" + amount + "\n" + desc + "\n" + category);
+            }
         }
 
         public void Cancel()
         {
-            throw new NotImplementedException();
+            MessageBox.Show("Your entries will be cleared.", "Configuration", MessageBoxButton.OK, MessageBoxImage.Warning);
+
+            // Clear fields.
+            DateTimePicker1.SelectedDate = null;
+            Amount.Text = "Enter amount";
+            Desc.Text = "Enter description";
+            CategoriesDropDown.SelectedItem = null;
         }
 
         public void CloseFile()
@@ -80,7 +110,7 @@ namespace HomeBudgetWPF
 
         public void OpenFile()
         {
-            Microsoft.Win32.OpenFileDialog openFileDlg = new Microsoft.Win32.OpenFileDialog();
+            OpenFileDialog openFileDlg = new OpenFileDialog();
             openFileDlg.Filter = "Database file (.db)|*.db";
             Nullable<bool> result = openFileDlg.ShowDialog();
             if (result == true)
@@ -99,7 +129,7 @@ namespace HomeBudgetWPF
 
         public void Refresh()
         {
-            throw new NotImplementedException();
+            Cancel();
         }
 
         public void ShowAdded()
@@ -134,7 +164,7 @@ namespace HomeBudgetWPF
 
         private void Open_Category_Window(object sender, RoutedEventArgs e)
         {
-            Category window = new Category();
+            window = new Category(presenter, this);
             window.Show();
 
         }
@@ -147,15 +177,42 @@ namespace HomeBudgetWPF
 
         private void CategoriesDropDown_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            int selectedIndex = CategoriesDropDown.SelectedIndex;
             Budget.Category selectedItem = CategoriesDropDown.SelectedItem as Budget.Category;
             ComboBoxItem desc = new ComboBoxItem();
             desc.Content = selectedItem.Description;
+        }
+
+        // Closing the application.
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (MessageBox.Show("If you close this window without saving, your changes will be lost.\nSave?", "Save file", MessageBoxButton.YesNo, MessageBoxImage.Hand) == MessageBoxResult.Yes)
+            {
+                SaveFileDialog dlg = new SaveFileDialog();
+                dlg.DefaultExt = ".db";
+                dlg.Filter = "Database file (.db)|*.db";
+
+                if (dlg.ShowDialog() == true)
+                {
+                    string filename = dlg.FileName;
+                }
+            }
             
+        }
 
-            ComboBoxItem cbi = desc;
+        private void Amount_TextChanged(object sender, MouseButtonEventArgs e)
+        {
+            if (Amount.Text == "Amount")
+            {
+                Amount.Text = "";
+            }
+        }
 
-            string selectedtext = cbi.Content.ToString();
+        private void Desc_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (Desc.Text == "Description")
+            {
+                Desc.Text = "";
+            }            
         }
     }
 }

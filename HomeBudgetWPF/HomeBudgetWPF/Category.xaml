@@ -5,22 +5,26 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HomeBudgetWPF"
         mc:Ignorable="d"
-        Title="Category" Height="450" Width="800">
-    <Grid Margin="100">
+        Title="Category" Height="550" Width="500">
+    <Grid Background="#C9E4E7">
         <Grid.RowDefinitions>
             <RowDefinition></RowDefinition>
             <RowDefinition>
             </RowDefinition>
             <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <TextBlock Grid.Row="0">Name</TextBlock>
-        <TextBlock Grid.Row="1">Type</TextBlock>
-        <TextBox Grid.Row="1" Margin="100,0,0,0">Type</TextBox>
-        <TextBox Grid.Row="0" Margin="100,0,0,0">Name</TextBox>
-
-        <Button Grid.Row="3" Width="50" Height="25">Add</Button>
+        <TextBox Background="#C9E4E7" BorderThickness="0" Grid.Column="0" Grid.ColumnSpan="4" Text="Add a new category" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#0C6291" FontWeight="Bold" FontSize="45"/>
+        <TextBlock Background="#0C6291" Foreground="White" VerticalAlignment="Center" Width="50" Height="30" Padding="5" Grid.Row="1" Grid.Column="0">Name</TextBlock>
+        <TextBlock Background="#0C6291" Foreground="White" VerticalAlignment="Center" Width="45" Height="30" Padding="5" Grid.Row="2" Grid.Column="0">Type</TextBlock>
+        <ComboBox Name="categoryType" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Text="Type" Height="30">Type</ComboBox>
+        <TextBox Name="categoryName" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" MouseDoubleClick="categoryName_MouseDoubleClick">Enter name</TextBox>
+        <Button  Background="#0C6291" Foreground="White" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Width="50" Height="25" Click="Add_Category_Click">Add</Button>
     </Grid>
 </Window>

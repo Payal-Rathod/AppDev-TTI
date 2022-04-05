@@ -19,9 +19,62 @@ namespace HomeBudgetWPF
     /// </summary>
     public partial class Category : Window
     {
-        public Category()
+        Presenter presenter;
+        MainWindow mainWindow;
+        public Category(Presenter mainPresenter, MainWindow main)
         {
             InitializeComponent();
+            mainWindow = main;
+            presenter = mainPresenter;
+
+            // Dropdown for types.
+            foreach (Budget.Category.CategoryType type in Enum.GetValues(typeof(Budget.Category.CategoryType)))
+            {
+                categoryType.Items.Add(type);
+            }
+        }
+
+        private void Add_Category_Click(object sender, RoutedEventArgs e)
+        {
+            // We display the added category in drop down list.
+            // We add it to categories list.
+
+            Budget.Category.CategoryType tmp;
+            Budget.Category category;
+
+            // Validation.
+            if (categoryName.Text == "")
+            {
+                MessageBox.Show("Please enter a description!");
+            }
+
+            else if (categoryType.SelectedItem == null)
+            {
+                MessageBox.Show("Please select a category type!");
+            }
+
+            else
+            {
+                // Get type.
+                foreach (Budget.Category.CategoryType type in Enum.GetValues(typeof(Budget.Category.CategoryType)))
+                {
+                    if (Enum.TryParse(categoryType.Text, out tmp))
+                    {
+                        category = presenter.addCategory(categoryName.Text, tmp);
+
+                        // Updating.
+                        mainWindow.CategoriesDropDown.Items.Add(category);
+                    }
+                }
+            }
+        }
+
+        private void categoryName_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (categoryName.Text == "Enter name")
+            {
+                categoryName.Text = "";
+            }
         }
     }
 }
