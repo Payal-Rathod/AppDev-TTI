@@ -43,12 +43,16 @@ namespace HomeBudgetWPF
             Budget.Category category;
 
             // Validation.
-            if (categoryName.Text == "")
+            if (categoryName.Text == "" || categoryName.Text == "Enter name")
             {
                 MessageBox.Show("Please enter a description!");
             }
 
-            else if (categoryType.SelectedItem == null)
+            else if (categoryName.Text.Any(char.IsDigit))
+            {
+                MessageBox.Show("Your description contains a number!");
+            }
+            else if (categoryType.SelectedIndex == -1)
             {
                 MessageBox.Show("Please select a category type!");
             }
@@ -64,8 +68,12 @@ namespace HomeBudgetWPF
 
                         // Updating.
                         mainWindow.CategoriesDropDown.Items.Add(category);
+
                     }
                 }
+
+                mainWindow.ShowAdded();
+                this.Close();
             }
         }
 

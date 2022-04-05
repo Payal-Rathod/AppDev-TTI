@@ -59,17 +59,17 @@ namespace HomeBudgetWPF
                 ShowError("Please select a date!");
             }
 
-            else if (Amount.Text == "")
+            else if (Amount.Text == "" || Amount.Text == "Amount")
             {
                 ShowError("Please enter an amount!");
             }
 
-            else if (Desc.Text == "")
+            else if (Desc.Text == "" || Desc.Text == "Description")
             {
                 ShowError("Please enter a description!");
             }
 
-            else if (CategoriesDropDown.SelectedItem == null)
+            else if (CategoriesDropDown.SelectedIndex == -1)
             {
                 ShowError("Please enter a category from the list, or create a new one!");
             }
@@ -94,9 +94,15 @@ namespace HomeBudgetWPF
                         index = i;
                         presenter.addExpenses(date, index, amount, desc);
                     }
+<<<<<<< HEAD
                 }
 
                 ShowAdded(date, amount, desc, category);
+=======
+                }             
+
+                MessageBox.Show(date.ToString("yyyy-MM-dd") + "\n" + amount + "\n" + desc + "\n" + category);
+>>>>>>> 58c5c8dd26076fa3053fed78922dc4a110df7220
 
                 // Clear fields except Category and Date.
                 Refresh();          
@@ -157,7 +163,13 @@ namespace HomeBudgetWPF
 
         public void ShowAdded(DateTime date, int amount, string desc, string category)
         {
+<<<<<<< HEAD
             MessageBox.Show(date.ToString("yyyy-MM-dd") + "\n" + amount + "\n" + desc + "\n" + category);
+=======
+            catsList = presenter.getCategoriesList();
+
+            MessageBox.Show("Added " + catsList.Last(), "Configuration", MessageBoxButton.OK, MessageBoxImage.Information);
+>>>>>>> 58c5c8dd26076fa3053fed78922dc4a110df7220
         }
 
         public void ShowCategories()
@@ -232,6 +244,7 @@ namespace HomeBudgetWPF
             }            
         }
 
+<<<<<<< HEAD
         private void newFile_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog dialog = new OpenFileDialog();
@@ -243,6 +256,40 @@ namespace HomeBudgetWPF
         private void cancelExpenses_Click(object sender, RoutedEventArgs e)
         {
             Cancel();
+=======
+        private void ColorMode_Click(object sender, RoutedEventArgs e)
+        {
+            Button btn = sender as Button;
+            if (btn.Content.ToString() == "Dark Mode")
+            {
+                DarkMode();
+            }
+            else
+                LightMode();
+        }
+
+        public void LightMode()
+        {
+            theme.Content = "Dark Mode";
+            theme.Foreground = Brushes.White;
+            theme.Background = Brushes.Black;
+            
+            Color color = (Color)ColorConverter.ConvertFromString("#C9E4E7");
+
+            var brush = new SolidColorBrush(color);
+            
+            mainGrid.Background = brush;
+            menu.Background = brush;            
+        }
+
+        public void DarkMode()
+        {
+            theme.Content = "Light Mode";
+            theme.Foreground = Brushes.Black;
+            theme.Background = Brushes.White;
+            mainGrid.Background = Brushes.Black;
+            menu.Background = Brushes.Black;
+>>>>>>> 58c5c8dd26076fa3053fed78922dc4a110df7220
         }
     }
 }

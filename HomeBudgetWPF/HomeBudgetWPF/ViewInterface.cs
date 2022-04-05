@@ -16,7 +16,12 @@ namespace HomeBudgetWPF
         void ShowUserHistory();
         void RecentlyOpened();
         void ShowDatabase();
+<<<<<<< HEAD
         void ShowCategories();
+=======
+        void LightMode();
+        void DarkMode();
+>>>>>>> 58c5c8dd26076fa3053fed78922dc4a110df7220
         void Cancel();
     }
 }
