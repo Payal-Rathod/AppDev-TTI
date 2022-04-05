@@ -94,19 +94,18 @@ namespace HomeBudgetWPF
                         index = i;
                         presenter.addExpenses(date, index, amount, desc);
                     }
-<<<<<<< HEAD
+
                 }
 
                 ShowAdded(date, amount, desc, category);
-=======
-                }             
+
+
 
                 MessageBox.Show(date.ToString("yyyy-MM-dd") + "\n" + amount + "\n" + desc + "\n" + category);
->>>>>>> 58c5c8dd26076fa3053fed78922dc4a110df7220
+
 
                 // Clear fields except Category and Date.
-                Refresh();          
-
+                Refresh();
             }
         }
 
@@ -163,13 +162,13 @@ namespace HomeBudgetWPF
 
         public void ShowAdded(DateTime date, int amount, string desc, string category)
         {
-<<<<<<< HEAD
+
             MessageBox.Show(date.ToString("yyyy-MM-dd") + "\n" + amount + "\n" + desc + "\n" + category);
-=======
+
             catsList = presenter.getCategoriesList();
 
             MessageBox.Show("Added " + catsList.Last(), "Configuration", MessageBoxButton.OK, MessageBoxImage.Information);
->>>>>>> 58c5c8dd26076fa3053fed78922dc4a110df7220
+
         }
 
         public void ShowCategories()
@@ -244,7 +243,7 @@ namespace HomeBudgetWPF
             }            
         }
 
-<<<<<<< HEAD
+
         private void newFile_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog dialog = new OpenFileDialog();
@@ -253,10 +252,10 @@ namespace HomeBudgetWPF
                 fileName = dialog.FileName;
             }
         }
-        private void cancelExpenses_Click(object sender, RoutedEventArgs e)
-        {
-            Cancel();
-=======
+    private void cancelExpenses_Click(object sender, RoutedEventArgs e)
+    {
+        Cancel();
+    }
         private void ColorMode_Click(object sender, RoutedEventArgs e)
         {
             Button btn = sender as Button;
@@ -289,7 +288,6 @@ namespace HomeBudgetWPF
             theme.Background = Brushes.White;
             mainGrid.Background = Brushes.Black;
             menu.Background = Brushes.Black;
->>>>>>> 58c5c8dd26076fa3053fed78922dc4a110df7220
         }
     }
 }

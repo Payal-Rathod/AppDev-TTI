@@ -60,8 +60,6 @@ namespace HomeBudgetWPF
             else
             {
                 // Get type.
-                foreach (Budget.Category.CategoryType type in Enum.GetValues(typeof(Budget.Category.CategoryType)))
-                {
                     if (Enum.TryParse(categoryType.Text, out tmp))
                     {
                         category = presenter.addCategory(categoryName.Text, tmp);
@@ -72,9 +70,8 @@ namespace HomeBudgetWPF
                     }
                 }
 
-                mainWindow.ShowAdded();
+                //mainWindow.ShowAdded();
                 this.Close();
-            }
         }
 
         private void categoryName_MouseDoubleClick(object sender, MouseButtonEventArgs e)
