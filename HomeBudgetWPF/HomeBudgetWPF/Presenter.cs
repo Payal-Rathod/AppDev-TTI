@@ -10,6 +10,7 @@ namespace HomeBudgetWPF
 {
     public class Presenter
     {
+        // We should use view.
         private readonly ViewInterface view;
         private HomeBudget homeBudget;
         private Categories cats;

@@ -89,6 +89,10 @@ namespace HomeBudgetWPF
                 //presenter.addExpenses(date, category, amount, desc);
 
                 MessageBox.Show(date.ToString("yyyy-MM-dd") + "\n" + amount + "\n" + desc + "\n" + category);
+
+                // Clear fields except Category and Date.
+                Refresh();          
+
             }
         }
 
@@ -129,7 +133,9 @@ namespace HomeBudgetWPF
 
         public void Refresh()
         {
-            Cancel();
+            // Clear fields except Date and Category.
+            Amount.Text = "Enter amount";
+            Desc.Text = "Enter description";
         }
 
         public void ShowAdded()
