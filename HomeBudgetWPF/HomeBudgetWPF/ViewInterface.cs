@@ -12,11 +12,10 @@ namespace HomeBudgetWPF
         void Refresh();
         void OpenFile();
         void CloseFile();
-        void ShowAdded();
+        void ShowAdded(DateTime date, int amount, string desc, string category);
         void ShowUserHistory();
         void RecentlyOpened();
         void ShowDatabase();
-        //void AddCategory();
         void ShowCategories();
         void Cancel();
     }

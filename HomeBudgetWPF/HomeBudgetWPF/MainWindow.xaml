@@ -13,9 +13,8 @@
         <TextBlock Grid.Row="1" Grid.Column="0" x:Name="FileNameTextBox" Height="30" Width="Auto" HorizontalAlignment="Left"/>
         <Menu Background="#C9E4E7" BorderThickness="0">
             <MenuItem Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="20" Header="_File" Background="#FFFFFF">
-            <MenuItem Header="_New"></MenuItem>
+            <MenuItem Header="_New" Click="newFile_Click"></MenuItem>
             <MenuItem Header="_Open" Click="openFile_Click"></MenuItem>
-            <MenuItem Header="_Save"></MenuItem>
                 <Separator />
                 <MenuItem Header="_Exit" Click="MenuItem_Click"></MenuItem>
         </MenuItem>
@@ -26,7 +25,7 @@
 
         <TextBox MouseDoubleClick="Desc_MouseDoubleClick" BorderBrush="#0C6291" Margin="0, 10, 0, 0" BorderThickness="2" Grid.Row="4" Name="Desc" HorizontalAlignment="Stretch" Height="Auto" Grid.Column="1" Grid.ColumnSpan="2" AutomationProperties.IsRequiredForForm="True">Description</TextBox>
         <Button Background="#0C6291" Foreground="White" Grid.Column="1" Grid.Row="5" Width="100" Height="30" Click="AddExpenses_Click" >Add</Button>
-        <Button Background="#0C6291" Foreground="White" Grid.Column="2" Grid.Row="5" Width="100" Height="30" >Cancel</Button>
+        <Button Background="#0C6291" Foreground="White" Grid.Column="2" Grid.Row="5" Width="100" Height="30" Click="cancelExpenses_Click" >Cancel</Button>
         <Button Background="#0C6291" Foreground="White" Grid.Column="1" Grid.Row="6" Width="100" Height="30" Grid.ColumnSpan="2" Margin="0, 5, 0, 0" Click="Open_Category_Window">Add Category</Button>
         <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>

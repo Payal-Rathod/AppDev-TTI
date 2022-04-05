@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -24,7 +25,7 @@ namespace HomeBudgetWPF
     public partial class MainWindow : Window, ViewInterface
     {
         Presenter presenter;
-        string filename;
+        string fileName;
         bool newDb;
         Category window;
         List<Budget.Category> catsList;
@@ -38,10 +39,7 @@ namespace HomeBudgetWPF
             this.DataContext = this;
 
             presenter = new Presenter(this);
-           
-
-            // NO BINDING.          
-
+          
         }
         private void openFile_Click(object sender, RoutedEventArgs e)
         {
@@ -58,22 +56,22 @@ namespace HomeBudgetWPF
             // Input validation.
             if (DateTimePicker1.SelectedDate.Value == null)
             {
-                MessageBox.Show("Please select a date!");
+                ShowError("Please select a date!");
             }
 
             else if (Amount.Text == "")
             {
-                MessageBox.Show("Please enter an amount!");
+                ShowError("Please enter an amount!");
             }
 
             else if (Desc.Text == "")
             {
-                MessageBox.Show("Please enter a description!");
+                ShowError("Please enter a description!");
             }
 
             else if (CategoriesDropDown.SelectedItem == null)
             {
-                MessageBox.Show("Please enter a category from the list, or create a new one!");
+                ShowError("Please enter a category from the list, or create a new one!");
             }
 
             else
@@ -98,10 +96,7 @@ namespace HomeBudgetWPF
                     }
                 }
 
-
-                
-
-                MessageBox.Show(date.ToString("yyyy-MM-dd") + "\n" + amount + "\n" + desc + "\n" + category);
+                ShowAdded(date, amount, desc, category);
 
                 // Clear fields except Category and Date.
                 Refresh();          
@@ -133,10 +128,19 @@ namespace HomeBudgetWPF
             if (result == true)
             {
                 FileNameTextBox.Text = openFileDlg.FileName;
-                filename = FileNameTextBox.Text;
+                fileName = FileNameTextBox.Text;
             }
 
-            presenter.openDatabase(filename, newDb = true);
+            if (new FileInfo(fileName).Length == 0)
+            {
+                newDb = true;
+            }
+            else
+            {
+                newDb = false;
+            }
+
+            presenter.openDatabase(fileName, newDb);
         }
 
         public void RecentlyOpened()
@@ -151,9 +155,9 @@ namespace HomeBudgetWPF
             Desc.Text = "Enter description";
         }
 
-        public void ShowAdded()
+        public void ShowAdded(DateTime date, int amount, string desc, string category)
         {
-            throw new NotImplementedException();
+            MessageBox.Show(date.ToString("yyyy-MM-dd") + "\n" + amount + "\n" + desc + "\n" + category);
         }
 
         public void ShowCategories()
@@ -168,7 +172,7 @@ namespace HomeBudgetWPF
 
         public void ShowError(string msg)
         {
-            throw new NotImplementedException();
+            MessageBox.Show("Error! " +msg);
         }
 
         public void ShowUserHistory()
@@ -198,22 +202,16 @@ namespace HomeBudgetWPF
         {
             Budget.Category selectedItem = CategoriesDropDown.SelectedItem as Budget.Category;
             ComboBoxItem desc = new ComboBoxItem();
-            desc.Content = selectedItem.Description;
+            if (CategoriesDropDown.SelectedIndex != -1)
+                desc.Content = selectedItem.Description;
         }
 
         // Closing the application.
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (MessageBox.Show("If you close this window without saving, your changes will be lost.\nSave?", "Save file", MessageBoxButton.YesNo, MessageBoxImage.Hand) == MessageBoxResult.Yes)
+            if (MessageBox.Show("If you close this window without adding, your changes will be lost.\nSave?", "Add expense", MessageBoxButton.YesNo, MessageBoxImage.Hand) == MessageBoxResult.Yes)
             {
-                SaveFileDialog dlg = new SaveFileDialog();
-                dlg.DefaultExt = ".db";
-                dlg.Filter = "Database file (.db)|*.db";
 
-                if (dlg.ShowDialog() == true)
-                {
-                    string filename = dlg.FileName;
-                }
             }
             
         }
@@ -232,6 +230,19 @@ namespace HomeBudgetWPF
             {
                 Desc.Text = "";
             }            
+        }
+
+        private void newFile_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog dialog = new OpenFileDialog();
+            if (DialogResult.HasValue == dialog.ShowDialog())
+            {
+                fileName = dialog.FileName;
+            }
+        }
+        private void cancelExpenses_Click(object sender, RoutedEventArgs e)
+        {
+            Cancel();
         }
     }
 }
