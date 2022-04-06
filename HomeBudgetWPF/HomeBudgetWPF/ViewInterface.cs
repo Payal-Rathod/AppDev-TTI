@@ -15,10 +15,13 @@ namespace HomeBudgetWPF
         void ShowAdded();
         void ShowUserHistory();
         void RecentlyOpened();
-        void ShowDatabase();
+        void ShowDatabase(string filename);
         void LightMode();
         void DarkMode();
-
         void Cancel();
+        void EnableBtnAndInput();
+        void DisableBtnAndInput();
+        void CloseApp();
+        void StayOpen();
     }
 }

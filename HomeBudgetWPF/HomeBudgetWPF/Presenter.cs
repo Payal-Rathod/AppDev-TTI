@@ -18,18 +18,34 @@ namespace HomeBudgetWPF
         public Presenter(ViewInterface v)
         {
             view = v;
+            view.Refresh();
+            view.ShowDatabase("Open a database file in the file tab");
+            view.DisableBtnAndInput();
         }
         public void openDatabase(string filename, bool newDb)
         {
             homeBudget = new HomeBudget(filename, "", newDb);
             cats = homeBudget.categories;
             expenses = homeBudget.expenses;
+            view.EnableBtnAndInput();
         }
 
         public void addExpenses(DateTime date, int category, Double amount, String description) 
         {
             expenses.Add(date, category, amount, description);
-                
+            view.ShowAdded();
+            view.Refresh();
+        }
+        public void ChangeColorMode(string mode)
+        {
+            if (mode == "Dark Mode")
+                view.DarkMode();
+            else
+                view.LightMode();
+        }
+        public void ClearFields()
+        {
+            view.Cancel();
         }
 
         public List<Budget.Category> getCategoriesList()
