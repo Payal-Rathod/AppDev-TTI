@@ -12,7 +12,7 @@ namespace HomeBudgetWPF
         void Refresh();
         void OpenFile();
         void CloseFile();
-        void ShowAdded();
+        void ShowAdded(string desc);
         void ShowUserHistory();
         void RecentlyOpened();
         void ShowDatabase(string filename);

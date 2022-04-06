@@ -33,7 +33,7 @@ namespace HomeBudgetWPF
         public void addExpenses(DateTime date, int category, Double amount, String description) 
         {
             expenses.Add(date, category, amount, description);
-            view.ShowAdded();
+            view.ShowAdded(description);
             view.Refresh();
         }
         public void ChangeColorMode(string mode)

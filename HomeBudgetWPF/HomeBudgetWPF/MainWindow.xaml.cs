@@ -31,7 +31,9 @@ namespace HomeBudgetWPF
             this.DataContext = this;
 
             presenter = new Presenter(this);
-          
+            DateTimePicker1.SelectedDate = DateTime.Today;
+
+
         }
         private void OpenFile_Click(object sender, RoutedEventArgs e)
         {
@@ -50,7 +52,6 @@ namespace HomeBudgetWPF
             Nullable<bool> result = openFileDlg.ShowDialog();
             if (result == true)
             {
-                //FileNameTextBox.Text = openFileDlg.FileName;
                 ShowDatabase(System.IO.Path.GetFileName(openFileDlg.FileName));
                 fileName = openFileDlg.FileName;
             }
@@ -164,11 +165,9 @@ namespace HomeBudgetWPF
             Desc.Text = "Description";
         }
 
-        public void ShowAdded()
+        public void ShowAdded(string desc)
         {
-            catsList = presenter.getCategoriesList();
-
-            MessageBox.Show("Added " + catsList.Last(), "Configuration", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show("Added " + desc, "Configuration", MessageBoxButton.OK, MessageBoxImage.Information);
 
         }
         public void ShowDatabase(string fileName)
@@ -215,7 +214,7 @@ namespace HomeBudgetWPF
         // Closing the application.
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (DateTimePicker1.SelectedDate.HasValue == false && (Amount.Text == "" || Amount.Text == "Amount") && (Desc.Text == "" || Desc.Text == "Description") && CategoriesDropDown.SelectedIndex == -1)
+            if ((Amount.Text == "" || Amount.Text == "Amount") && (Desc.Text == "" || Desc.Text == "Description"))
             {
                 e.Cancel = false;
             }
