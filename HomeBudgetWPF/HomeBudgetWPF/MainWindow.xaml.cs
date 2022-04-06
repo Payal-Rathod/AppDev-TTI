@@ -44,6 +44,7 @@ namespace HomeBudgetWPF
             {
                 CategoriesDropDown.Items.Add(c);
             }
+            CategoriesDropDown.DisplayMemberPath = "Description";
         }
         public void OpenFile()
         {
@@ -95,24 +96,11 @@ namespace HomeBudgetWPF
             {
                 DateTime date = DateTimePicker1.SelectedDate.Value;
 
-                int amount = Int32.Parse(Amount.Text);
+                int amount = int.Parse(Amount.Text);
 
                 string desc = Desc.Text;
 
-                string category = CategoriesDropDown.SelectedItem.ToString();
-
-                catsList = presenter.getCategoriesList();
-                int index = 0;
-
-                for (int i = 0; i < catsList.Count(); i++)
-                {
-                    if (catsList[i].Description == category)
-                    {
-                        index = i;
-                        break;
-                    }
-
-                }
+                int index = CategoriesDropDown.SelectedIndex;
 
                 presenter.addExpenses(date, index, amount, desc);
             }
@@ -203,13 +191,13 @@ namespace HomeBudgetWPF
             e.Handled = regex.IsMatch(e.Text);
         }
 
-        private void CategoriesDropDown_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            Budget.Category selectedItem = CategoriesDropDown.SelectedItem as Budget.Category;
-            ComboBoxItem desc = new ComboBoxItem();
-            if (CategoriesDropDown.SelectedIndex != -1)
-                desc.Content = selectedItem.Description;
-        }
+        //private void CategoriesDropDown_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        //{
+        //    Budget.Category selectedItem = CategoriesDropDown.SelectedItem as Budget.Category;
+        //    ComboBoxItem desc = new ComboBoxItem();
+        //    if (CategoriesDropDown.SelectedIndex != -1)
+        //        desc.Content = selectedItem.Description;
+        //}
 
         // Closing the application.
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -286,6 +274,14 @@ namespace HomeBudgetWPF
             theme.Background = Brushes.White;
             mainGrid.Background = Brushes.Black;
             menu.Background = Brushes.Black;
+        }
+
+        private void CategoriesDropDown_TextChanged(object sender, MouseButtonEventArgs e)
+        {
+            if (CategoriesDropDown.Text == "Select a category")
+            {
+                CategoriesDropDown.Text = "";
+            }
         }
     }
 }
