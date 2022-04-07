@@ -15,17 +15,29 @@ namespace HomeBudgetWPF
         private HomeBudget homeBudget;
         private Categories cats;
         private Expenses expenses;
+        /// <summary>
+        /// Default Constructor.
+        /// </summary>
+        /// <param name="v">View Interface</param>
         public Presenter(ViewInterface v)
         {
             view = v;
             NewDatabase();
         }
+        /// <summary>
+        /// Logic for finding a database file.
+        /// </summary>
         public void NewDatabase()
         {
             view.Refresh();
             view.ShowDatabase("Open a database file in the file tab");
             view.DisableBtnAndInput();
         }
+        /// <summary>
+        /// Opens a database file and creates categories and expenses from it.
+        /// </summary>
+        /// <param name="filename">String name of file path.</param>
+        /// <param name="newDb">Boolean connection to database.</param>
         public void OpenDatabase(string filename, bool newDb)
         {
             homeBudget = new HomeBudget(filename, "", newDb);
@@ -33,13 +45,23 @@ namespace HomeBudgetWPF
             expenses = homeBudget.expenses;
             view.EnableBtnAndInput();
         }
-
+        /// <summary>
+        /// Adds an expense from user input on GUI.
+        /// </summary>
+        /// <param name="date">DateTime value of expense date.</param>
+        /// <param name="category">Category ID of expense.</param>
+        /// <param name="amount">Amount double value of expense.</param>
+        /// <param name="description">String description of expense.</param>
         public void AddExpense(DateTime date, int category, double amount, string description) 
         {
             expenses.Add(date, category, amount, description);
             view.ShowAdded(description);
             view.Refresh();
         }
+        /// <summary>
+        /// Changes color modes from Dark to Light and vice-versa to accomodate user's needs.
+        /// </summary>
+        /// <param name="colorMode">String value of button's content - Light or dark.</param>
         public void ChangeColorMode(string colorMode)
         {
             if (colorMode == "Dark Mode")
@@ -47,16 +69,27 @@ namespace HomeBudgetWPF
             else
                 view.LightMode();
         }
+        /// <summary>
+        /// Clears fields.
+        /// </summary>
         public void ClearFields()
         {
             view.Cancel();
         }
-
+        /// <summary>
+        /// Gets updated categories list from database.
+        /// </summary>
+        /// <returns></returns>
         public List<Budget.Category> getCategoriesList()
         {
             return cats.List();
         }
-
+        /// <summary>
+        /// Adds a category to database.
+        /// </summary>
+        /// <param name="name">String name of category.</param>
+        /// <param name="type">Type of category.</param>
+        /// <returns>Last category of updated list of categories, which is the ID.</returns>
         public Budget.Category AddCategory(String name, Budget.Category.CategoryType type)
         {
             cats.Add(name, type);
