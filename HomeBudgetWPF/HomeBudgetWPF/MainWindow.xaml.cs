@@ -19,7 +19,6 @@ namespace HomeBudgetWPF
         Presenter presenter;
         string fileName;
         bool newDb;
-        Category window;
         List<Budget.Category> catsList;
 
         private List<Budget.Category> categoriesList = new List<Budget.Category>();
@@ -66,7 +65,7 @@ namespace HomeBudgetWPF
                 newDb = false;
             }
 
-            presenter.openDatabase(fileName, newDb);
+            presenter.OpenDatabase(fileName, newDb);
         }
 
         private void AddExpenses_Click(object sender, RoutedEventArgs e)
@@ -102,7 +101,7 @@ namespace HomeBudgetWPF
 
                 int index = CategoriesDropDown.SelectedIndex;
 
-                presenter.addExpenses(date, index, amount, desc);
+                presenter.AddExpense(date, index, amount, desc);
             }
         }
         public void Cancel()
@@ -128,7 +127,6 @@ namespace HomeBudgetWPF
         public void DisableBtnAndInput()
         {
             addExpense_btn.IsEnabled = false;
-            addCategory_btn.IsEnabled = false;
             cancelExpense_btn.IsEnabled = false;
             Desc.IsEnabled = false;
             Amount.IsEnabled = false;
@@ -138,7 +136,6 @@ namespace HomeBudgetWPF
         public void EnableBtnAndInput()
         {
             addExpense_btn.IsEnabled = true;
-            addCategory_btn.IsEnabled = true;
             cancelExpense_btn.IsEnabled = true;
             Desc.IsEnabled = true;
             Amount.IsEnabled = true;
@@ -178,13 +175,6 @@ namespace HomeBudgetWPF
             Close();
         }
 
-        private void Open_Category_Window(object sender, RoutedEventArgs e)
-        {
-            window = new Category(presenter, this);
-            window.Show();
-
-        }
-
         private void Amount_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             Regex regex = new Regex("[^0-9]+");
@@ -218,16 +208,6 @@ namespace HomeBudgetWPF
                 }
             }
         }
-        public void CloseApp()
-        {
-            
-        }
-        public void StayOpen()
-        {
-
-        }
-           
-
         private void Amount_TextChanged(object sender, MouseButtonEventArgs e)
         {
             if (Amount.Text == "Amount")
@@ -278,8 +258,17 @@ namespace HomeBudgetWPF
 
         private void CategoriesDropDown_TextChanged(object sender, MouseButtonEventArgs e)
         {
-            if (CategoriesDropDown.Text == "Select a category")
+            if (CategoriesDropDown.Text == "Select or type a category")
             {
+                CategoriesDropDown.Text = "";
+            }
+        }
+        private void OnKeyDownHandler(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Return)
+            {
+                Budget.Category cat = presenter.AddCategory(CategoriesDropDown.Text, Budget.Category.CategoryType.Expense);
+                CategoriesDropDown.Items.Add(cat);
                 CategoriesDropDown.Text = "";
             }
         }

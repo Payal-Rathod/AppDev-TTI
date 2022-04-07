@@ -18,11 +18,15 @@ namespace HomeBudgetWPF
         public Presenter(ViewInterface v)
         {
             view = v;
+            NewDatabase();
+        }
+        public void NewDatabase()
+        {
             view.Refresh();
             view.ShowDatabase("Open a database file in the file tab");
             view.DisableBtnAndInput();
         }
-        public void openDatabase(string filename, bool newDb)
+        public void OpenDatabase(string filename, bool newDb)
         {
             homeBudget = new HomeBudget(filename, "", newDb);
             cats = homeBudget.categories;
@@ -30,15 +34,15 @@ namespace HomeBudgetWPF
             view.EnableBtnAndInput();
         }
 
-        public void addExpenses(DateTime date, int category, Double amount, String description) 
+        public void AddExpense(DateTime date, int category, double amount, string description) 
         {
             expenses.Add(date, category, amount, description);
             view.ShowAdded(description);
             view.Refresh();
         }
-        public void ChangeColorMode(string mode)
+        public void ChangeColorMode(string colorMode)
         {
-            if (mode == "Dark Mode")
+            if (colorMode == "Dark Mode")
                 view.DarkMode();
             else
                 view.LightMode();
@@ -53,11 +57,8 @@ namespace HomeBudgetWPF
             return cats.List();
         }
 
-        public Budget.Category addCategory(String name, Budget.Category.CategoryType type)
+        public Budget.Category AddCategory(String name, Budget.Category.CategoryType type)
         {
-            // This only works if you opened a file. 
-            // Input validation.
-            // Default file's cats if no database file has been selected.
             cats.Add(name, type);
             return cats.List().Last();
         }
