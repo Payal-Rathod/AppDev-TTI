@@ -11,14 +11,12 @@ namespace HomeBudgetWPF
         void ShowError(string msg);
         void Refresh();
         void OpenFile();
-        void CloseFile();
-        void ShowAdded(DateTime date, int amount, string desc, string category);
-        void ShowUserHistory();
-        void RecentlyOpened();
-        void ShowDatabase();
+        void ShowAdded(string desc);
+        void ShowDatabase(string filename);
         void LightMode();
         void DarkMode();
-
         void Cancel();
+        void EnableBtnAndInput();
+        void DisableBtnAndInput();
     }
 }
