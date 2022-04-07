@@ -32,6 +32,7 @@ namespace HomeBudgetWPF
             presenter = new Presenter(this);
             DateTimePicker1.SelectedDate = DateTime.Today;
 
+            Application.Current.MainWindow.FontFamily = new FontFamily("Cambria");
 
         }
         private void OpenFile_Click(object sender, RoutedEventArgs e)
@@ -180,14 +181,7 @@ namespace HomeBudgetWPF
             Regex regex = new Regex("[^0-9]+");
             e.Handled = regex.IsMatch(e.Text);
         }
-
-        //private void CategoriesDropDown_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        //{
-        //    Budget.Category selectedItem = CategoriesDropDown.SelectedItem as Budget.Category;
-        //    ComboBoxItem desc = new ComboBoxItem();
-        //    if (CategoriesDropDown.SelectedIndex != -1)
-        //        desc.Content = selectedItem.Description;
-        //}
+  
 
         // Closing the application.
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -238,22 +232,60 @@ namespace HomeBudgetWPF
             theme.Content = "Dark Mode";
             theme.Foreground = Brushes.White;
             theme.Background = Brushes.Black;
-            
+            FileNameTextBox.Foreground = Brushes.Black;
+
             Color color = (Color)ColorConverter.ConvertFromString("#C9E4E7");
+            Color darkBlue = (Color)ColorConverter.ConvertFromString("#0C6291");
 
             var brush = new SolidColorBrush(color);
-            
+            var blueBrush = new SolidColorBrush(darkBlue);
+
             mainGrid.Background = brush;
-            menu.Background = brush;            
+            menu.Background = brush;
+
+            Amount.Background = Brushes.White;
+            Desc.Background = Brushes.White;
+            DateTimePicker1.Background = Brushes.White;
+            Header.Foreground = blueBrush;
+            Header.Foreground = blueBrush;
+
+            addExpense_btn.Background = blueBrush;
+            addExpense_btn.Foreground = Brushes.White;
+
+            cancelExpense_btn.Background = blueBrush;
+            cancelExpense_btn.Foreground = Brushes.White;
+
+            DateTimePicker1.BorderBrush = blueBrush;
         }
 
         public void DarkMode()
         {
+            Color color = (Color)ColorConverter.ConvertFromString("#0C6291");
+
+            var brush = new SolidColorBrush(color);
+
             theme.Content = "Light Mode";
             theme.Foreground = Brushes.Black;
             theme.Background = Brushes.White;
             mainGrid.Background = Brushes.Black;
             menu.Background = Brushes.Black;
+            FileNameTextBox.Foreground = brush;
+
+            Amount.Background = Brushes.DarkGray;
+            Desc.Background = Brushes.DarkGray;
+            DateTimePicker1.Background = Brushes.DarkGray;
+            Header.Foreground = brush;
+
+            addExpense_btn.Background = brush;
+            addExpense_btn.Foreground = Brushes.DarkGray;
+
+            cancelExpense_btn.Background = brush;
+            cancelExpense_btn.Foreground = Brushes.DarkGray;
+
+            addExpense_btn.BorderBrush = brush;
+            cancelExpense_btn.BorderBrush = brush;
+
+            DateTimePicker1.BorderBrush = brush;
         }
 
         private void CategoriesDropDown_TextChanged(object sender, MouseButtonEventArgs e)
