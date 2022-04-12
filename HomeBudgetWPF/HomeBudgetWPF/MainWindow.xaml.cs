@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -17,11 +18,10 @@ namespace HomeBudgetWPF
     public partial class MainWindow : Window, ViewInterface
     {
         Presenter presenter;
-        string fileName;
+        public string fileName;
         bool newDb;
         List<Budget.Category> catsList;
 
-        private List<Budget.Category> categoriesList = new List<Budget.Category>();
         /// <summary>
         /// Initializes application and Presenter.
         /// </summary>
@@ -36,6 +36,36 @@ namespace HomeBudgetWPF
 
             Application.Current.MainWindow.FontFamily = new FontFamily("Cambria");
 
+            InitializeDataGrid();
+
+            
+
+        }
+        public void InitializeDataGrid()
+        {
+            ViewExpenses.Columns.Clear();
+
+            // create columns
+            var col1 = new DataGridTextColumn();
+            col1.Header = "Date";
+            col1.Binding = new Binding("Date");
+            ViewExpenses.Columns.Add(col1);
+            var col2 = new DataGridTextColumn();
+            col2.Header = "Category";
+            col2.Binding = new Binding("Category");
+            ViewExpenses.Columns.Add(col2);
+            var col3 = new DataGridTextColumn();
+            col3.Header = "Description";
+            col3.Binding = new Binding("ShortDescription");
+            ViewExpenses.Columns.Add(col3);
+            var col4 = new DataGridTextColumn();
+            col4.Header = "Amount";
+            col4.Binding = new Binding("Amount");
+            ViewExpenses.Columns.Add(col4);
+            var col5 = new DataGridTextColumn();
+            col5.Header = "Balance";
+            col5.Binding = new Binding("Balance");
+            ViewExpenses.Columns.Add(col5);
         }
         // =====================================================================================
         // VIEW INTERFACE
@@ -64,11 +94,16 @@ namespace HomeBudgetWPF
             }
 
             presenter.OpenDatabase(fileName, newDb);
+            
+            ViewExpenses.ItemsSource =  presenter.GetBudgetItemsList();
+
+            catsList = presenter.getCategoriesList();
+            CategoriesDropDown.ItemsSource = catsList;
         }
         /// <summary>
         /// Cancels expense entry and clears fields from user input.
         /// </summary>
-        public void Cancel()
+        public void CancelExpense()
         {
             MessageBox.Show("Your entries will be cleared.", "Configuration", MessageBoxButton.OK, MessageBoxImage.Warning);
 
@@ -211,15 +246,14 @@ namespace HomeBudgetWPF
         private void OpenFile_Click(object sender, RoutedEventArgs e)
         {
             OpenFile();
-
-            catsList = presenter.getCategoriesList();
-            foreach (Budget.Category c in catsList)
-            {
-                CategoriesDropDown.Items.Add(c);
-            }
-            CategoriesDropDown.DisplayMemberPath = "Description";
         }
-        
+
+        private void NewFile_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+
         private void AddExpenses_Click(object sender, RoutedEventArgs e)
         {
             // Input validation.
@@ -254,6 +288,7 @@ namespace HomeBudgetWPF
                 int index = CategoriesDropDown.SelectedIndex;
 
                 presenter.AddExpense(date, index, amount, desc);
+                ViewExpenses.ItemsSource =  presenter.GetBudgetItemsList();
             }
         }
        
@@ -337,9 +372,14 @@ namespace HomeBudgetWPF
             if (e.Key == Key.Return)
             {
                 Budget.Category cat = presenter.AddCategory(CategoriesDropDown.Text, Budget.Category.CategoryType.Expense);
-                CategoriesDropDown.Items.Add(cat);
+                catsList.Add(cat);
                 CategoriesDropDown.Text = "";
             }
+        }
+
+        private void AddExpense_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

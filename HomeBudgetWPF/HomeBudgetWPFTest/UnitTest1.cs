@@ -21,7 +21,7 @@ namespace HomeBudgetWPFTest
         public bool calledShowDatabase;
         public bool calledShowError;
 
-        public void Cancel()
+        public void CancelExpense()
         {
             calledCancel = true;
         }

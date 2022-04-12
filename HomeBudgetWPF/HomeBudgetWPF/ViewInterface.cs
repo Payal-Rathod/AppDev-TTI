@@ -15,7 +15,7 @@ namespace HomeBudgetWPF
         void ShowDatabase(string filename);
         void LightMode();
         void DarkMode();
-        void Cancel();
+        void CancelExpense();
         void EnableBtnAndInput();
         void DisableBtnAndInput();
     }

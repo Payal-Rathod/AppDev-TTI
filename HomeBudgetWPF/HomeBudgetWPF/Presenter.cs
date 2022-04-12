@@ -15,6 +15,7 @@ namespace HomeBudgetWPF
         private HomeBudget homeBudget;
         private Categories cats;
         private Expenses expenses;
+        private string filepath;
         /// <summary>
         /// Default Constructor.
         /// </summary>
@@ -43,6 +44,8 @@ namespace HomeBudgetWPF
             homeBudget = new HomeBudget(filename, "", newDb);
             cats = homeBudget.categories;
             expenses = homeBudget.expenses;
+            
+            filepath = filename;
             view.EnableBtnAndInput();
         }
         /// <summary>
@@ -74,7 +77,7 @@ namespace HomeBudgetWPF
         /// </summary>
         public void ClearFields()
         {
-            view.Cancel();
+            view.CancelExpense();
         }
         /// <summary>
         /// Gets updated categories list from database.
@@ -83,6 +86,10 @@ namespace HomeBudgetWPF
         public List<Budget.Category> getCategoriesList()
         {
             return cats.List();
+        }
+        public List<Budget.BudgetItem> GetBudgetItemsList()
+        {
+            return homeBudget.GetBudgetItems(DateTime.MinValue, DateTime.MaxValue, false, -1);
         }
         /// <summary>
         /// Adds a category to database.
