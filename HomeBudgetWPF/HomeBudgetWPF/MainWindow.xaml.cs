@@ -100,6 +100,25 @@ namespace HomeBudgetWPF
             catsList = presenter.getCategoriesList();
             CategoriesDropDown.ItemsSource = catsList;
         }
+
+        public void NewFile()
+        {
+            SaveFileDialog saveFileDlg = new SaveFileDialog();
+            saveFileDlg.Filter = "Database file (.db)|*.db";
+
+            if (saveFileDlg.ShowDialog() == true)
+            {
+                ShowDatabase(System.IO.Path.GetFileName(saveFileDlg.FileName));
+                fileName = saveFileDlg.FileName;
+            }
+
+            presenter.OpenDatabase(fileName, newDb = true);
+
+            ViewExpenses.ItemsSource = presenter.GetBudgetItemsList();
+
+            catsList = presenter.getCategoriesList();
+            CategoriesDropDown.ItemsSource = catsList;
+        }
         /// <summary>
         /// Cancels expense entry and clears fields from user input.
         /// </summary>
@@ -251,6 +270,7 @@ namespace HomeBudgetWPF
         private void NewFile_Click(object sender, RoutedEventArgs e)
         {
 
+            NewFile();
         }
 
 

@@ -41,19 +41,10 @@ namespace HomeBudgetWPF
 
         private void CreateFile_Click(object sender, RoutedEventArgs e)
         {
-            // first we want the path -> open file dialog.
-            // now that path has been selected, you create .db file from the path.
-            OpenFileDialog dialog = new OpenFileDialog();
+            window.NewFile();
 
-            //dialog.
-            //dialog.ShowDialog();
-            
-            
-            //openFileDlg.Filter = "Folder (.db)|*.db";
-            //Nullable<bool> result = openFileDlg.ShowDialog();
-
-            //string path = "";
-            //File.Create(path); // find  away to to make it .db type.
+            this.Close();
+            window.Show();
         }
     }
 }
