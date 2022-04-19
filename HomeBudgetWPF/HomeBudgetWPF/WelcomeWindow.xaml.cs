@@ -34,17 +34,22 @@ namespace HomeBudgetWPF
         private void OpenFile_Click(object sender, RoutedEventArgs e)
         {
             window.OpenFile();
-
-            this.Close();
-            window.Show();
+            if (!string.IsNullOrEmpty(window.fileName))
+            {
+                this.Close();
+                window.Show();
+            }
         }
 
         private void CreateFile_Click(object sender, RoutedEventArgs e)
         {
             window.NewFile();
 
-            this.Close();
-            window.Show();
+            if (!string.IsNullOrEmpty(window.fileName))
+            {
+                this.Close();
+                window.Show();
+            }
         }
     }
 }

@@ -83,6 +83,10 @@ namespace HomeBudgetWPF
                 ShowDatabase(System.IO.Path.GetFileName(openFileDlg.FileName));
                 fileName = openFileDlg.FileName;
             }
+            else
+            {
+                return;
+            }
 
             if (new FileInfo(fileName).Length == 0)
             {
@@ -110,6 +114,10 @@ namespace HomeBudgetWPF
             {
                 ShowDatabase(System.IO.Path.GetFileName(saveFileDlg.FileName));
                 fileName = saveFileDlg.FileName;
+            }
+            else
+            {
+                return;
             }
 
             presenter.OpenDatabase(fileName, newDb = true);
@@ -269,7 +277,6 @@ namespace HomeBudgetWPF
 
         private void NewFile_Click(object sender, RoutedEventArgs e)
         {
-
             NewFile();
         }
 
@@ -398,6 +405,28 @@ namespace HomeBudgetWPF
         }
 
         private void AddExpense_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void deleteItem_Click(object sender, RoutedEventArgs e)
+        {
+            var selected = ViewExpenses.SelectedItem as Budget.BudgetItem;
+
+            if (selected != null)
+            {
+                presenter.DeleteExpense(selected.ExpenseID);
+                ViewExpenses.ItemsSource = presenter.GetBudgetItemsList();
+            }
+        }
+
+        private void updateItem_Click(object sender, RoutedEventArgs e)
+        {
+            UpdateExpense UpdateWindow = new UpdateExpense();
+            UpdateWindow.Show();
+        }
+
+        private void close_Click(object sender, RoutedEventArgs e)
         {
 
         }

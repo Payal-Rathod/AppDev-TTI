@@ -45,7 +45,14 @@
             </Button.Resources> Dark Mode</Button>
 
         <DataGrid Grid.Column="3" x:Name="ViewExpenses" AutoGenerateColumns="False">
-
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem x:Name="deleteItem" Click="deleteItem_Click" Header="Delete"></MenuItem>
+                    <MenuItem x:Name="updateItem" Click="updateItem_Click" Header="Update"></MenuItem>
+                    <Separator />
+                    <MenuItem x:Name="close" Click="close_Click"  Header="Close"></MenuItem>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
         </DataGrid>
         
         <Grid.RowDefinitions>

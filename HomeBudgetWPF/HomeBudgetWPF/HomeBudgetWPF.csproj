@@ -83,6 +83,9 @@
     <Compile Include="Expense.xaml.cs">
       <DependentUpon>Expense.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UpdateExpense.xaml.cs">
+      <DependentUpon>UpdateExpense.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewInterface.cs" />
     <Compile Include="WelcomeWindow.xaml.cs">
       <DependentUpon>WelcomeWindow.xaml</DependentUpon>
@@ -103,6 +106,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="UpdateExpense.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="WelcomeWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -102,5 +102,10 @@ namespace HomeBudgetWPF
             cats.Add(name, type);
             return cats.List().Last();
         }
+
+        public void DeleteExpense(int expenseId)
+        {
+            expenses.Delete(expenseId);
+        }
     }
 }
