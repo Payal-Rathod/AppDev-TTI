@@ -107,5 +107,9 @@ namespace HomeBudgetWPF
         {
             expenses.Delete(expenseId);
         }
+        public void UpdateExpense(Budget.BudgetItem item)
+        {
+            expenses.UpdateProperties(item.ExpenseID, item.Date, item.ShortDescription, item.Amount, item.CategoryID);
+        }
     }
 }

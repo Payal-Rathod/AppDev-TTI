@@ -51,5 +51,6 @@ namespace HomeBudgetWPF
                 window.Show();
             }
         }
+
     }
 }

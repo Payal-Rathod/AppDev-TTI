@@ -404,11 +404,6 @@ namespace HomeBudgetWPF
             }
         }
 
-        private void AddExpense_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
         private void deleteItem_Click(object sender, RoutedEventArgs e)
         {
             var selected = ViewExpenses.SelectedItem as Budget.BudgetItem;
@@ -420,10 +415,18 @@ namespace HomeBudgetWPF
             }
         }
 
+        
+
         private void updateItem_Click(object sender, RoutedEventArgs e)
         {
-            UpdateExpense UpdateWindow = new UpdateExpense();
-            UpdateWindow.Show();
+            var selected = ViewExpenses.SelectedItem as Budget.BudgetItem;
+
+            if (selected != null)
+            {
+                UpdateExpense UpdateWindow = new UpdateExpense(presenter, selected, ViewExpenses);
+                UpdateWindow.Owner = this;
+                UpdateWindow.Show();
+            }
         }
 
         private void close_Click(object sender, RoutedEventArgs e)
