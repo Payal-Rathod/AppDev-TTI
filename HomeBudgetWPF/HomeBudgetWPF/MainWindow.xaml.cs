@@ -19,8 +19,8 @@ namespace HomeBudgetWPF
     {
         Presenter presenter;
         public string fileName;
+        public string filePath;
         bool newDb;
-        List<Budget.Category> catsList;
 
         /// <summary>
         /// Initializes application and Presenter.
@@ -32,15 +32,13 @@ namespace HomeBudgetWPF
             this.DataContext = this;
 
             presenter = new Presenter(this);
-            DateTimePicker1.SelectedDate = DateTime.Today;
 
             Application.Current.MainWindow.FontFamily = new FontFamily("Cambria");
 
             InitializeDataGrid();
 
-            
-
         }
+
         public void InitializeDataGrid()
         {
             ViewExpenses.Columns.Clear();
@@ -61,6 +59,10 @@ namespace HomeBudgetWPF
             var col4 = new DataGridTextColumn();
             col4.Header = "Amount";
             col4.Binding = new Binding("Amount");
+
+            // We wamt all the cells inside that column.
+            //ViewExpenses.Columns[4].cell
+
             ViewExpenses.Columns.Add(col4);
             var col5 = new DataGridTextColumn();
             col5.Header = "Balance";
@@ -101,8 +103,6 @@ namespace HomeBudgetWPF
             
             ViewExpenses.ItemsSource =  presenter.GetBudgetItemsList();
 
-            catsList = presenter.getCategoriesList();
-            CategoriesDropDown.ItemsSource = catsList;
         }
 
         public void NewFile()
@@ -124,54 +124,8 @@ namespace HomeBudgetWPF
 
             ViewExpenses.ItemsSource = presenter.GetBudgetItemsList();
 
-            catsList = presenter.getCategoriesList();
-            CategoriesDropDown.ItemsSource = catsList;
         }
-        /// <summary>
-        /// Cancels expense entry and clears fields from user input.
-        /// </summary>
-        public void CancelExpense()
-        {
-            MessageBox.Show("Your entries will be cleared.", "Configuration", MessageBoxButton.OK, MessageBoxImage.Warning);
 
-            // Clear fields.
-            DateTimePicker1.SelectedDate = null;
-            Amount.Text = "Amount";
-            Desc.Text = "Description";
-            CategoriesDropDown.SelectedItem = null;
-        }
-        /// <summary>
-        /// Disables buttons' functionality.
-        /// </summary>
-        public void DisableBtnAndInput()
-        {
-            addExpense_btn.IsEnabled = false;
-            cancelExpense_btn.IsEnabled = false;
-            Desc.IsEnabled = false;
-            Amount.IsEnabled = false;
-            CategoriesDropDown.IsEnabled = false;
-            DateTimePicker1.IsEnabled = false;
-        }
-        /// <summary>
-        /// Enables buttons' functionality.
-        /// </summary>
-        public void EnableBtnAndInput()
-        {
-            addExpense_btn.IsEnabled = true;
-            cancelExpense_btn.IsEnabled = true;
-            Desc.IsEnabled = true;
-            Amount.IsEnabled = true;
-            CategoriesDropDown.IsEnabled = true;
-            DateTimePicker1.IsEnabled = true;
-        }
-        /// <summary>
-        /// Clears fields except Date and Category.
-        /// </summary>
-        public void Refresh()
-        {
-            Amount.Text = "Amount";
-            Desc.Text = "Description";
-        }
         /// <summary>
         /// Shows latest added entry.
         /// </summary>
@@ -197,16 +151,11 @@ namespace HomeBudgetWPF
         {
             MessageBox.Show(msg);
         }
-
-        public void ShowUserHistory()
-        {
-            throw new NotImplementedException();
-        }
         /// <summary>
         /// Light color mode.
         /// </summary>
         public void LightMode()
-        {
+        { /*
             theme.Content = "Dark Mode";
             theme.Foreground = Brushes.White;
             theme.Background = Brushes.Black;
@@ -233,13 +182,14 @@ namespace HomeBudgetWPF
             cancelExpense_btn.Background = blueBrush;
             cancelExpense_btn.Foreground = Brushes.White;
 
-            DateTimePicker1.BorderBrush = blueBrush;
+            DateTimePicker1.BorderBrush = blueBrush;*/
         }
         /// <summary>
         /// Dark color mode.
         /// </summary>
         public void DarkMode()
         {
+            /*
             Color color = (Color)ColorConverter.ConvertFromString("#0C6291");
 
             var brush = new SolidColorBrush(color);
@@ -265,7 +215,7 @@ namespace HomeBudgetWPF
             addExpense_btn.BorderBrush = brush;
             cancelExpense_btn.BorderBrush = brush;
 
-            DateTimePicker1.BorderBrush = brush;
+            DateTimePicker1.BorderBrush = brush;*/
         }
         // =====================================================================================
         // EVENT HANDLERS
@@ -279,130 +229,17 @@ namespace HomeBudgetWPF
         {
             NewFile();
         }
-
-
-        private void AddExpenses_Click(object sender, RoutedEventArgs e)
-        {
-            // Input validation.
-            if (DateTimePicker1.SelectedDate.HasValue == false)
-            {
-                ShowError("Please select a date!");
-            }
-
-            else if (Amount.Text == "" || Amount.Text == "Amount")
-            {
-                ShowError("Please enter an amount!");
-            }
-
-            else if (Desc.Text == "" || Desc.Text == "Description")
-            {
-                ShowError("Please enter a description!");
-            }
-
-            else if (CategoriesDropDown.SelectedIndex == -1)
-            {
-                ShowError("Please enter a category from the list, or create a new one!");
-            }
-
-            else
-            {
-                DateTime date = DateTimePicker1.SelectedDate.Value;
-
-                int amount = int.Parse(Amount.Text);
-
-                string desc = Desc.Text;
-
-                int index = CategoriesDropDown.SelectedIndex;
-
-                presenter.AddExpense(date, index, amount, desc);
-                ViewExpenses.ItemsSource =  presenter.GetBudgetItemsList();
-            }
-        }
        
-
-        public void CloseFile()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void RecentlyOpened()
-        {
-            throw new NotImplementedException();
-        }
-       
-
         private void exit_Click(object sender, RoutedEventArgs e)
         {
             Close();
         }
 
-        private void Amount_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            Regex regex = new Regex("[^0-9]+");
-            e.Handled = regex.IsMatch(e.Text);
-        }
-  
-
-        // Closing the application.
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            if ((Amount.Text == "" || Amount.Text == "Amount") && (Desc.Text == "" || Desc.Text == "Description"))
-            {
-                e.Cancel = false;
-            }
-            else
-            {
-                if (MessageBox.Show("If you close this window without adding your expense, your changes will be lost.\nExit?", "Add expense", MessageBoxButton.YesNo, MessageBoxImage.Hand) == MessageBoxResult.Yes)
-                {
-                    e.Cancel = false;
-                }
-                else
-                {
-                    e.Cancel = true;
-                }
-            }
-        }
-        private void Amount_TextChanged(object sender, MouseButtonEventArgs e)
-        {
-            if (Amount.Text == "Amount")
-            {
-                Amount.Text = "";
-            }
-        }
-
-        private void Desc_TextChanged(object sender, MouseButtonEventArgs e)
-        {
-            if (Desc.Text == "Description")
-            {
-                Desc.Text = "";
-            }
-        }
-        private void CancelExpenses_Click(object sender, RoutedEventArgs e)
-        {
-            presenter.ClearFields();
-        }
         private void ColorMode_Click(object sender, RoutedEventArgs e)
         {
             Button btn = sender as Button;
             presenter.ChangeColorMode(btn.Content.ToString());
         }      
-
-        private void CategoriesDropDown_TextChanged(object sender, MouseButtonEventArgs e)
-        {
-            if (CategoriesDropDown.Text == "Select or type a category")
-            {
-                CategoriesDropDown.Text = "";
-            }
-        }
-        private void OnKeyDownHandler(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Return)
-            {
-                Budget.Category cat = presenter.AddCategory(CategoriesDropDown.Text, Budget.Category.CategoryType.Expense);
-                catsList.Add(cat);
-                CategoriesDropDown.Text = "";
-            }
-        }
 
         private void deleteItem_Click(object sender, RoutedEventArgs e)
         {
@@ -415,16 +252,13 @@ namespace HomeBudgetWPF
             }
         }
 
-        
-
         private void updateItem_Click(object sender, RoutedEventArgs e)
         {
             var selected = ViewExpenses.SelectedItem as Budget.BudgetItem;
 
             if (selected != null)
             {
-                UpdateExpense UpdateWindow = new UpdateExpense(presenter, selected, ViewExpenses);
-                UpdateWindow.Owner = this;
+                UpdateExpense UpdateWindow = new UpdateExpense(selected, ViewExpenses, fileName);
                 UpdateWindow.Show();
             }
         }
@@ -432,6 +266,12 @@ namespace HomeBudgetWPF
         private void close_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void AddExpense_Click(object sender, RoutedEventArgs e)
+        {
+            AddExpense AddWindow = new AddExpense(ViewExpenses, fileName);
+            AddWindow.Show();
         }
     }
 }

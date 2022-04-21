@@ -18,19 +18,19 @@ namespace HomeBudgetWPF
     /// <summary>
     /// Interaction logic for UpdateExpense.xaml
     /// </summary>
-    public partial class UpdateExpense : Window
+    public partial class UpdateExpense : Window, AddExpenseInterface
     {
         List<Budget.Category> catsList;
-        Presenter presenter;
+        UpdatePresenter presenter;
         Budget.BudgetItem item;
         DataGrid myDataGrid;
 
-        public UpdateExpense(Presenter p, Budget.BudgetItem selectedItem, DataGrid datagrid)
+        public UpdateExpense(Budget.BudgetItem selectedItem, DataGrid datagrid, string filename)
         {
             InitializeComponent();
-            presenter = p;
-            catsList = p.getCategoriesList();
-
+            presenter = new UpdatePresenter(this, filename);
+            catsList = presenter.getCategoriesList();
+         
             CategoriesDropDown.ItemsSource = catsList;
 
             item = selectedItem;
@@ -42,6 +42,8 @@ namespace HomeBudgetWPF
         public void PopulateItemInForm()
         {
             Amount.Text = item.Amount.ToString();
+            if (Amount.Text.Contains("-"))
+                Amount.Text = Amount.Text.Split('-')[1];
             Desc.Text = item.ShortDescription;
             CategoriesDropDown.SelectedIndex = item.CategoryID;
             DateTimePicker1.SelectedDate = item.Date;

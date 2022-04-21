@@ -8,6 +8,7 @@ using System.Collections.Generic;
 
 namespace HomeBudgetWPFTest
 {
+    /*
     public class TestView : ViewInterface
     {
         public bool calledCancel;
@@ -200,5 +201,7 @@ namespace HomeBudgetWPFTest
             //Assert
             Assert.Equal(catsAfter.Count, catsBefore.Count+1);
         }
+    
     }
+    */
  }
