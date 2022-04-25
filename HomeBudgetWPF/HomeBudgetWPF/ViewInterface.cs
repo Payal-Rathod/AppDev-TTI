@@ -8,13 +8,10 @@ namespace HomeBudgetWPF
 {
     public interface ViewInterface
     {
-        //void ShowError(string msg);
-        //void Refresh();
         void OpenFile();
-        //void ShowAdded(string desc);
+        void NewFile();
         void ShowDatabase(string filename);
         void LightMode();
         void DarkMode();
-        //void CancelExpense();
     }
 }

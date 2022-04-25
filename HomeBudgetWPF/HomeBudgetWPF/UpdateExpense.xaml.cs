@@ -24,14 +24,25 @@ namespace HomeBudgetWPF
         UpdatePresenter presenter;
         Budget.BudgetItem item;
         DataGrid myDataGrid;
+        string filepath;
+        ComboBox catsDropDown;
 
-        public UpdateExpense(Budget.BudgetItem selectedItem, DataGrid datagrid, string filename)
+        /// <summary>
+        /// Gets selected item, datagrid, filename and categories drop down values and initializes window.
+        /// </summary>
+        /// <param name="selectedItem"></param>
+        /// <param name="datagrid"></param>
+        /// <param name="filename"></param>
+        /// <param name="catdropdown"></param>
+        public UpdateExpense(Budget.BudgetItem selectedItem, DataGrid datagrid, string filename, ComboBox catdropdown)
         {
             InitializeComponent();
             presenter = new UpdatePresenter(this, filename);
-            catsList = presenter.getCategoriesList();
-         
-            CategoriesDropDown.ItemsSource = catsList;
+            filepath = filename;
+            catsDropDown = catdropdown;
+
+            catsList = presenter.getCategoriesList(); //gets categories list
+            CategoriesDropDown.ItemsSource = catsList;  //Updates categories list
 
             item = selectedItem;
             myDataGrid = datagrid;
@@ -39,6 +50,9 @@ namespace HomeBudgetWPF
             PopulateItemInForm();
         }
 
+        /// <summary>
+        /// Populates items in form with the existing info
+        /// </summary>
         public void PopulateItemInForm()
         {
             Amount.Text = item.Amount.ToString();
@@ -71,7 +85,9 @@ namespace HomeBudgetWPF
                 presenter.UpdateExpense(item);
             }
 
-            myDataGrid.ItemsSource = presenter.GetBudgetItemsList();
+            catsDropDown.ItemsSource = presenter.getCategoriesList(); //updates drop down list
+
+            myDataGrid.ItemsSource = presenter.GetBudgetItemsList(); //updates datagrid items
 
             this.Close();
 
@@ -104,9 +120,9 @@ namespace HomeBudgetWPF
         {
             if (e.Key == Key.Return)
             {
-                Budget.Category cat = presenter.AddCategory(CategoriesDropDown.Text, Budget.Category.CategoryType.Expense);
-                catsList.Add(cat);
-                CategoriesDropDown.Text = "";
+                //New category window if new category is written in drop down list
+                Category CategoryWindow = new Category(CategoriesDropDown.Text, filepath, CategoriesDropDown);
+                CategoryWindow.Show();
             }
         }
         private void Amount_PreviewTextInput(object sender, TextCompositionEventArgs e)
@@ -130,15 +146,7 @@ namespace HomeBudgetWPF
             Amount.Text = "Amount";
             Desc.Text = "Description";
         }
-        /// <summary>
-        /// Shows latest added entry.
-        /// </summary>
-        /// <param name="desc">String description of entry.</param>
-        public void ShowUpdated(string desc)
-        {
-            MessageBox.Show("Added " + desc, "Configuration", MessageBoxButton.OK, MessageBoxImage.Information);
 
-        }
         /// <summary>
         /// Cancels expense entry and clears fields from user input.
         /// </summary>
@@ -152,6 +160,14 @@ namespace HomeBudgetWPF
             Desc.Text = "Description";
             CategoriesDropDown.SelectedItem = null;
         }
-        
+
+        /// <summary>
+        /// Shows message that expense was updated.
+        /// </summary>
+        /// <param name="desc">The updated expense's description</param>
+        public void ShowAdded(string desc)
+        {
+            MessageBox.Show(desc + " updated");
+        }
     }
 }

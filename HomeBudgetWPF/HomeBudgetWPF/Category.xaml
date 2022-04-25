@@ -1,0 +1,35 @@
+﻿<Window x:Class="HomeBudgetWPF.Category"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:HomeBudgetWPF"
+        mc:Ignorable="d"
+        Title="Category" Height="550" Width="500">
+    <Grid Background="#C9E4E7">
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition>
+            </RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <TextBox Background="#C9E4E7" BorderThickness="0" Grid.Column="0" Grid.ColumnSpan="4" Text="Add a new category" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#0C6291" FontWeight="Bold" FontSize="45"/>
+        <TextBlock Background="#0C6291" Foreground="White" VerticalAlignment="Center" Width="50" Height="30" Padding="5" Grid.Row="1" Grid.Column="0">Name</TextBlock>
+        <TextBlock Background="#0C6291" Foreground="White" VerticalAlignment="Center" Width="45" Height="30" Padding="5" Grid.Row="2" Grid.Column="0">Type</TextBlock>
+        <ComboBox Name="categoryType" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Text="Type" Height="30"></ComboBox>
+        <TextBox Name="categoryName" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" MouseDoubleClick="categoryName_MouseDoubleClick">Enter name</TextBox>
+        <Button  Background="#0C6291" Foreground="White" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Width="50" Height="25" Click="Add_Category_Click">
+            <Button.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="5"/>
+                </Style>
+            </Button.Resources> Add</Button>
+    </Grid>
+</Window>

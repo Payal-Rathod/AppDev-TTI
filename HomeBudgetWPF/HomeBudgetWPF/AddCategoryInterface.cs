@@ -6,11 +6,8 @@ using System.Threading.Tasks;
 
 namespace HomeBudgetWPF
 {
-    interface AddExpenseInterface
+    interface AddCategoryInterface
     {
         void ShowError(string msg);
-        void Refresh();
-        void CancelExpense();
-        void ShowAdded(string desc);
     }
 }

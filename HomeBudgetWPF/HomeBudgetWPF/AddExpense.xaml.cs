@@ -21,18 +21,33 @@ namespace HomeBudgetWPF
     public partial class AddExpense : Window, AddExpenseInterface
     {
         List<Budget.Category> catsList;
+        static int previousIndexSelected = -1;
+        static DateTime previousDateSelected = DateTime.Today;
+        string filepath;
+        ComboBox categoriesDropDown;
 
         ExpensePresenter presenter;
         DataGrid myDataGrid;
-        public AddExpense(DataGrid dataGrid, string filename)
+
+        /// <summary>
+        /// Gets datagrid, filename and categoriesdropdown values and initializes window.
+        /// </summary>
+        /// <param name="dataGrid">The datagrid in the main window.</param>
+        /// <param name="filename">The filepath of the database.</param>
+        /// <param name="catDropDown">The categories drop down list in the main window</param>
+        public AddExpense(DataGrid dataGrid, string filename, ComboBox catDropDown)
         {
             InitializeComponent();
             myDataGrid = dataGrid;
-            presenter = new ExpensePresenter(this, filename);
+            presenter = new ExpensePresenter(this, filename); //Opens database connection
+            presenter.openDatabase(filename);
+            filepath = filename;
+            categoriesDropDown = catDropDown;
 
-            catsList = presenter.getCategoriesList();
-            CategoriesDropDown.ItemsSource = catsList;
-            DateTimePicker1.SelectedDate = DateTime.Today;
+            catsList = presenter.getCategoriesList();  //Gets categories list
+            CategoriesDropDown.ItemsSource = catsList; //Populates drop down list with categories list
+            DateTimePicker1.SelectedDate = previousDateSelected; //Selected date is the same as the previous expense
+            CategoriesDropDown.SelectedIndex = previousIndexSelected; //Selected category is the same as the previous expense
         }
 
         private void CategoriesDropDown_TextChanged(object sender, MouseButtonEventArgs e)
@@ -46,9 +61,9 @@ namespace HomeBudgetWPF
         {
             if (e.Key == Key.Return)
             {
-                Budget.Category cat = presenter.AddCategory(CategoriesDropDown.Text, Budget.Category.CategoryType.Expense);
-                catsList.Add(cat);
-                CategoriesDropDown.Text = "";
+                //New category window shown if a category is typed in drop down list
+                Category CategoryWindow = new Category(CategoriesDropDown.Text, filepath, CategoriesDropDown);
+                CategoryWindow.Show();
             }
         }
 
@@ -127,18 +142,31 @@ namespace HomeBudgetWPF
 
                 int index = CategoriesDropDown.SelectedIndex;
 
+                previousIndexSelected = index;
+                previousDateSelected = date;
+
                 presenter.AddExpense(date, index, amount, desc);
 
-                myDataGrid.ItemsSource = presenter.GetBudgetItemsList();
+                myDataGrid.ItemsSource = presenter.GetBudgetItemsList(); //Updates datagrid
 
+                categoriesDropDown.ItemsSource = presenter.getCategoriesList(); //Updates drop down list
 
                 this.Close();
             }
         }
 
+        /// <summary>
+        /// Shows error message to the user
+        /// </summary>
+        /// <param name="msg">The error message details</param>
         public void ShowError(string msg)
         {
             MessageBox.Show(msg);
+        }
+
+        public void ShowAdded(string desc)
+        {
+            MessageBox.Show(desc + " added");
         }
 
         /// <summary>

@@ -12,10 +12,11 @@ namespace HomeBudgetWPF
     {
         // We should use view.
         private readonly ViewInterface view;
-        private HomeBudget homeBudget;
-        private Categories cats;
-        private Expenses expenses;
-        private string filepath;
+        private static HomeBudget homeBudget;
+        private static Categories cats;
+        private static Expenses expenses;
+        private static string filepath;
+
         /// <summary>
         /// Default Constructor.
         /// </summary>
@@ -31,9 +32,7 @@ namespace HomeBudgetWPF
         /// </summary>
         public void NewDatabase()
         {
-            //view.Refresh();
             view.ShowDatabase("Open a database file in the file tab");
-            //view.DisableBtnAndInput();
         }
         /// <summary>
         /// Opens a database file and creates categories and expenses from it.
@@ -54,7 +53,6 @@ namespace HomeBudgetWPF
             expenses = homeBudget.expenses;
 
             filepath = filename;
-            //view.EnableBtnAndInput();
         }
 
         /// <summary>
@@ -68,6 +66,15 @@ namespace HomeBudgetWPF
             else
                 view.LightMode();
         }
+
+        /// <summary>
+        /// Gets budget items list from homebudget and returns it
+        /// </summary>
+        /// <param name="startDate">The start date of the items.</param>
+        /// <param name="endDate">The end date of the items</param>
+        /// <param name="filterFlag">The filter flag for showing only one category</param>
+        /// <param name="categoryId">The category id for filter flag</param>
+        /// <returns>List of budget items</returns>
         public List<Budget.BudgetItem> GetBudgetItemsList(DateTime? startDate, DateTime? endDate, bool filterFlag, int categoryId)
         {
             OpenDatabase(filepath, false);
@@ -90,6 +97,14 @@ namespace HomeBudgetWPF
             return items;
         }
 
+        /// <summary>
+        /// Gets budget items list by month from homebudget and returns it
+        /// </summary>
+        /// <param name="startDate">The start date of the items.</param>
+        /// <param name="endDate">The end date of the items</param>
+        /// <param name="filterFlag">The filter flag for showing only one category</param>
+        /// <param name="categoryId">The category id for filter flag</param>
+        /// <returns>List of budget items by month</returns>
         public List<Budget.BudgetItemsByMonth> GetBudgetItemsListByMonth(DateTime? startDate, DateTime? endDate, bool filterFlag, int categoryId)
         {
             OpenDatabase(filepath, false);
@@ -106,6 +121,14 @@ namespace HomeBudgetWPF
             return items;
         }
 
+        /// <summary>
+        /// Gets budget items list by category from homebudget and returns it
+        /// </summary>
+        /// <param name="startDate">The start date of the items.</param>
+        /// <param name="endDate">The end date of the items</param>
+        /// <param name="filterFlag">The filter flag for showing only one category</param>
+        /// <param name="categoryId">The category id for filter flag</param>
+        /// <returns>List of budget items by category</returns>
         public List<Budget.BudgetItemsByCategory> GetBudgetItemsListByCategory(DateTime? startDate, DateTime? endDate, bool filterFlag, int categoryId)
         {
             OpenDatabase(filepath, false);
@@ -122,9 +145,18 @@ namespace HomeBudgetWPF
             return items;
         }
 
+        /// <summary>
+        /// Gets budget items list by category and month from homebudget and returns it
+        /// </summary>
+        /// <param name="startDate">The start date of the items.</param>
+        /// <param name="endDate">The end date of the items</param>
+        /// <param name="filterFlag">The filter flag for showing only one category</param>
+        /// <param name="categoryId">The category id for filter flag</param>
+        /// <returns>List of budget items by category and month</returns>
         public List<Dictionary<string,object>> GetBudgetItemsListByMonthAndCategory(DateTime? startDate, DateTime? endDate, bool filterFlag, int categoryId)
         {
             OpenDatabase(filepath, false);
+
             if (startDate == null)
             {
                 startDate = DateTime.MinValue;
@@ -136,6 +168,11 @@ namespace HomeBudgetWPF
             List<Dictionary<string, object>> items = homeBudget.GetBudgetDictionaryByCategoryAndMonth(startDate, endDate, filterFlag, categoryId);
             return items;
         }
+
+        /// <summary>
+        /// Deletes an expense with a given id
+        /// </summary>
+        /// <param name="expenseId">Id of the expense to delete</param>
         public void DeleteExpense(int expenseId)
         {
             OpenDatabase(filepath, false);
@@ -146,9 +183,10 @@ namespace HomeBudgetWPF
         /// <summary>
         /// Gets updated categories list from database.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>List of categpries of homebudget</returns>
         public List<Budget.Category> getCategoriesList()
         {
+            OpenDatabase(filepath, false);
             cats = homeBudget.categories;
             return cats.List();
         }

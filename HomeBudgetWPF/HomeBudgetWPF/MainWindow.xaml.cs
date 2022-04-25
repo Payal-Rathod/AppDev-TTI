@@ -43,6 +43,9 @@ namespace HomeBudgetWPF
             InitializeDataGrid();
         }
 
+        /// <summary>
+        /// Initializes grid for getbudgetitems list
+        /// </summary>
         public void InitializeDataGrid()
         {
             ViewExpenses.Columns.Clear();
@@ -64,9 +67,6 @@ namespace HomeBudgetWPF
             col4.Header = "Amount";
             col4.Binding = new Binding("Amount");
 
-            // We wamt all the cells inside that column.
-            //ViewExpenses.Columns[4].cell
-
             ViewExpenses.Columns.Add(col4);
             var col5 = new DataGridTextColumn();
             col5.Header = "Balance";
@@ -74,6 +74,9 @@ namespace HomeBudgetWPF
             ViewExpenses.Columns.Add(col5);
         }
 
+        /// <summary>
+        /// Initializes grid for getbudgetitemsbymonth list
+        /// </summary>
         public void InitializeDataGridByMonth()
         {
             ViewExpenses.Columns.Clear();
@@ -89,6 +92,9 @@ namespace HomeBudgetWPF
             ViewExpenses.Columns.Add(col2);
         }
 
+        /// <summary>
+        /// Initializes grid for getbudgetitemsbycategory list
+        /// </summary>
         public void InitializeDataGridByCategory()
         {
             ViewExpenses.Columns.Clear();
@@ -104,11 +110,14 @@ namespace HomeBudgetWPF
             ViewExpenses.Columns.Add(col2);
         }
 
+        /// <summary>
+        /// Initializes grid for getbudgetitemsbycategoryandmonth list
+        /// </summary>
         public void InitializeDataGridByMonthAndCategory(List<Dictionary<string, object>> items)
         {
             ViewExpenses.Columns.Clear();
 
-            foreach (string key in items[0].Keys)
+            foreach (string key in items[1].Keys) //Goes through each key values
             {
                 if (key.Split(':')[0] == "details")
                 {
@@ -123,6 +132,7 @@ namespace HomeBudgetWPF
         // =====================================================================================
         // VIEW INTERFACE
         // =====================================================================================
+
         /// <summary>
         /// Opens file from File Explorer, only .db files.
         /// </summary>
@@ -157,6 +167,9 @@ namespace HomeBudgetWPF
             CategoriesDropDown.ItemsSource = presenter.getCategoriesList();
         }
 
+        /// <summary>
+        /// Opens databse connection to a new db file
+        /// </summary>
         public void NewFile()
         {
             SaveFileDialog saveFileDlg = new SaveFileDialog();
@@ -181,15 +194,6 @@ namespace HomeBudgetWPF
         }
 
         /// <summary>
-        /// Shows latest added entry.
-        /// </summary>
-        /// <param name="desc">String description of entry.</param>
-        public void ShowAdded(string desc)
-        {
-            MessageBox.Show("Added " + desc, "Configuration", MessageBoxButton.OK, MessageBoxImage.Information);
-
-        }
-        /// <summary>
         /// Shows database from file.
         /// </summary>
         /// <param name="fileName">String value of file name.</param>
@@ -197,14 +201,7 @@ namespace HomeBudgetWPF
         {
             FileNameTextBox.Text = fileName;
         }
-        /// <summary>
-        /// Shows errors from string.
-        /// </summary>
-        /// <param name="msg">String value of error message.</param>
-        public void ShowError(string msg)
-        {
-            MessageBox.Show(msg);
-        }
+
         /// <summary>
         /// Light color mode.
         /// </summary>
@@ -271,6 +268,7 @@ namespace HomeBudgetWPF
 
             DateTimePicker1.BorderBrush = brush;*/
         }
+
         // =====================================================================================
         // EVENT HANDLERS
         // =====================================================================================
@@ -312,9 +310,10 @@ namespace HomeBudgetWPF
 
             if (selected != null)
             {
-                UpdateExpense UpdateWindow = new UpdateExpense(selected, ViewExpenses, fileName);
+                UpdateExpense UpdateWindow = new UpdateExpense(selected, ViewExpenses, fileName, CategoriesDropDown);
                 UpdateWindow.Show();
             }
+
         }
 
         private void close_Click(object sender, RoutedEventArgs e)
@@ -324,8 +323,11 @@ namespace HomeBudgetWPF
 
         private void AddExpense_Click(object sender, RoutedEventArgs e)
         {
-            AddExpense AddWindow = new AddExpense(ViewExpenses, fileName);
+            AddExpense AddWindow = new AddExpense(ViewExpenses, fileName, CategoriesDropDown);
             AddWindow.Show();
+
+            InitializeDataGrid();
+            ViewExpenses.ItemsSource = presenter.GetBudgetItemsList(startDate, endDate, filterFlag, filterCategoryId);
         }
 
         private void StartDateTimePicker1_SelectedDateChanged(object sender, SelectionChangedEventArgs e)

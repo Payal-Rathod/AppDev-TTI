@@ -22,6 +22,13 @@ namespace HomeBudgetWPF
         public ExpensePresenter(AddExpenseInterface v, string filename)
         {
             view = v;
+            filepath = filename;
+            view.Refresh();
+            openDatabase(filename);
+        }
+
+        public void openDatabase(string filename)
+        {
             homeBudget = new HomeBudget(filename, "", newDb = false);
             cats = homeBudget.categories;
             expenses = homeBudget.expenses;
@@ -36,9 +43,9 @@ namespace HomeBudgetWPF
         /// <param name="description">String description of expense.</param>
         public void AddExpense(DateTime date, int category, double amount, string description)
         {
+            openDatabase(filepath);
             expenses.Add(date, category, amount, description);
-            //view.ShowAdded(description);
-            //view.Refresh();
+            view.ShowAdded(description);
         }
 
         /// <summary>
@@ -51,12 +58,17 @@ namespace HomeBudgetWPF
         /// <summary>
         /// Gets updated categories list from database.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Categories list of homebudget</returns>
         public List<Budget.Category> getCategoriesList()
         {
+            openDatabase(filepath);
             return cats.List();
         }
 
+        /// <summary>
+        /// Gets budget items list in homebudget and returns the list.
+        /// </summary>
+        /// <returns>The list of budget items</returns>
         public List<Budget.BudgetItem> GetBudgetItemsList()
         {
             List<Budget.BudgetItem> items = homeBudget.GetBudgetItems(DateTime.MinValue, DateTime.MaxValue, false, -1);
@@ -80,13 +92,14 @@ namespace HomeBudgetWPF
             return cats.List().Last();
         }
 
+        /// <summary>
+        /// Deletes an expense with a given id.
+        /// </summary>
+        /// <param name="expenseId">Id of the expense to delete</param>
         public void DeleteExpense(int expenseId)
         {
+            openDatabase(filepath);
             expenses.Delete(expenseId);
-        }
-        public void UpdateExpense(Budget.BudgetItem item)
-        {
-            expenses.UpdateProperties(item.ExpenseID, item.Date, item.ShortDescription, item.Amount, item.CategoryID);
         }
     }
 }

@@ -80,10 +80,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AddCategoryInterface.cs" />
     <Compile Include="AddExpense.xaml.cs">
       <DependentUpon>AddExpense.xaml</DependentUpon>
     </Compile>
     <Compile Include="AddExpenseInterface.cs" />
+    <Compile Include="Category.xaml.cs">
+      <DependentUpon>Category.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CategoryPresenter.cs" />
     <Compile Include="ExpensePresenter.cs" />
     <Compile Include="UpdateExpense.xaml.cs">
       <DependentUpon>UpdateExpense.xaml</DependentUpon>
@@ -97,6 +102,10 @@
     <Page Include="AddExpense.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Category.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
