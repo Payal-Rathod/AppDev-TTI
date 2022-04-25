@@ -56,6 +56,22 @@ namespace HomeBudgetWPF
         }
 
         /// <summary>
+        /// Opens existing file in the new application
+        /// </summary>
+        public void OpenFile()
+        {
+            view.OpenFile();
+        }
+
+        /// <summary>
+        /// Opens new file in the application
+        /// </summary>
+        public void NewFile()
+        {
+            view.NewFile();
+        }
+
+        /// <summary>
         /// Changes color modes from Dark to Light and vice-versa to accomodate user's needs.
         /// </summary>
         /// <param name="colorMode">String value of button's content - Light or dark.</param>
@@ -78,6 +94,8 @@ namespace HomeBudgetWPF
         public List<Budget.BudgetItem> GetBudgetItemsList(DateTime? startDate, DateTime? endDate, bool filterFlag, int categoryId)
         {
             OpenDatabase(filepath, false);
+
+            view.InitializeDataGrid();
 
             if (startDate == null)
             {
@@ -109,6 +127,8 @@ namespace HomeBudgetWPF
         {
             OpenDatabase(filepath, false);
 
+            view.InitializeDataGridByMonth();
+
             if (startDate == null)
             {
                 startDate = DateTime.MinValue;
@@ -132,6 +152,8 @@ namespace HomeBudgetWPF
         public List<Budget.BudgetItemsByCategory> GetBudgetItemsListByCategory(DateTime? startDate, DateTime? endDate, bool filterFlag, int categoryId)
         {
             OpenDatabase(filepath, false);
+
+            view.InitializeDataGridByCategory();
 
             if (startDate == null)
             {
@@ -166,6 +188,9 @@ namespace HomeBudgetWPF
                 endDate = DateTime.MaxValue;
             }
             List<Dictionary<string, object>> items = homeBudget.GetBudgetDictionaryByCategoryAndMonth(startDate, endDate, filterFlag, categoryId);
+
+            view.InitializeDataGridByMonthAndCategory(items);
+
             return items;
         }
 

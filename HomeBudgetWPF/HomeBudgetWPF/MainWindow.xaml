@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:HomeBudgetWPF"
         mc:Ignorable="d"
         Title="MainWindow" Height="600" Width="725"
+        Closing="Window_Closing"  
         >
 
     <Grid Name="mainGrid" Background="#C9E4E7">
@@ -16,7 +17,7 @@
                 <MenuItem Header="_Open" Click="OpenFile_Click"></MenuItem>
                 <MenuItem Header="_New" Click="NewFile_Click"></MenuItem>
                 <Separator />
-                <MenuItem Header="_Exit" Click="exit_Click"></MenuItem>
+                <MenuItem Header="_Exit" Click="Exit_Click"></MenuItem>
             </MenuItem>
         </Menu>
 

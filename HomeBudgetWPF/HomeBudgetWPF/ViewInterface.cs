@@ -13,5 +13,10 @@ namespace HomeBudgetWPF
         void ShowDatabase(string filename);
         void LightMode();
         void DarkMode();
+        void InitializeDataGrid();
+        void InitializeDataGridByMonth();
+        void InitializeDataGridByCategory();
+        void InitializeDataGridByMonthAndCategory(List<Dictionary<string, object>> items);
+
     }
 }

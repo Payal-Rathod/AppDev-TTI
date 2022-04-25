@@ -26,6 +26,8 @@ namespace HomeBudgetWPF
         public int filterCategoryId = -1;
         bool newDb;
         List<Budget.Category> catsList;
+        UpdateExpense UpdateWindow;
+        AddExpense AddWindow;
 
         /// <summary>
         /// Initializes application and Presenter.
@@ -117,7 +119,7 @@ namespace HomeBudgetWPF
         {
             ViewExpenses.Columns.Clear();
 
-            foreach (string key in items[1].Keys) //Goes through each key values
+            foreach (string key in items[0].Keys) //Goes through each key values
             {
                 if (key.Split(':')[0] == "details")
                 {
@@ -274,12 +276,12 @@ namespace HomeBudgetWPF
         // =====================================================================================
         private void OpenFile_Click(object sender, RoutedEventArgs e)
         {
-            OpenFile();
+            presenter.OpenFile();
         }
 
         private void NewFile_Click(object sender, RoutedEventArgs e)
         {
-            NewFile();
+            presenter.NewFile();
         }
        
         private void exit_Click(object sender, RoutedEventArgs e)
@@ -310,23 +312,17 @@ namespace HomeBudgetWPF
 
             if (selected != null)
             {
-                UpdateExpense UpdateWindow = new UpdateExpense(selected, ViewExpenses, fileName, CategoriesDropDown);
+                UpdateWindow = new UpdateExpense(selected, ViewExpenses, fileName, CategoriesDropDown);
                 UpdateWindow.Show();
             }
 
         }
 
-        private void close_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
         private void AddExpense_Click(object sender, RoutedEventArgs e)
         {
-            AddExpense AddWindow = new AddExpense(ViewExpenses, fileName, CategoriesDropDown);
+            AddWindow = new AddExpense(ViewExpenses, fileName, CategoriesDropDown);
             AddWindow.Show();
 
-            InitializeDataGrid();
             ViewExpenses.ItemsSource = presenter.GetBudgetItemsList(startDate, endDate, filterFlag, filterCategoryId);
         }
 
@@ -352,52 +348,97 @@ namespace HomeBudgetWPF
 
         private void filterCheck_Click(object sender, RoutedEventArgs e)
         {
+            monthCheck.IsChecked = false;
+            categoryCheck.IsChecked = false;
+
             if (filterCheck.IsChecked == true)
             {
+
                 filterCategoryId = CategoriesDropDown.SelectedIndex;
                 filterFlag = true;
-                InitializeDataGrid();
                 ViewExpenses.ItemsSource = presenter.GetBudgetItemsList(startDate, endDate, filterFlag, filterCategoryId);
             }
             else
             {
                 filterCategoryId = -1;
                 filterFlag = false;
-                InitializeDataGrid();
                 ViewExpenses.ItemsSource = presenter.GetBudgetItemsList(startDate, endDate, filterFlag, filterCategoryId);
-
             }
-
-            monthCheck.IsChecked = false;
-            categoryCheck.IsChecked = false;
         }
 
         private void MonthCategoryCheck_Click(object sender, RoutedEventArgs e)
         {
             if (monthCheck.IsChecked == true && categoryCheck.IsChecked == false)
             {
-                InitializeDataGridByMonth();
                 ViewExpenses.ItemsSource = presenter.GetBudgetItemsListByMonth(startDate, endDate, filterFlag, filterCategoryId);
             }
             else if (monthCheck.IsChecked == true && categoryCheck.IsChecked == true)
             {
                 List<Dictionary<string, object>> items = presenter.GetBudgetItemsListByMonthAndCategory(startDate, endDate, filterFlag, filterCategoryId);
                 ViewExpenses.ItemsSource = items;
-                InitializeDataGridByMonthAndCategory(items);
 
             }
             else if (monthCheck.IsChecked == false && categoryCheck.IsChecked == true)
             {
-                InitializeDataGridByCategory();
                 ViewExpenses.ItemsSource = presenter.GetBudgetItemsListByCategory(startDate, endDate, filterFlag, filterCategoryId);
             }
             else
             {
-                InitializeDataGrid();
                 ViewExpenses.ItemsSource = presenter.GetBudgetItemsList(startDate, endDate, filterFlag, filterCategoryId);
 
             }
 
         }
+
+        private void close_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Exit_Click(object sender, RoutedEventArgs e)
+        {
+            int windowActiveCount = 0;
+            foreach (var Window in App.Current.Windows)
+            {
+                windowActiveCount++;
+            }
+            if (windowActiveCount > 3)
+            {
+                if (MessageBox.Show("There are unsaved changes.\nExit?", "Add expense", MessageBoxButton.YesNo, MessageBoxImage.Hand) == MessageBoxResult.Yes)
+                {
+                    App.Current.Shutdown();
+                }
+            }
+            else
+            {
+                App.Current.Shutdown();
+            }
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            int windowActiveCount = 0;
+            foreach (var Window in App.Current.Windows)
+            {
+                windowActiveCount++;
+            }
+            if (windowActiveCount > 2)
+            {
+                if (MessageBox.Show("There are unsaved changes.\nExit?", "Add expense", MessageBoxButton.YesNo, MessageBoxImage.Hand) == MessageBoxResult.Yes)
+                {
+                    App.Current.Shutdown();
+                    e.Cancel = false;
+                }
+                else
+                {
+                    e.Cancel = true;
+                }
+            }
+            else
+            {
+                App.Current.Shutdown();
+            }
+        }
+
     }
 }
