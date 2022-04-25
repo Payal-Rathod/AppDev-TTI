@@ -68,9 +68,19 @@ namespace HomeBudgetWPF
             else
                 view.LightMode();
         }
-        public List<Budget.BudgetItem> GetBudgetItemsList()
+        public List<Budget.BudgetItem> GetBudgetItemsList(DateTime? startDate, DateTime? endDate, bool filterFlag, int categoryId)
         {
-            List<Budget.BudgetItem> items = homeBudget.GetBudgetItems(DateTime.MinValue, DateTime.MaxValue, false, -1);
+            OpenDatabase(filepath, false);
+
+            if (startDate == null)
+            {
+                startDate = DateTime.MinValue;
+            }
+            if(endDate == null)
+            {
+                endDate = DateTime.MaxValue;
+            }
+            List<Budget.BudgetItem> items = homeBudget.GetBudgetItems(startDate, endDate, filterFlag, categoryId);
             foreach(BudgetItem item in items)
             {
                 if (item.CategoryID == 8 || item.CategoryID == 15)
@@ -79,11 +89,68 @@ namespace HomeBudgetWPF
             }
             return items;
         }
+
+        public List<Budget.BudgetItemsByMonth> GetBudgetItemsListByMonth(DateTime? startDate, DateTime? endDate, bool filterFlag, int categoryId)
+        {
+            OpenDatabase(filepath, false);
+
+            if (startDate == null)
+            {
+                startDate = DateTime.MinValue;
+            }
+            if (endDate == null)
+            {
+                endDate = DateTime.MaxValue;
+            }
+            List<Budget.BudgetItemsByMonth> items = homeBudget.GetBudgetItemsByMonth(startDate, endDate, filterFlag, categoryId);
+            return items;
+        }
+
+        public List<Budget.BudgetItemsByCategory> GetBudgetItemsListByCategory(DateTime? startDate, DateTime? endDate, bool filterFlag, int categoryId)
+        {
+            OpenDatabase(filepath, false);
+
+            if (startDate == null)
+            {
+                startDate = DateTime.MinValue;
+            }
+            if (endDate == null)
+            {
+                endDate = DateTime.MaxValue;
+            }
+            List<Budget.BudgetItemsByCategory> items = homeBudget.GeBudgetItemsByCategory(startDate, endDate, filterFlag, categoryId);
+            return items;
+        }
+
+        public List<Dictionary<string,object>> GetBudgetItemsListByMonthAndCategory(DateTime? startDate, DateTime? endDate, bool filterFlag, int categoryId)
+        {
+            OpenDatabase(filepath, false);
+            if (startDate == null)
+            {
+                startDate = DateTime.MinValue;
+            }
+            if (endDate == null)
+            {
+                endDate = DateTime.MaxValue;
+            }
+            List<Dictionary<string, object>> items = homeBudget.GetBudgetDictionaryByCategoryAndMonth(startDate, endDate, filterFlag, categoryId);
+            return items;
+        }
         public void DeleteExpense(int expenseId)
         {
             OpenDatabase(filepath, false);
             expenses = homeBudget.expenses;
             expenses.Delete(expenseId);
+        }
+
+        /// <summary>
+        /// Gets updated categories list from database.
+        /// </summary>
+        /// <returns></returns>
+        public List<Budget.Category> getCategoriesList()
+        {
+            cats = homeBudget.categories;
+            return cats.List();
         }
     }
 }

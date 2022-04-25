@@ -20,7 +20,12 @@ namespace HomeBudgetWPF
         Presenter presenter;
         public string fileName;
         public string filePath;
+        public bool filterFlag = false;
+        public DateTime? startDate = DateTime.MinValue;
+        public DateTime? endDate = DateTime.MaxValue;
+        public int filterCategoryId = -1;
         bool newDb;
+        List<Budget.Category> catsList;
 
         /// <summary>
         /// Initializes application and Presenter.
@@ -36,7 +41,6 @@ namespace HomeBudgetWPF
             Application.Current.MainWindow.FontFamily = new FontFamily("Cambria");
 
             InitializeDataGrid();
-
         }
 
         public void InitializeDataGrid()
@@ -68,6 +72,53 @@ namespace HomeBudgetWPF
             col5.Header = "Balance";
             col5.Binding = new Binding("Balance");
             ViewExpenses.Columns.Add(col5);
+        }
+
+        public void InitializeDataGridByMonth()
+        {
+            ViewExpenses.Columns.Clear();
+
+            // create columns
+            var col1 = new DataGridTextColumn();
+            col1.Header = "Month";
+            col1.Binding = new Binding("Month");
+            ViewExpenses.Columns.Add(col1);
+            var col2 = new DataGridTextColumn();
+            col2.Header = "Total";
+            col2.Binding = new Binding("Total");
+            ViewExpenses.Columns.Add(col2);
+        }
+
+        public void InitializeDataGridByCategory()
+        {
+            ViewExpenses.Columns.Clear();
+
+            // create columns
+            var col1 = new DataGridTextColumn();
+            col1.Header = "Category";
+            col1.Binding = new Binding("Category");
+            ViewExpenses.Columns.Add(col1);
+            var col2 = new DataGridTextColumn();
+            col2.Header = "Total";
+            col2.Binding = new Binding("Total");
+            ViewExpenses.Columns.Add(col2);
+        }
+
+        public void InitializeDataGridByMonthAndCategory(List<Dictionary<string, object>> items)
+        {
+            ViewExpenses.Columns.Clear();
+
+            foreach (string key in items[0].Keys)
+            {
+                if (key.Split(':')[0] == "details")
+                {
+                    continue;
+                }
+                var column = new DataGridTextColumn();
+                column.Header = key;
+                column.Binding = new Binding($"[{key}]");
+                ViewExpenses.Columns.Add(column);
+            }
         }
         // =====================================================================================
         // VIEW INTERFACE
@@ -101,8 +152,9 @@ namespace HomeBudgetWPF
 
             presenter.OpenDatabase(fileName, newDb);
             
-            ViewExpenses.ItemsSource =  presenter.GetBudgetItemsList();
+            ViewExpenses.ItemsSource =  presenter.GetBudgetItemsList(null, null, false, -1);
 
+            CategoriesDropDown.ItemsSource = presenter.getCategoriesList();
         }
 
         public void NewFile()
@@ -122,7 +174,9 @@ namespace HomeBudgetWPF
 
             presenter.OpenDatabase(fileName, newDb = true);
 
-            ViewExpenses.ItemsSource = presenter.GetBudgetItemsList();
+            ViewExpenses.ItemsSource = presenter.GetBudgetItemsList(null, null, false, -1);
+
+            CategoriesDropDown.ItemsSource = presenter.getCategoriesList();
 
         }
 
@@ -248,7 +302,7 @@ namespace HomeBudgetWPF
             if (selected != null)
             {
                 presenter.DeleteExpense(selected.ExpenseID);
-                ViewExpenses.ItemsSource = presenter.GetBudgetItemsList();
+                ViewExpenses.ItemsSource = presenter.GetBudgetItemsList(startDate, endDate, filterFlag, filterCategoryId);
             }
         }
 
@@ -272,6 +326,76 @@ namespace HomeBudgetWPF
         {
             AddExpense AddWindow = new AddExpense(ViewExpenses, fileName);
             AddWindow.Show();
+        }
+
+        private void StartDateTimePicker1_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            startDate = StartDateTimePicker1.SelectedDate;
+            ViewExpenses.ItemsSource = presenter.GetBudgetItemsList(startDate, endDate, filterFlag, filterCategoryId);
+        }
+
+        private void EndDateTimePicker1_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            endDate = EndDateTimePicker1.SelectedDate;
+            ViewExpenses.ItemsSource = presenter.GetBudgetItemsList(startDate, endDate, filterFlag, filterCategoryId);
+        }
+
+        private void CategoriesDropDown_TextChanged(object sender, MouseButtonEventArgs e)
+        {
+            if (CategoriesDropDown.Text == "Select or type a category")
+            {
+                CategoriesDropDown.Text = "";
+            }
+        }
+
+        private void filterCheck_Click(object sender, RoutedEventArgs e)
+        {
+            if (filterCheck.IsChecked == true)
+            {
+                filterCategoryId = CategoriesDropDown.SelectedIndex;
+                filterFlag = true;
+                InitializeDataGrid();
+                ViewExpenses.ItemsSource = presenter.GetBudgetItemsList(startDate, endDate, filterFlag, filterCategoryId);
+            }
+            else
+            {
+                filterCategoryId = -1;
+                filterFlag = false;
+                InitializeDataGrid();
+                ViewExpenses.ItemsSource = presenter.GetBudgetItemsList(startDate, endDate, filterFlag, filterCategoryId);
+
+            }
+
+            monthCheck.IsChecked = false;
+            categoryCheck.IsChecked = false;
+        }
+
+        private void MonthCategoryCheck_Click(object sender, RoutedEventArgs e)
+        {
+            if (monthCheck.IsChecked == true && categoryCheck.IsChecked == false)
+            {
+                InitializeDataGridByMonth();
+                ViewExpenses.ItemsSource = presenter.GetBudgetItemsListByMonth(startDate, endDate, filterFlag, filterCategoryId);
+            }
+            else if (monthCheck.IsChecked == true && categoryCheck.IsChecked == true)
+            {
+                List<Dictionary<string, object>> items = presenter.GetBudgetItemsListByMonthAndCategory(startDate, endDate, filterFlag, filterCategoryId);
+                ViewExpenses.ItemsSource = items;
+                InitializeDataGridByMonthAndCategory(items);
+
+            }
+            else if (monthCheck.IsChecked == false && categoryCheck.IsChecked == true)
+            {
+                InitializeDataGridByCategory();
+                ViewExpenses.ItemsSource = presenter.GetBudgetItemsListByCategory(startDate, endDate, filterFlag, filterCategoryId);
+            }
+            else
+            {
+                InitializeDataGrid();
+                ViewExpenses.ItemsSource = presenter.GetBudgetItemsList(startDate, endDate, filterFlag, filterCategoryId);
+
+            }
+
         }
     }
 }

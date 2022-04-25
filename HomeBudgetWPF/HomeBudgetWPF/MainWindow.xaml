@@ -22,6 +22,16 @@
 
         <Button x:Name="AddExpense" Content="Add Expense" Grid.Row="2" Click="AddExpense_Click"></Button>
 
+        <DatePicker Background="White" BorderBrush="#0C6291" BorderThickness="2" Grid.Row="3" Height="35"  x:Name="StartDateTimePicker1"  HorizontalAlignment="Stretch" Grid.Column="0" AutomationProperties.IsRequiredForForm="True" SelectedDateChanged="StartDateTimePicker1_SelectedDateChanged"></DatePicker>
+        <DatePicker Background="White" BorderBrush="#0C6291" BorderThickness="2" Grid.Row="4" Height="35"  x:Name="EndDateTimePicker1"  HorizontalAlignment="Stretch" Grid.Column="0" AutomationProperties.IsRequiredForForm="True" SelectedDateChanged="EndDateTimePicker1_SelectedDateChanged"></DatePicker>
+        <CheckBox x:Name="filterCheck" Grid.Row="2" Grid.Column="2" Click="filterCheck_Click">Filter</CheckBox>
+        <ComboBox SelectionChanged="filterCheck_Click" BorderBrush="#0C6291" BorderThickness="2" Text="Select or type a category" x:Name="CategoriesDropDown" HorizontalAlignment="Stretch" Height="35" Grid.Row="2" Grid.Column="2" IsSynchronizedWithCurrentItem="True" IsEditable="False" AutomationProperties.IsRequiredForForm="True"></ComboBox>
+        <CheckBox x:Name="monthCheck" Grid.Row="3" Grid.Column="2" Click="MonthCategoryCheck_Click">By month</CheckBox>
+        <CheckBox x:Name="categoryCheck" Grid.Row="4" Grid.Column="2" Click="MonthCategoryCheck_Click">By category</CheckBox>
+
+
+
+
         <Button Name="theme" Click="ColorMode_Click" Background="Black" Foreground="White" Grid.Column="3" Grid.Row="6" Width="100" Height="30" Grid.ColumnSpan="2" Margin="0, 5, 0, 0">
             <Button.Resources>
                 <Style TargetType="Border">
@@ -31,7 +41,7 @@
         </Button>
 
 
-        <DataGrid Grid.Column="1" Grid.Row="2" Grid.RowSpan="3" x:Name="ViewExpenses" AutoGenerateColumns="False" MouseDoubleClick="updateItem_Click" IsReadOnly="True" Width="">
+        <DataGrid Grid.Column="1" Grid.Row="2" Grid.RowSpan="3" x:Name="ViewExpenses" AutoGenerateColumns="False" MouseDoubleClick="updateItem_Click" IsReadOnly="True">
             <DataGrid.ContextMenu>
                 <ContextMenu>
                     <MenuItem x:Name="deleteItem" Click="deleteItem_Click" Header="Delete"></MenuItem>
