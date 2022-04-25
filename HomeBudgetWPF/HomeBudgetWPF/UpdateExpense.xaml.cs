@@ -26,6 +26,7 @@ namespace HomeBudgetWPF
         DataGrid myDataGrid;
         string filepath;
         ComboBox catsDropDown;
+        Budget.BudgetItem selectedItemDataGrid;
 
         /// <summary>
         /// Gets selected item, datagrid, filename and categories drop down values and initializes window.
@@ -46,6 +47,7 @@ namespace HomeBudgetWPF
 
             item = selectedItem;
             myDataGrid = datagrid;
+            selectedItemDataGrid = selectedItem;
 
             PopulateItemInForm();
         }

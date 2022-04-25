@@ -125,6 +125,7 @@ namespace HomeBudgetWPF
                 {
                     continue;
                 }
+
                 var column = new DataGridTextColumn();
                 column.Header = key;
                 column.Binding = new Binding($"[{key}]");
