@@ -81,7 +81,7 @@ jobs:
       
       
     - name: Run Nuget.exe to restore NuGet packages
-      run: nuget restore $env:Solution_Name
+      run: nuget restore $env:HomeBudgetWPF.sln
 
     # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
     - name: Setup MSBuild.exe
