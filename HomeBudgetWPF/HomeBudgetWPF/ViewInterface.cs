@@ -8,15 +8,15 @@ namespace HomeBudgetWPF
 {
     public interface ViewInterface
     {
-        void ShowError(string msg);
-        void Refresh();
         void OpenFile();
-        void ShowAdded(string desc);
+        void NewFile();
         void ShowDatabase(string filename);
         void LightMode();
         void DarkMode();
-        void Cancel();
-        void EnableBtnAndInput();
-        void DisableBtnAndInput();
+        void InitializeDataGrid();
+        void InitializeDataGridByMonth();
+        void InitializeDataGridByCategory();
+        void InitializeDataGridByMonthAndCategory(List<Dictionary<string, object>> items);
+
     }
 }

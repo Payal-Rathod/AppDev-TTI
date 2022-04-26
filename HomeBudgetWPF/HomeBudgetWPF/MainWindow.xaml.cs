@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -17,11 +18,17 @@ namespace HomeBudgetWPF
     public partial class MainWindow : Window, ViewInterface
     {
         Presenter presenter;
-        string fileName;
+        public string fileName;
+        public string filePath;
+        public bool filterFlag = false;
+        public DateTime? startDate = DateTime.MinValue;
+        public DateTime? endDate = DateTime.MaxValue;
+        public int filterCategoryId = -1;
         bool newDb;
         List<Budget.Category> catsList;
+        UpdateExpense UpdateWindow;
+        AddExpense AddWindow;
 
-        private List<Budget.Category> categoriesList = new List<Budget.Category>();
         /// <summary>
         /// Initializes application and Presenter.
         /// </summary>
@@ -32,14 +39,103 @@ namespace HomeBudgetWPF
             this.DataContext = this;
 
             presenter = new Presenter(this);
-            DateTimePicker1.SelectedDate = DateTime.Today;
 
             Application.Current.MainWindow.FontFamily = new FontFamily("Cambria");
 
+            InitializeDataGrid();
+        }
+
+        /// <summary>
+        /// Initializes grid for getbudgetitems list
+        /// </summary>
+        public void InitializeDataGrid()
+        {
+            ViewExpenses.Columns.Clear();
+
+            // create columns
+            var col1 = new DataGridTextColumn();
+            col1.Header = "Date";
+            col1.Binding = new Binding("Date");
+            ViewExpenses.Columns.Add(col1);
+            var col2 = new DataGridTextColumn();
+            col2.Header = "Category";
+            col2.Binding = new Binding("Category");
+            ViewExpenses.Columns.Add(col2);
+            var col3 = new DataGridTextColumn();
+            col3.Header = "Description";
+            col3.Binding = new Binding("ShortDescription");
+            ViewExpenses.Columns.Add(col3);
+            var col4 = new DataGridTextColumn();
+            col4.Header = "Amount";
+            col4.Binding = new Binding("Amount");
+
+            ViewExpenses.Columns.Add(col4);
+            var col5 = new DataGridTextColumn();
+            col5.Header = "Balance";
+            col5.Binding = new Binding("Balance");
+            ViewExpenses.Columns.Add(col5);
+        }
+
+        /// <summary>
+        /// Initializes grid for getbudgetitemsbymonth list
+        /// </summary>
+        public void InitializeDataGridByMonth()
+        {
+            ViewExpenses.Columns.Clear();
+
+            // create columns
+            var col1 = new DataGridTextColumn();
+            col1.Header = "Month";
+            col1.Binding = new Binding("Month");
+            ViewExpenses.Columns.Add(col1);
+            var col2 = new DataGridTextColumn();
+            col2.Header = "Total";
+            col2.Binding = new Binding("Total");
+            ViewExpenses.Columns.Add(col2);
+        }
+
+        /// <summary>
+        /// Initializes grid for getbudgetitemsbycategory list
+        /// </summary>
+        public void InitializeDataGridByCategory()
+        {
+            ViewExpenses.Columns.Clear();
+
+            // create columns
+            var col1 = new DataGridTextColumn();
+            col1.Header = "Category";
+            col1.Binding = new Binding("Category");
+            ViewExpenses.Columns.Add(col1);
+            var col2 = new DataGridTextColumn();
+            col2.Header = "Total";
+            col2.Binding = new Binding("Total");
+            ViewExpenses.Columns.Add(col2);
+        }
+
+        /// <summary>
+        /// Initializes grid for getbudgetitemsbycategoryandmonth list
+        /// </summary>
+        public void InitializeDataGridByMonthAndCategory(List<Dictionary<string, object>> items)
+        {
+            ViewExpenses.Columns.Clear();
+
+            foreach (string key in items[0].Keys) //Goes through each key values
+            {
+                if (key.Split(':')[0] == "details")
+                {
+                    continue;
+                }
+
+                var column = new DataGridTextColumn();
+                column.Header = key;
+                column.Binding = new Binding($"[{key}]");
+                ViewExpenses.Columns.Add(column);
+            }
         }
         // =====================================================================================
         // VIEW INTERFACE
         // =====================================================================================
+
         /// <summary>
         /// Opens file from File Explorer, only .db files.
         /// </summary>
@@ -53,6 +149,10 @@ namespace HomeBudgetWPF
                 ShowDatabase(System.IO.Path.GetFileName(openFileDlg.FileName));
                 fileName = openFileDlg.FileName;
             }
+            else
+            {
+                return;
+            }
 
             if (new FileInfo(fileName).Length == 0)
             {
@@ -64,61 +164,38 @@ namespace HomeBudgetWPF
             }
 
             presenter.OpenDatabase(fileName, newDb);
-        }
-        /// <summary>
-        /// Cancels expense entry and clears fields from user input.
-        /// </summary>
-        public void Cancel()
-        {
-            MessageBox.Show("Your entries will be cleared.", "Configuration", MessageBoxButton.OK, MessageBoxImage.Warning);
+            
+            ViewExpenses.ItemsSource =  presenter.GetBudgetItemsList(null, null, false, -1);
 
-            // Clear fields.
-            DateTimePicker1.SelectedDate = null;
-            Amount.Text = "Amount";
-            Desc.Text = "Description";
-            CategoriesDropDown.SelectedItem = null;
+            CategoriesDropDown.ItemsSource = presenter.getCategoriesList();
         }
+
         /// <summary>
-        /// Disables buttons' functionality.
+        /// Opens databse connection to a new db file
         /// </summary>
-        public void DisableBtnAndInput()
+        public void NewFile()
         {
-            addExpense_btn.IsEnabled = false;
-            cancelExpense_btn.IsEnabled = false;
-            Desc.IsEnabled = false;
-            Amount.IsEnabled = false;
-            CategoriesDropDown.IsEnabled = false;
-            DateTimePicker1.IsEnabled = false;
-        }
-        /// <summary>
-        /// Enables buttons' functionality.
-        /// </summary>
-        public void EnableBtnAndInput()
-        {
-            addExpense_btn.IsEnabled = true;
-            cancelExpense_btn.IsEnabled = true;
-            Desc.IsEnabled = true;
-            Amount.IsEnabled = true;
-            CategoriesDropDown.IsEnabled = true;
-            DateTimePicker1.IsEnabled = true;
-        }
-        /// <summary>
-        /// Clears fields except Date and Category.
-        /// </summary>
-        public void Refresh()
-        {
-            Amount.Text = "Amount";
-            Desc.Text = "Description";
-        }
-        /// <summary>
-        /// Shows latest added entry.
-        /// </summary>
-        /// <param name="desc">String description of entry.</param>
-        public void ShowAdded(string desc)
-        {
-            MessageBox.Show("Added " + desc, "Configuration", MessageBoxButton.OK, MessageBoxImage.Information);
+            SaveFileDialog saveFileDlg = new SaveFileDialog();
+            saveFileDlg.Filter = "Database file (.db)|*.db";
+
+            if (saveFileDlg.ShowDialog() == true)
+            {
+                ShowDatabase(System.IO.Path.GetFileName(saveFileDlg.FileName));
+                fileName = saveFileDlg.FileName;
+            }
+            else
+            {
+                return;
+            }
+
+            presenter.OpenDatabase(fileName, newDb = true);
+
+            ViewExpenses.ItemsSource = presenter.GetBudgetItemsList(null, null, false, -1);
+
+            CategoriesDropDown.ItemsSource = presenter.getCategoriesList();
 
         }
+
         /// <summary>
         /// Shows database from file.
         /// </summary>
@@ -127,24 +204,12 @@ namespace HomeBudgetWPF
         {
             FileNameTextBox.Text = fileName;
         }
-        /// <summary>
-        /// Shows errors from string.
-        /// </summary>
-        /// <param name="msg">String value of error message.</param>
-        public void ShowError(string msg)
-        {
-            MessageBox.Show(msg);
-        }
 
-        public void ShowUserHistory()
-        {
-            throw new NotImplementedException();
-        }
         /// <summary>
         /// Light color mode.
         /// </summary>
         public void LightMode()
-        {
+        { /*
             theme.Content = "Dark Mode";
             theme.Foreground = Brushes.White;
             theme.Background = Brushes.Black;
@@ -171,13 +236,14 @@ namespace HomeBudgetWPF
             cancelExpense_btn.Background = blueBrush;
             cancelExpense_btn.Foreground = Brushes.White;
 
-            DateTimePicker1.BorderBrush = blueBrush;
+            DateTimePicker1.BorderBrush = blueBrush;*/
         }
         /// <summary>
         /// Dark color mode.
         /// </summary>
         public void DarkMode()
         {
+            /*
             Color color = (Color)ColorConverter.ConvertFromString("#0C6291");
 
             var brush = new SolidColorBrush(color);
@@ -203,127 +269,75 @@ namespace HomeBudgetWPF
             addExpense_btn.BorderBrush = brush;
             cancelExpense_btn.BorderBrush = brush;
 
-            DateTimePicker1.BorderBrush = brush;
+            DateTimePicker1.BorderBrush = brush;*/
         }
+
         // =====================================================================================
         // EVENT HANDLERS
         // =====================================================================================
         private void OpenFile_Click(object sender, RoutedEventArgs e)
         {
-            OpenFile();
-
-            catsList = presenter.getCategoriesList();
-            foreach (Budget.Category c in catsList)
-            {
-                CategoriesDropDown.Items.Add(c);
-            }
-            CategoriesDropDown.DisplayMemberPath = "Description";
+            presenter.OpenFile();
         }
-        
-        private void AddExpenses_Click(object sender, RoutedEventArgs e)
+
+        private void NewFile_Click(object sender, RoutedEventArgs e)
         {
-            // Input validation.
-            if (DateTimePicker1.SelectedDate.HasValue == false)
-            {
-                ShowError("Please select a date!");
-            }
-
-            else if (Amount.Text == "" || Amount.Text == "Amount")
-            {
-                ShowError("Please enter an amount!");
-            }
-
-            else if (Desc.Text == "" || Desc.Text == "Description")
-            {
-                ShowError("Please enter a description!");
-            }
-
-            else if (CategoriesDropDown.SelectedIndex == -1)
-            {
-                ShowError("Please enter a category from the list, or create a new one!");
-            }
-
-            else
-            {
-                DateTime date = DateTimePicker1.SelectedDate.Value;
-
-                int amount = int.Parse(Amount.Text);
-
-                string desc = Desc.Text;
-
-                int index = CategoriesDropDown.SelectedIndex;
-
-                presenter.AddExpense(date, index, amount, desc);
-            }
+            presenter.NewFile();
         }
        
-
-        public void CloseFile()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void RecentlyOpened()
-        {
-            throw new NotImplementedException();
-        }
-       
-
         private void exit_Click(object sender, RoutedEventArgs e)
         {
             Close();
         }
 
-        private void Amount_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            Regex regex = new Regex("[^0-9]+");
-            e.Handled = regex.IsMatch(e.Text);
-        }
-  
-
-        // Closing the application.
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            if ((Amount.Text == "" || Amount.Text == "Amount") && (Desc.Text == "" || Desc.Text == "Description"))
-            {
-                e.Cancel = false;
-            }
-            else
-            {
-                if (MessageBox.Show("If you close this window without adding your expense, your changes will be lost.\nExit?", "Add expense", MessageBoxButton.YesNo, MessageBoxImage.Hand) == MessageBoxResult.Yes)
-                {
-                    e.Cancel = false;
-                }
-                else
-                {
-                    e.Cancel = true;
-                }
-            }
-        }
-        private void Amount_TextChanged(object sender, MouseButtonEventArgs e)
-        {
-            if (Amount.Text == "Amount")
-            {
-                Amount.Text = "";
-            }
-        }
-
-        private void Desc_TextChanged(object sender, MouseButtonEventArgs e)
-        {
-            if (Desc.Text == "Description")
-            {
-                Desc.Text = "";
-            }
-        }
-        private void CancelExpenses_Click(object sender, RoutedEventArgs e)
-        {
-            presenter.ClearFields();
-        }
         private void ColorMode_Click(object sender, RoutedEventArgs e)
         {
             Button btn = sender as Button;
             presenter.ChangeColorMode(btn.Content.ToString());
         }      
+
+        private void deleteItem_Click(object sender, RoutedEventArgs e)
+        {
+            var selected = ViewExpenses.SelectedItem as Budget.BudgetItem;
+
+            if (selected != null)
+            {
+                presenter.DeleteExpense(selected.ExpenseID);
+                ViewExpenses.ItemsSource = presenter.GetBudgetItemsList(startDate, endDate, filterFlag, filterCategoryId);
+            }
+        }
+
+        private void updateItem_Click(object sender, RoutedEventArgs e)
+        {
+            var selected = ViewExpenses.SelectedItem as Budget.BudgetItem;
+
+            if (selected != null)
+            {
+                UpdateWindow = new UpdateExpense(selected, ViewExpenses, fileName, CategoriesDropDown);
+                UpdateWindow.Show();
+            }
+
+        }
+
+        private void AddExpense_Click(object sender, RoutedEventArgs e)
+        {
+            AddWindow = new AddExpense(ViewExpenses, fileName, CategoriesDropDown);
+            AddWindow.Show();
+
+            ViewExpenses.ItemsSource = presenter.GetBudgetItemsList(startDate, endDate, filterFlag, filterCategoryId);
+        }
+
+        private void StartDateTimePicker1_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            startDate = StartDateTimePicker1.SelectedDate;
+            ViewExpenses.ItemsSource = presenter.GetBudgetItemsList(startDate, endDate, filterFlag, filterCategoryId);
+        }
+
+        private void EndDateTimePicker1_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            endDate = EndDateTimePicker1.SelectedDate;
+            ViewExpenses.ItemsSource = presenter.GetBudgetItemsList(startDate, endDate, filterFlag, filterCategoryId);
+        }
 
         private void CategoriesDropDown_TextChanged(object sender, MouseButtonEventArgs e)
         {
@@ -332,14 +346,100 @@ namespace HomeBudgetWPF
                 CategoriesDropDown.Text = "";
             }
         }
-        private void OnKeyDownHandler(object sender, KeyEventArgs e)
+
+        private void filterCheck_Click(object sender, RoutedEventArgs e)
         {
-            if (e.Key == Key.Return)
+            monthCheck.IsChecked = false;
+            categoryCheck.IsChecked = false;
+
+            if (filterCheck.IsChecked == true)
             {
-                Budget.Category cat = presenter.AddCategory(CategoriesDropDown.Text, Budget.Category.CategoryType.Expense);
-                CategoriesDropDown.Items.Add(cat);
-                CategoriesDropDown.Text = "";
+
+                filterCategoryId = CategoriesDropDown.SelectedIndex;
+                filterFlag = true;
+                ViewExpenses.ItemsSource = presenter.GetBudgetItemsList(startDate, endDate, filterFlag, filterCategoryId);
+            }
+            else
+            {
+                filterCategoryId = -1;
+                filterFlag = false;
+                ViewExpenses.ItemsSource = presenter.GetBudgetItemsList(startDate, endDate, filterFlag, filterCategoryId);
             }
         }
+
+        private void MonthCategoryCheck_Click(object sender, RoutedEventArgs e)
+        {
+            if (monthCheck.IsChecked == true && categoryCheck.IsChecked == false)
+            {
+                ViewExpenses.ItemsSource = presenter.GetBudgetItemsListByMonth(startDate, endDate, filterFlag, filterCategoryId);
+            }
+            else if (monthCheck.IsChecked == true && categoryCheck.IsChecked == true)
+            {
+                List<Dictionary<string, object>> items = presenter.GetBudgetItemsListByMonthAndCategory(startDate, endDate, filterFlag, filterCategoryId);
+                ViewExpenses.ItemsSource = items;
+
+            }
+            else if (monthCheck.IsChecked == false && categoryCheck.IsChecked == true)
+            {
+                ViewExpenses.ItemsSource = presenter.GetBudgetItemsListByCategory(startDate, endDate, filterFlag, filterCategoryId);
+            }
+            else
+            {
+                ViewExpenses.ItemsSource = presenter.GetBudgetItemsList(startDate, endDate, filterFlag, filterCategoryId);
+
+            }
+
+        }
+
+        private void close_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Exit_Click(object sender, RoutedEventArgs e)
+        {
+            int windowActiveCount = 0;
+            foreach (var Window in App.Current.Windows)
+            {
+                windowActiveCount++;
+            }
+            if (windowActiveCount > 3)
+            {
+                if (MessageBox.Show("There are unsaved changes.\nExit?", "Add expense", MessageBoxButton.YesNo, MessageBoxImage.Hand) == MessageBoxResult.Yes)
+                {
+                    App.Current.Shutdown();
+                }
+            }
+            else
+            {
+                App.Current.Shutdown();
+            }
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            int windowActiveCount = 0;
+            foreach (var Window in App.Current.Windows)
+            {
+                windowActiveCount++;
+            }
+            if (windowActiveCount > 2)
+            {
+                if (MessageBox.Show("There are unsaved changes.\nExit?", "Add expense", MessageBoxButton.YesNo, MessageBoxImage.Hand) == MessageBoxResult.Yes)
+                {
+                    App.Current.Shutdown();
+                    e.Cancel = false;
+                }
+                else
+                {
+                    e.Cancel = true;
+                }
+            }
+            else
+            {
+                App.Current.Shutdown();
+            }
+        }
+
     }
 }
