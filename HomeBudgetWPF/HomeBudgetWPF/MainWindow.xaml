@@ -5,17 +5,21 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HomeBudgetWPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="725"
+        Title="MainWindow" Height="800" Width="725"
         Closing="Window_Closing"  
         >
 
     <Grid Name="mainGrid" Background="#C9E4E7">
         <TextBlock x:Name="Header" Grid.Row="0" Grid.Column="1" Text="HomeBudget" HorizontalAlignment="Center" FontSize="25" Grid.ColumnSpan="1" FontWeight="Bold" Margin="0, 5, 0, 0"/>
-        <TextBlock Grid.Row="1" Grid.Column="0" x:Name="FileNameTextBox" Height="30" Width="Auto" HorizontalAlignment="Center"/>
+        <TextBlock Grid.Row="1" VerticalAlignment="top" Grid.ColumnSpan="2" Grid.Column="0" x:Name="FileNameTextBox" Height="30" Width="Auto" HorizontalAlignment="Center"/>
+        <TextBlock x:Name="showResults" Grid.Row="1" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,0,20"></TextBlock>
+        
+        
         <Menu Name="menu" Background="#C9E4E7" BorderThickness="0">
             <MenuItem Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="20" Header="_File" Background="#FFFFFF">
                 <MenuItem Header="_Open" Click="OpenFile_Click"></MenuItem>
                 <MenuItem Header="_New" Click="NewFile_Click"></MenuItem>
+                <MenuItem x:Name="recentlyOpened" Header="_Recently Opened" Click="RecentlyOpened_Click"></MenuItem>
                 <Separator />
                 <MenuItem Header="_Exit" Click="Exit_Click"></MenuItem>
             </MenuItem>
@@ -42,7 +46,10 @@
         </Button>
 
 
-        <DataGrid Grid.Column="1" Grid.Row="2" Grid.RowSpan="3" x:Name="ViewExpenses" AutoGenerateColumns="False" MouseDoubleClick="updateItem_Click" IsReadOnly="True">
+        <TextBox x:Name="searchBox" Height="22"  Grid.Row="1" Grid.Column="1"/>
+        <Button x:Name="enter" Grid.Row="1" Grid.Column="2" Height="40"  Margin="10,0,10,0" Click="enter_Click">Search</Button>
+
+        <DataGrid Grid.Column="1" Grid.Row="2" Grid.RowSpan="4" x:Name="ViewExpenses" AutoGenerateColumns="False" MouseDoubleClick="updateItem_Click" IsReadOnly="True">
             <DataGrid.ContextMenu>
                 <ContextMenu>
                     <MenuItem x:Name="deleteItem" Click="deleteItem_Click" Header="Delete"></MenuItem>

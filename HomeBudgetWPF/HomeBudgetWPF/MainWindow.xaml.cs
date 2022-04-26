@@ -12,11 +12,13 @@ using System.Windows.Media;
 
 namespace HomeBudgetWPF
 {
+    
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window, ViewInterface
     {
+        private const int NUMFILESRECENT = 3;
         Presenter presenter;
         public string fileName;
         public string filePath;
@@ -24,10 +26,13 @@ namespace HomeBudgetWPF
         public DateTime? startDate = DateTime.MinValue;
         public DateTime? endDate = DateTime.MaxValue;
         public int filterCategoryId = -1;
+        public string filePathString;
         bool newDb;
         List<Budget.Category> catsList;
+        List<String> recentlyOpenedFile = new List<String>();
         UpdateExpense UpdateWindow;
         AddExpense AddWindow;
+        public static string appDataPath = Environment.GetEnvironmentVariable("APPDATA");
 
         /// <summary>
         /// Initializes application and Presenter.
@@ -42,8 +47,11 @@ namespace HomeBudgetWPF
 
             Application.Current.MainWindow.FontFamily = new FontFamily("Cambria");
 
+            ShowRecentlyOpened();
+
             InitializeDataGrid();
         }
+
 
         /// <summary>
         /// Initializes grid for getbudgetitems list
@@ -146,8 +154,21 @@ namespace HomeBudgetWPF
             Nullable<bool> result = openFileDlg.ShowDialog();
             if (result == true)
             {
-                ShowDatabase(System.IO.Path.GetFileName(openFileDlg.FileName));
+                ShowDatabase(openFileDlg.FileName);
                 fileName = openFileDlg.FileName;
+                if(recentlyOpenedFile.Count == NUMFILESRECENT)
+                {
+                    recentlyOpenedFile.RemoveAt(0);
+                    recentlyOpenedFile.Add(fileName);
+                    File.WriteAllLines(filePathString, recentlyOpenedFile);
+
+                }
+                else
+                {
+                    recentlyOpenedFile.Add(fileName);
+                    File.WriteAllLines(filePathString, recentlyOpenedFile);
+                }
+
             }
             else
             {
@@ -180,7 +201,7 @@ namespace HomeBudgetWPF
 
             if (saveFileDlg.ShowDialog() == true)
             {
-                ShowDatabase(System.IO.Path.GetFileName(saveFileDlg.FileName));
+                ShowDatabase(saveFileDlg.FileName);
                 fileName = saveFileDlg.FileName;
             }
             else
@@ -438,6 +459,82 @@ namespace HomeBudgetWPF
             else
             {
                 App.Current.Shutdown();
+            }
+        }
+
+        int selectedCouter = 0;
+
+        private void enter_Click(object sender, RoutedEventArgs e)
+        {
+            if (searchBox.Text == "")
+            {
+                MessageBox.Show("Please enter a value in the search bar");
+            }
+            else
+            {
+                string searchBoxValue = searchBox.Text;
+                var items = ViewExpenses.ItemsSource as List<Budget.BudgetItem>;
+
+              
+                var item = items.FindAll(it => it.ShortDescription == searchBoxValue);
+
+                showResults.Text = item.Count + " results found";
+
+
+                if (selectedCouter < item.Count)
+                {
+                    ViewExpenses.SelectedItem = item[selectedCouter];
+                }
+                else
+                {
+                    selectedCouter = 0;
+                    ViewExpenses.SelectedItem = item[selectedCouter];
+                }
+
+                ViewExpenses.ScrollIntoView(item[selectedCouter]);
+                selectedCouter++;
+            }
+        }
+
+        private void RecentlyOpened_Click(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < recentlyOpenedFile.Count; i++)
+            {
+                MenuItem file = new MenuItem();
+                file.Header = recentlyOpenedFile[i];
+                recentlyOpened.Items.Add(file);
+
+                file.Click += OpenRecent_Click;
+            }
+
+        }
+
+        private void OpenRecent_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem file = sender as MenuItem;
+            string path = file.Header.ToString();
+            presenter.OpenDatabase(path, false);
+
+            ViewExpenses.ItemsSource = presenter.GetBudgetItemsList(null, null, false, -1);
+
+            CategoriesDropDown.ItemsSource = presenter.getCategoriesList();
+
+        }
+
+        public void ShowRecentlyOpened()
+        {
+            string pathString = System.IO.Path.Combine(appDataPath, "Budget");
+
+            if (!System.IO.Directory.Exists(pathString))
+            {
+                System.IO.Directory.CreateDirectory(pathString);
+            }
+
+            filePathString = System.IO.Path.Combine(pathString, "RecentlyOpenedDBFiles.txt");
+
+            if (!System.IO.File.Exists(filePathString))
+            {
+                System.IO.File.CreateText(filePathString);
             }
         }
 
