@@ -73,6 +73,9 @@ namespace HomeBudgetWPF
 
         private void updateExpense_btn_Click(object sender, RoutedEventArgs e)
         {
+            //myDataGrid.SelectedItem = item;
+            int index = myDataGrid.SelectedIndex;
+
             if (Amount.Text == item.Amount.ToString() && Desc.Text == item.ShortDescription && CategoriesDropDown.SelectedIndex == item.CategoryID && DateTimePicker1.SelectedDate == item.Date)
             {
                 MessageBox.Show("No changes were made");
@@ -90,6 +93,8 @@ namespace HomeBudgetWPF
             catsDropDown.ItemsSource = presenter.getCategoriesList(); //updates drop down list
 
             myDataGrid.ItemsSource = presenter.GetBudgetItemsList(); //updates datagrid items
+
+            myDataGrid.SelectedIndex = index;
 
             this.Close();
 

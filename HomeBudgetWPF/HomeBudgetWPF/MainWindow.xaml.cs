@@ -156,6 +156,7 @@ namespace HomeBudgetWPF
             {
                 ShowDatabase(openFileDlg.FileName);
                 fileName = openFileDlg.FileName;
+                //MessageBox.Show(File.ReadLines(filePathString).Count() + "");
                 if(recentlyOpenedFile.Count == NUMFILESRECENT)
                 {
                     recentlyOpenedFile.RemoveAt(0);
@@ -189,6 +190,18 @@ namespace HomeBudgetWPF
             ViewExpenses.ItemsSource =  presenter.GetBudgetItemsList(null, null, false, -1);
 
             CategoriesDropDown.ItemsSource = presenter.getCategoriesList();
+
+            recentlyOpened.Items.Clear();
+
+
+            for (int i = 0; i < recentlyOpenedFile.Count; i++)
+            {
+                MenuItem file = new MenuItem();
+                file.Header = recentlyOpenedFile[i];
+                recentlyOpened.Items.Add(file);
+
+                file.Click += OpenRecent_Click;
+            }
         }
 
         /// <summary>
@@ -203,6 +216,19 @@ namespace HomeBudgetWPF
             {
                 ShowDatabase(saveFileDlg.FileName);
                 fileName = saveFileDlg.FileName;
+
+                if (recentlyOpenedFile.Count == NUMFILESRECENT)
+                {
+                    recentlyOpenedFile.RemoveAt(0);
+                    recentlyOpenedFile.Add(fileName);
+                    File.WriteAllLines(filePathString, recentlyOpenedFile);
+
+                }
+                else
+                {
+                    recentlyOpenedFile.Add(fileName);
+                    File.WriteAllLines(filePathString, recentlyOpenedFile);
+                }
             }
             else
             {
@@ -214,6 +240,18 @@ namespace HomeBudgetWPF
             ViewExpenses.ItemsSource = presenter.GetBudgetItemsList(null, null, false, -1);
 
             CategoriesDropDown.ItemsSource = presenter.getCategoriesList();
+
+            recentlyOpened.Items.Clear();
+
+            for (int i = 0; i < recentlyOpenedFile.Count; i++)
+            {
+                MenuItem file = new MenuItem();
+                file.Header = recentlyOpenedFile[i];
+
+                recentlyOpened.Items.Add(file);
+
+                file.Click += OpenRecent_Click;
+            }
 
         }
 
@@ -320,12 +358,25 @@ namespace HomeBudgetWPF
         private void deleteItem_Click(object sender, RoutedEventArgs e)
         {
             var selected = ViewExpenses.SelectedItem as Budget.BudgetItem;
+            int index = ViewExpenses.SelectedIndex;
 
             if (selected != null)
             {
                 presenter.DeleteExpense(selected.ExpenseID);
                 ViewExpenses.ItemsSource = presenter.GetBudgetItemsList(startDate, endDate, filterFlag, filterCategoryId);
             }
+
+            if(index != ViewExpenses.Items.Count)
+            {
+
+                ViewExpenses.SelectedIndex = index + 1;
+                ViewExpenses.ScrollIntoView(ViewExpenses.SelectedItem);
+            }
+            else
+            {
+                ViewExpenses.SelectedIndex = index -1;
+                ViewExpenses.ScrollIntoView(ViewExpenses.SelectedItem);
+            }                        
         }
 
         private void updateItem_Click(object sender, RoutedEventArgs e)
@@ -333,10 +384,11 @@ namespace HomeBudgetWPF
             var selected = ViewExpenses.SelectedItem as Budget.BudgetItem;
 
             if (selected != null)
-            {
+            {                
                 UpdateWindow = new UpdateExpense(selected, ViewExpenses, fileName, CategoriesDropDown);
                 UpdateWindow.Show();
             }
+
 
         }
 
@@ -498,14 +550,6 @@ namespace HomeBudgetWPF
 
         private void RecentlyOpened_Click(object sender, RoutedEventArgs e)
         {
-            for (int i = 0; i < recentlyOpenedFile.Count; i++)
-            {
-                MenuItem file = new MenuItem();
-                file.Header = recentlyOpenedFile[i];
-                recentlyOpened.Items.Add(file);
-
-                file.Click += OpenRecent_Click;
-            }
 
         }
 
@@ -535,6 +579,10 @@ namespace HomeBudgetWPF
             if (!System.IO.File.Exists(filePathString))
             {
                 System.IO.File.CreateText(filePathString);
+            }
+            for (int i = 0; i < File.ReadLines(filePathString).Count(); i++)
+            {
+                recentlyOpenedFile.Add(File.ReadAllLines(filePathString)[i]);
             }
         }
 

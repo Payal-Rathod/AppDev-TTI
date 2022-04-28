@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HomeBudgetWPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="800" Width="725"
+        Title="MainWindow" Height="800" Width="800"
         Closing="Window_Closing"  
         >
 
@@ -34,9 +34,6 @@
         <CheckBox Margin="10,0,10,0" x:Name="monthCheck" Grid.Row="4" Grid.Column="2" Click="MonthCategoryCheck_Click">By month</CheckBox>
         <CheckBox Margin="10,20,10,0" x:Name="categoryCheck" Grid.Row="4" Grid.Column="2" Click="MonthCategoryCheck_Click">By category</CheckBox>
 
-
-
-
         <Button Name="theme" Click="ColorMode_Click" Background="Black" Foreground="White" Grid.Column="3" Grid.Row="6" Width="100" Height="30" Grid.ColumnSpan="2" Margin="0, 5, 0, 0">
             <Button.Resources>
                 <Style TargetType="Border">
@@ -45,11 +42,14 @@
             </Button.Resources> Dark Mode
         </Button>
 
-
         <TextBox x:Name="searchBox" Height="22"  Grid.Row="1" Grid.Column="1"/>
         <Button x:Name="enter" Grid.Row="1" Grid.Column="2" Height="40"  Margin="10,0,10,0" Click="enter_Click">Search</Button>
 
         <DataGrid Grid.Column="1" Grid.Row="2" Grid.RowSpan="4" x:Name="ViewExpenses" AutoGenerateColumns="False" MouseDoubleClick="updateItem_Click" IsReadOnly="True">
+            <DataGrid.Resources>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" 
+                   Color="AliceBlue"/>
+            </DataGrid.Resources>
             <DataGrid.ContextMenu>
                 <ContextMenu>
                     <MenuItem x:Name="deleteItem" Click="deleteItem_Click" Header="Delete"></MenuItem>

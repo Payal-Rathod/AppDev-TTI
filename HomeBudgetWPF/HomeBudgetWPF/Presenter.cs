@@ -43,7 +43,7 @@ namespace HomeBudgetWPF
         {
             homeBudget = new HomeBudget(filename, "", newDb);
             cats = homeBudget.categories;
-            
+
             foreach(Expense exp in homeBudget.expenses.List())
             {
                 if (exp.Category == 2)

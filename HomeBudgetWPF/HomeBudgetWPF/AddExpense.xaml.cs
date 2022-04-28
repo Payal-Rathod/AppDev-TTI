@@ -22,6 +22,7 @@ namespace HomeBudgetWPF
     {
         List<Budget.Category> catsList;
         static int previousIndexSelected = -1;
+        static string prevDesc = "";
         static DateTime previousDateSelected = DateTime.Today;
         string filepath;
         ComboBox categoriesDropDown;
@@ -43,6 +44,8 @@ namespace HomeBudgetWPF
             presenter.openDatabase(filename);
             filepath = filename;
             categoriesDropDown = catDropDown;
+
+            actions.Text = prevDesc + " added to Expenses";
 
             catsList = presenter.getCategoriesList();  //Gets categories list
             CategoriesDropDown.ItemsSource = catsList; //Populates drop down list with categories list
@@ -140,6 +143,8 @@ namespace HomeBudgetWPF
 
                 string desc = Desc.Text;
 
+                prevDesc = desc;
+
                 int index = CategoriesDropDown.SelectedIndex;
 
                 previousIndexSelected = index;
@@ -151,7 +156,11 @@ namespace HomeBudgetWPF
 
                 categoriesDropDown.ItemsSource = presenter.getCategoriesList(); //Updates drop down list
 
-                this.Close();
+
+
+                actions.Text = prevDesc + " added to Expenses";
+
+                //this.Close();
             }
         }
 

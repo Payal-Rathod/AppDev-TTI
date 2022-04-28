@@ -27,6 +27,10 @@
             </Button.Resources> Cancel
         </Button>
 
+        <TextBlock Grid.Row="1" Grid.Column="0" x:Name="last_action" Background="AliceBlue">Last actions taken
+        </TextBlock>
+        <TextBlock Grid.Row="2" Grid.RowSpan="3" x:Name="actions"/>
+
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
