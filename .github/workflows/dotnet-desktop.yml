@@ -61,6 +61,7 @@ jobs:
       Wap_Project_Directory: your-wap-project-directory-name    # Replace with the Wap project directory relative to the solution, i.e. MyWpfApp.Package.
       Wap_Project_Path: your-wap-project-path                  # Replace with the path to your Wap project, i.e. MyWpf.App.Package\MyWpfApp.Package.wapproj.
       Test_Project_Directory: HomeBudgetWPF/HomeBudgetWPFTest
+      Test_DLL: HomeBudgetWPFTest.dll
 
     steps:
     - name: Checkout
@@ -104,7 +105,7 @@ jobs:
       uses: darenm/Setup-VSTest@v1
       
     - name: Execute unit tests
-      run: vstest.console.exe
+      run: vstest.console.exe $env:Test_DLL
       env:
         Configuration: ${{ matrix.configuration }}
       
