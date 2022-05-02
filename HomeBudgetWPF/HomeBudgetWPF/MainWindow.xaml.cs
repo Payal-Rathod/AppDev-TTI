@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Controls.DataVisualization.Charting;
 
 namespace HomeBudgetWPF
 {
@@ -33,7 +34,6 @@ namespace HomeBudgetWPF
         UpdateExpense UpdateWindow;
         AddExpense AddWindow;
         public static string appDataPath = Environment.GetEnvironmentVariable("APPDATA");
-
         /// <summary>
         /// Initializes application and Presenter.
         /// </summary>
@@ -50,6 +50,14 @@ namespace HomeBudgetWPF
             ShowRecentlyOpened();
 
             InitializeDataGrid();
+        }
+
+        public void ShowChart()
+        {
+            List<Dictionary<string, object>> myItems = presenter.GetBudgetItemsListByMonthAndCategory(startDate, endDate, filterFlag, filterCategoryId);
+            List<Object> theObjects = myItems.Cast<object>().ToList();
+
+            presenter.DataSource = theObjects;
         }
 
 
@@ -76,12 +84,21 @@ namespace HomeBudgetWPF
             var col4 = new DataGridTextColumn();
             col4.Header = "Amount";
             col4.Binding = new Binding("Amount");
-
             ViewExpenses.Columns.Add(col4);
             var col5 = new DataGridTextColumn();
+            col4.Binding.StringFormat = "F2";
+
+            Style s = new Style();
+            s.Setters.Add(new Setter(TextBlock.TextAlignmentProperty,
+                                    TextAlignment.Right));
+            col4.CellStyle = s;
+
+
             col5.Header = "Balance";
             col5.Binding = new Binding("Balance");
             ViewExpenses.Columns.Add(col5);
+            col5.Binding.StringFormat = "F2";
+
         }
 
         /// <summary>
@@ -100,6 +117,15 @@ namespace HomeBudgetWPF
             col2.Header = "Total";
             col2.Binding = new Binding("Total");
             ViewExpenses.Columns.Add(col2);
+
+            col2.Binding.StringFormat = "F2";
+
+            Style s = new Style();
+            s.Setters.Add(new Setter(TextBlock.TextAlignmentProperty,
+                                    TextAlignment.Right));
+            col2.CellStyle = s;
+
+
         }
 
         /// <summary>
@@ -118,6 +144,13 @@ namespace HomeBudgetWPF
             col2.Header = "Total";
             col2.Binding = new Binding("Total");
             ViewExpenses.Columns.Add(col2);
+
+            col2.Binding.StringFormat = "F2";
+
+            Style s = new Style();
+            s.Setters.Add(new Setter(TextBlock.TextAlignmentProperty,
+                                    TextAlignment.Right));
+            col2.CellStyle = s;
         }
 
         /// <summary>
@@ -133,10 +166,20 @@ namespace HomeBudgetWPF
                 {
                     continue;
                 }
-
                 var column = new DataGridTextColumn();
                 column.Header = key;
                 column.Binding = new Binding($"[{key}]");
+
+                if (key.Split(':')[0] == "Total")
+                {
+                    column.Binding.StringFormat = "F2";
+
+                    Style s = new Style();
+                    s.Setters.Add(new Setter(TextBlock.TextAlignmentProperty,
+                                            TextAlignment.Right));
+                    column.CellStyle = s;
+                }
+
                 ViewExpenses.Columns.Add(column);
             }
         }
@@ -157,7 +200,11 @@ namespace HomeBudgetWPF
                 ShowDatabase(openFileDlg.FileName);
                 fileName = openFileDlg.FileName;
                 //MessageBox.Show(File.ReadLines(filePathString).Count() + "");
-                if(recentlyOpenedFile.Count == NUMFILESRECENT)
+                if (recentlyOpenedFile.Contains(fileName))
+                {
+
+                }
+                else if (recentlyOpenedFile.Count == NUMFILESRECENT)
                 {
                     recentlyOpenedFile.RemoveAt(0);
                     recentlyOpenedFile.Add(fileName);
@@ -217,7 +264,11 @@ namespace HomeBudgetWPF
                 ShowDatabase(saveFileDlg.FileName);
                 fileName = saveFileDlg.FileName;
 
-                if (recentlyOpenedFile.Count == NUMFILESRECENT)
+                if (recentlyOpenedFile.Contains(fileName))
+                {
+
+                }
+                else if (recentlyOpenedFile.Count == NUMFILESRECENT)
                 {
                     recentlyOpenedFile.RemoveAt(0);
                     recentlyOpenedFile.Add(fileName);
@@ -252,7 +303,6 @@ namespace HomeBudgetWPF
 
                 file.Click += OpenRecent_Click;
             }
-
         }
 
         /// <summary>
@@ -546,11 +596,13 @@ namespace HomeBudgetWPF
                 ViewExpenses.ScrollIntoView(item[selectedCouter]);
                 selectedCouter++;
             }
+
+            ShowChart();
+
         }
 
         private void RecentlyOpened_Click(object sender, RoutedEventArgs e)
         {
-
         }
 
         private void OpenRecent_Click(object sender, RoutedEventArgs e)
@@ -558,6 +610,7 @@ namespace HomeBudgetWPF
             MenuItem file = sender as MenuItem;
             string path = file.Header.ToString();
             presenter.OpenDatabase(path, false);
+            ShowDatabase(path);
 
             ViewExpenses.ItemsSource = presenter.GetBudgetItemsList(null, null, false, -1);
 

@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:toolkit="http://schemas.microsoft.com/winfx/2006/xaml/presentation/toolkit"
         xmlns:local="clr-namespace:HomeBudgetWPF"
         mc:Ignorable="d"
         Title="MainWindow" Height="800" Width="800"
@@ -46,10 +47,10 @@
         <Button x:Name="enter" Grid.Row="1" Grid.Column="2" Height="40"  Margin="10,0,10,0" Click="enter_Click">Search</Button>
 
         <DataGrid Grid.Column="1" Grid.Row="2" Grid.RowSpan="4" x:Name="ViewExpenses" AutoGenerateColumns="False" MouseDoubleClick="updateItem_Click" IsReadOnly="True">
-            <DataGrid.Resources>
+            <!--<DataGrid.Resources>
                 <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" 
                    Color="AliceBlue"/>
-            </DataGrid.Resources>
+            </DataGrid.Resources>-->
             <DataGrid.ContextMenu>
                 <ContextMenu>
                     <MenuItem x:Name="deleteItem" Click="deleteItem_Click" Header="Delete"></MenuItem>
@@ -59,9 +60,12 @@
                 </ContextMenu>
             </DataGrid.ContextMenu>
         </DataGrid>
-        
+
+        <local:Chart x:Name="theDataGridView" Grid.Row="6" Grid.RowSpan="2" Grid.ColumnSpan="2"></local:Chart>
+
         <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition/>
                 <RowDefinition/>
                 <RowDefinition/>
                 <RowDefinition/>

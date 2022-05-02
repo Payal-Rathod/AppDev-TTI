@@ -52,5 +52,9 @@ namespace HomeBudgetWPF
             }
         }
 
+        private void WelcomeWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+
+        }
     }
 }

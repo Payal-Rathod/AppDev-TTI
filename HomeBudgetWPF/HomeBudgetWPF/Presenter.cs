@@ -26,6 +26,7 @@ namespace HomeBudgetWPF
             view = v;
             NewDatabase();
         }
+        public List<object> DataSource { get; set; }
 
         /// <summary>
         /// Logic for finding a database file.
