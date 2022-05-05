@@ -30,15 +30,20 @@ namespace HomeBudgetWPF
         ExpensePresenter presenter;
         DataGrid myDataGrid;
 
+        string windowColorMode;
+
         /// <summary>
         /// Gets datagrid, filename and categoriesdropdown values and initializes window.
         /// </summary>
         /// <param name="dataGrid">The datagrid in the main window.</param>
         /// <param name="filename">The filepath of the database.</param>
         /// <param name="catDropDown">The categories drop down list in the main window</param>
-        public AddExpense(DataGrid dataGrid, string filename, ComboBox catDropDown)
+        public AddExpense(DataGrid dataGrid, string filename, ComboBox catDropDown, object colormode)
         {
             InitializeComponent();
+            windowColorMode = colormode as String;
+            GenerateWindowColors();
+
             myDataGrid = dataGrid;
             presenter = new ExpensePresenter(this, filename); //Opens database connection
             presenter.openDatabase(filename);
@@ -53,6 +58,76 @@ namespace HomeBudgetWPF
             CategoriesDropDown.SelectedIndex = previousIndexSelected; //Selected category is the same as the previous expense
         }
 
+        public void GenerateWindowColors()
+        {
+            if (windowColorMode == "Light Mode")
+            {
+                Color color = (Color)ColorConverter.ConvertFromString("#0C6291");
+
+                var brush = new SolidColorBrush(color);
+
+                mainGridAddExpense.Background = Brushes.Black;
+
+                Amount.Background = Brushes.DarkGray;
+                Desc.Background = Brushes.DarkGray;
+                DateTimePicker1.Background = Brushes.DarkGray;
+
+                addExpense_btn.Background = brush;
+                addExpense_btn.Foreground = Brushes.DarkGray;
+
+                cancelExpense_btn.Background = brush;
+                cancelExpense_btn.Foreground = Brushes.DarkGray;
+
+                addExpense_btn.BorderBrush = brush;
+                cancelExpense_btn.BorderBrush = brush;
+
+                DateTimePicker1.BorderBrush = brush;
+
+                CategoriesDropDown.Background = brush;
+                //categoriesDropDown.Foreground = Brushes.DarkGray;
+
+                last_action.Foreground = Brushes.DarkGray;
+                last_action.Background = Brushes.Black;
+
+                actions.Foreground = Brushes.DarkGray;
+                actions.Background = Brushes.Black;
+
+
+            }
+            else
+            {
+
+                Color color = (Color)ColorConverter.ConvertFromString("#C9E4E7");
+                Color darkBlue = (Color)ColorConverter.ConvertFromString("#0C6291");
+
+                mainGridAddExpense.Background = Brushes.White;
+
+                var brush = new SolidColorBrush(color);
+                var blueBrush = new SolidColorBrush(darkBlue);
+                Amount.Background = Brushes.White;
+                Desc.Background = Brushes.White;
+                DateTimePicker1.Background = Brushes.White;
+
+                addExpense_btn.Background = blueBrush;
+                addExpense_btn.Foreground = Brushes.White;
+
+                cancelExpense_btn.Background = blueBrush;
+                cancelExpense_btn.Foreground = Brushes.White;
+
+                DateTimePicker1.BorderBrush = blueBrush;
+
+                CategoriesDropDown.Background = brush;
+                //categoriesDropDown.Foreground = Brushes.DarkGray;
+
+                last_action.Foreground = blueBrush;
+                last_action.Background = Brushes.White;
+
+                actions.Foreground = blueBrush;
+                actions.Background = Brushes.White;
+            }
+
+        }
+
         private void CategoriesDropDown_TextChanged(object sender, MouseButtonEventArgs e)
         {
             if (CategoriesDropDown.Text == "Select or type a category")
@@ -65,7 +140,7 @@ namespace HomeBudgetWPF
             if (e.Key == Key.Return)
             {
                 //New category window shown if a category is typed in drop down list
-                Category CategoryWindow = new Category(CategoriesDropDown.Text, filepath, CategoriesDropDown);
+                Category CategoryWindow = new Category(CategoriesDropDown.Text, filepath, CategoriesDropDown, windowColorMode);
                 CategoryWindow.Show();
             }
         }

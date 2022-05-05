@@ -329,7 +329,7 @@ namespace HomeBudgetWPF
         /// Light color mode.
         /// </summary>
         public void LightMode()
-        { /*
+        { 
             theme.Content = "Dark Mode";
             theme.Foreground = Brushes.White;
             theme.Background = Brushes.Black;
@@ -344,26 +344,16 @@ namespace HomeBudgetWPF
             mainGrid.Background = brush;
             menu.Background = brush;
 
-            Amount.Background = Brushes.White;
-            Desc.Background = Brushes.White;
-            DateTimePicker1.Background = Brushes.White;
             Header.Foreground = blueBrush;
             Header.Foreground = blueBrush;
 
-            addExpense_btn.Background = blueBrush;
-            addExpense_btn.Foreground = Brushes.White;
-
-            cancelExpense_btn.Background = blueBrush;
-            cancelExpense_btn.Foreground = Brushes.White;
-
-            DateTimePicker1.BorderBrush = blueBrush;*/
         }
         /// <summary>
         /// Dark color mode.
         /// </summary>
         public void DarkMode()
         {
-            /*
+            
             Color color = (Color)ColorConverter.ConvertFromString("#0C6291");
 
             var brush = new SolidColorBrush(color);
@@ -374,22 +364,10 @@ namespace HomeBudgetWPF
             mainGrid.Background = Brushes.Black;
             menu.Background = Brushes.Black;
             FileNameTextBox.Foreground = brush;
-
-            Amount.Background = Brushes.DarkGray;
-            Desc.Background = Brushes.DarkGray;
-            DateTimePicker1.Background = Brushes.DarkGray;
+            filterCheck.Foreground = brush;
+            monthCheck.Foreground = brush;
+            categoryCheck.Foreground = brush;
             Header.Foreground = brush;
-
-            addExpense_btn.Background = brush;
-            addExpense_btn.Foreground = Brushes.DarkGray;
-
-            cancelExpense_btn.Background = brush;
-            cancelExpense_btn.Foreground = Brushes.DarkGray;
-
-            addExpense_btn.BorderBrush = brush;
-            cancelExpense_btn.BorderBrush = brush;
-
-            DateTimePicker1.BorderBrush = brush;*/
         }
 
         // =====================================================================================
@@ -446,7 +424,7 @@ namespace HomeBudgetWPF
 
             if (selected != null)
             {                
-                UpdateWindow = new UpdateExpense(selected, ViewExpenses, fileName, CategoriesDropDown);
+                UpdateWindow = new UpdateExpense(selected, ViewExpenses, fileName, CategoriesDropDown, theme.Content);
                 UpdateWindow.Show();
             }
 
@@ -455,7 +433,7 @@ namespace HomeBudgetWPF
 
         private void AddExpense_Click(object sender, RoutedEventArgs e)
         {
-            AddWindow = new AddExpense(ViewExpenses, fileName, CategoriesDropDown);
+            AddWindow = new AddExpense(ViewExpenses, fileName, CategoriesDropDown, theme.Content);
             AddWindow.Show();
 
             ViewExpenses.ItemsSource = presenter.GetBudgetItemsList(startDate, endDate, filterFlag, filterCategoryId);

@@ -21,6 +21,7 @@ namespace HomeBudgetWPF
     {
         CategoryPresenter presenter;
         ComboBox categoriesDropDown;
+        string windowColorMode;
 
         /// <summary>
         /// Gets category, filename and categoriedropdown values and initializes window
@@ -28,9 +29,12 @@ namespace HomeBudgetWPF
         /// <param name="category">The ategory that was typed in the drop down list</param>
         /// <param name="filename">The filepath of the database</param>
         /// <param name="catDropDown">The drop down list of categories in expenses window</param>
-        public Category(string category, string filename, ComboBox catDropDown)
+        public Category(string category, string filename, ComboBox catDropDown, object colorMode)
         {
             InitializeComponent();
+
+            windowColorMode = colorMode as string;
+
             presenter = new CategoryPresenter(this, filename);
             presenter.openDatabase(filename);
 
@@ -44,6 +48,7 @@ namespace HomeBudgetWPF
                 categoryType.Items.Add(type);
             }
         }
+
 
         /// <summary>
         /// Shows error message to the user
