@@ -59,6 +59,10 @@ namespace HomeBudgetWPF
             ViewExpenses.ItemsSource = myItems;
 
             presenter.DataSource = theObjects;
+
+            List<String> test = new List<string>();
+            chartView.InitializeByCategoryAndMonthDisplay(presenter.getCategoriesListInString());
+            chartView.DataSource = theObjects;
         }
 
         public List<object> DataSource { get { return presenter.DataSource; } set { DataSource = value; } }
@@ -242,6 +246,8 @@ namespace HomeBudgetWPF
 
             recentlyOpened.Items.Clear();
 
+            chartView.Visibility = Visibility.Hidden;
+
 
             for (int i = 0; i < recentlyOpenedFile.Count; i++)
             {
@@ -305,6 +311,9 @@ namespace HomeBudgetWPF
 
                 file.Click += OpenRecent_Click;
             }
+
+            chartView.Visibility = Visibility.Hidden;
+
         }
 
         /// <summary>
@@ -602,7 +611,6 @@ namespace HomeBudgetWPF
                 selectedCouter++;
             }
 
-            ShowChart();
         }
 
         private void RecentlyOpened_Click(object sender, RoutedEventArgs e)
@@ -611,6 +619,8 @@ namespace HomeBudgetWPF
 
         private void OpenRecent_Click(object sender, RoutedEventArgs e)
         {
+            chartView.Visibility = Visibility.Hidden;
+
             MenuItem file = sender as MenuItem;
             string path = file.Header.ToString();
             presenter.OpenDatabase(path, false);
@@ -643,5 +653,10 @@ namespace HomeBudgetWPF
             }
         }
 
+        private void showChart_Click(object sender, RoutedEventArgs e)
+        {
+            chartView.Visibility = Visibility.Visible;
+            ShowChart();
+        }
     }
 }

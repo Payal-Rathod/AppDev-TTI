@@ -184,9 +184,9 @@ namespace HomeBudgetWPF
                         var amount = 0.0;
                         double.TryParse(value, out amount);
                         // only display expenses (i.e., amount < 0)
-                        if (amount < 0)
+                        //if (amount < 0)
                         {
-                            DisplayData.Add(new KeyValuePair<String, double>(category, -amount));
+                            DisplayData.Add(new KeyValuePair<String, double>(category, amount));
                         }
                     }
                     // we found the month we wanted, no need to loop through other months, so

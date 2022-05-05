@@ -216,5 +216,18 @@ namespace HomeBudgetWPF
             cats = homeBudget.categories;
             return cats.List();
         }
+
+        public List<String> getCategoriesListInString()
+        {
+            List<String> catsName = new List<String>();
+            OpenDatabase(filepath, false);
+            cats = homeBudget.categories;
+            foreach(Budget.Category cat in cats.List())
+            {
+                catsName.Add(cat.Description);
+            }
+
+            return catsName;
+        }
     }
 }
