@@ -50,6 +50,7 @@ namespace HomeBudgetWPF
                     drawByMonthPieChart();
 
                 if (chartType == ChartType.ByMonth) drawByMonthLineChart();
+
             }
         }
         #region public methods

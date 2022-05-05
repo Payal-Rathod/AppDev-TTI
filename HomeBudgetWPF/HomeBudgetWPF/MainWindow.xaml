@@ -63,6 +63,16 @@
 
         <local:Chart x:Name="chart" Grid.Row="6" Grid.RowSpan="2" Grid.ColumnSpan="2"></local:Chart>
 
+        <toolkit:Chart Name="chPie">
+            <!-- this chart will be a pie chart -->
+            <toolkit:LabeledPieSeries
+IndependentValueBinding="{Binding Path=Key}"
+DependentValueBinding="{Binding Path=Value}"
+Title="Test" Margin="10,10,0,0">
+
+            </toolkit:LabeledPieSeries>
+        </toolkit:Chart>
+
         <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition/>
