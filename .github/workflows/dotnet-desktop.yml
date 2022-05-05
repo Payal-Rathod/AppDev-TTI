@@ -106,7 +106,7 @@ jobs:
       
       
     - name: Execute unit tests
-      run: vstest.console.exe $env:Test_DLL $env:Test_Project_Directory/bin/${{ matrix.configuration }}/$env:Test_Dll
+      run: vstest.console.exe $env:Test_Project_Directory/bin/${{ matrix.configuration }}/$env:Test_Dll
       
         
       
