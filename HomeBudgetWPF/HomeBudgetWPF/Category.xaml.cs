@@ -17,21 +17,46 @@ namespace HomeBudgetWPF
     /// <summary>
     /// Interaction logic for Category.xaml
     /// </summary>
-    public partial class Category : Window
+    public partial class Category : Window, AddCategoryInterface
     {
-        Presenter presenter;
-        MainWindow mainWindow;
-        public Category(Presenter mainPresenter, MainWindow main)
+        CategoryPresenter presenter;
+        ComboBox categoriesDropDown;
+        string windowColorMode;
+
+        /// <summary>
+        /// Gets category, filename and categoriedropdown values and initializes window
+        /// </summary>
+        /// <param name="category">The ategory that was typed in the drop down list</param>
+        /// <param name="filename">The filepath of the database</param>
+        /// <param name="catDropDown">The drop down list of categories in expenses window</param>
+        public Category(string category, string filename, ComboBox catDropDown, object colorMode)
         {
             InitializeComponent();
-            mainWindow = main;
-            presenter = mainPresenter;
 
-            // Dropdown for types.
+            windowColorMode = colorMode as string;
+
+            presenter = new CategoryPresenter(this, filename);
+            presenter.openDatabase(filename);
+
+
+            categoryName.Text = category;
+            categoriesDropDown = catDropDown;
+
+            // Adds all category types to the drop down list
             foreach (Budget.Category.CategoryType type in Enum.GetValues(typeof(Budget.Category.CategoryType)))
             {
                 categoryType.Items.Add(type);
             }
+        }
+
+
+        /// <summary>
+        /// Shows error message to the user
+        /// </summary>
+        /// <param name="msg">The error message details</param>
+        public void ShowError(string msg)
+        {
+            MessageBox.Show(msg);
         }
 
         private void Add_Category_Click(object sender, RoutedEventArgs e)
@@ -45,33 +70,32 @@ namespace HomeBudgetWPF
             // Validation.
             if (categoryName.Text == "" || categoryName.Text == "Enter name")
             {
-                MessageBox.Show("Please enter a description!");
+               ShowError("Please enter a description!");
             }
 
             else if (categoryName.Text.Any(char.IsDigit))
             {
-                MessageBox.Show("Your description contains a number!");
+                ShowError("Your description contains a number!");
             }
             else if (categoryType.SelectedIndex == -1)
             {
-                MessageBox.Show("Please select a category type!");
+                ShowError("Please select a category type!");
             }
 
             else
             {
                 // Get type.
-                    if (Enum.TryParse(categoryType.Text, out tmp))
-                    {
-                        category = presenter.addCategory(categoryName.Text, tmp);
+                if (Enum.TryParse(categoryType.Text, out tmp))
+                {
+                    category = presenter.AddCategory(categoryName.Text, tmp);
 
-                        // Updating.
-                        mainWindow.CategoriesDropDown.Items.Add(category);
-
-                    }
                 }
 
-                //mainWindow.ShowAdded();
+                //Updates drop down list in previous window.
+                categoriesDropDown.ItemsSource = presenter.getCategoriesList();
+
                 this.Close();
+            }
         }
 
         private void categoryName_MouseDoubleClick(object sender, MouseButtonEventArgs e)

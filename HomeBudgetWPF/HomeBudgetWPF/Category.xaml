@@ -23,7 +23,7 @@
         <TextBox Background="#C9E4E7" BorderThickness="0" Grid.Column="0" Grid.ColumnSpan="4" Text="Add a new category" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#0C6291" FontWeight="Bold" FontSize="45"/>
         <TextBlock Background="#0C6291" Foreground="White" VerticalAlignment="Center" Width="50" Height="30" Padding="5" Grid.Row="1" Grid.Column="0">Name</TextBlock>
         <TextBlock Background="#0C6291" Foreground="White" VerticalAlignment="Center" Width="45" Height="30" Padding="5" Grid.Row="2" Grid.Column="0">Type</TextBlock>
-        <ComboBox Name="categoryType" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Text="Type" Height="30">Type</ComboBox>
+        <ComboBox Name="categoryType" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Text="Type" Height="30"></ComboBox>
         <TextBox Name="categoryName" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" MouseDoubleClick="categoryName_MouseDoubleClick">Enter name</TextBox>
         <Button  Background="#0C6291" Foreground="White" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Width="50" Height="25" Click="Add_Category_Click">
             <Button.Resources>

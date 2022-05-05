@@ -13,5 +13,14 @@ namespace HomeBudgetWPF
     /// </summary>
     public partial class App : Application
     {
+        private void Application_Startup(object sender, StartupEventArgs e)
+        {
+
+            // window of welcome page.
+            WelcomeWindow welcome = new WelcomeWindow();
+
+            welcome.Show();
+
+        }
     }
 }

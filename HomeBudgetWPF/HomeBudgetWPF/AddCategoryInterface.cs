@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace HomeBudgetWPF
 {
-    interface PresenterInterface
+    interface AddCategoryInterface
     {
+        void ShowError(string msg);
     }
 }
