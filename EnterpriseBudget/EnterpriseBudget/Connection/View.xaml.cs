@@ -83,6 +83,11 @@ namespace EnterpriseBudget.Connection
             //       ... otherwise it won't redraw the form while
             //           trying to connect.
             txtStatus.Text = "... Connecting";
+
+            txtDbName.Text = "AppDev_2022_ThreeInvincibles";
+            txtUserName.Text = "AppDev_2022_ThreeInvincibles_Team";
+            txtPassword.Password = "788ghh12";
+
             Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.ApplicationIdle,
                 new Action(() => { presenter.Connect(); }));
         }
