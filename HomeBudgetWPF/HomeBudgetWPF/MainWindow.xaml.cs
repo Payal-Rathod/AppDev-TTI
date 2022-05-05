@@ -462,6 +462,8 @@ namespace HomeBudgetWPF
 
         private void filterCheck_Click(object sender, RoutedEventArgs e)
         {
+            chartView.Visibility = Visibility.Hidden;
+            showChart.Visibility = Visibility.Hidden;
             monthCheck.IsChecked = false;
             categoryCheck.IsChecked = false;
 
@@ -485,20 +487,27 @@ namespace HomeBudgetWPF
             if (monthCheck.IsChecked == true && categoryCheck.IsChecked == false)
             {
                 ViewExpenses.ItemsSource = presenter.GetBudgetItemsListByMonth(startDate, endDate, filterFlag, filterCategoryId);
+                showChart.Visibility = Visibility.Hidden;
+                chartView.Visibility = Visibility.Hidden;
             }
             else if (monthCheck.IsChecked == true && categoryCheck.IsChecked == true)
             {
                 List<Dictionary<string, object>> items = presenter.GetBudgetItemsListByMonthAndCategory(startDate, endDate, filterFlag, filterCategoryId);
                 ViewExpenses.ItemsSource = items;
+                showChart.Visibility = Visibility.Visible;
 
             }
             else if (monthCheck.IsChecked == false && categoryCheck.IsChecked == true)
             {
                 ViewExpenses.ItemsSource = presenter.GetBudgetItemsListByCategory(startDate, endDate, filterFlag, filterCategoryId);
+                showChart.Visibility = Visibility.Hidden;
+                chartView.Visibility = Visibility.Hidden;
             }
             else
             {
                 ViewExpenses.ItemsSource = presenter.GetBudgetItemsList(startDate, endDate, filterFlag, filterCategoryId);
+                showChart.Visibility = Visibility.Hidden;
+                chartView.Visibility = Visibility.Hidden;
 
             }
 

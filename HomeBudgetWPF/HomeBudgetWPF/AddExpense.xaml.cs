@@ -56,6 +56,7 @@ namespace HomeBudgetWPF
             CategoriesDropDown.ItemsSource = catsList; //Populates drop down list with categories list
             DateTimePicker1.SelectedDate = previousDateSelected; //Selected date is the same as the previous expense
             CategoriesDropDown.SelectedIndex = previousIndexSelected; //Selected category is the same as the previous expense
+
         }
 
         public void GenerateWindowColors()
