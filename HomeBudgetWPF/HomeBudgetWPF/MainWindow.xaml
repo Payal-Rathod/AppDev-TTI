@@ -60,7 +60,7 @@
             </DataGrid.ContextMenu>
         </DataGrid>
 
-        <Button x:Name="showChart" Click="showChart_Click" Grid.Column="0" Grid.Row="5" Width="100" Height="30">Show chart</Button>
+        <Button x:Name="showChart" Visibility="Hidden" Click="showChart_Click" Grid.Column="0" Grid.Row="5" Width="100" Height="30">Show chart</Button>
         
         <local:Chart x:Name="chartView" Grid.Row="1" Grid.RowSpan="3" Grid.Column="3" Visibility="Hidden"></local:Chart>
 
