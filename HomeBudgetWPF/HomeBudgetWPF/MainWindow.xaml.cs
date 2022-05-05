@@ -3,17 +3,16 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.DataVisualization.Charting;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Controls.DataVisualization.Charting;
 
 namespace HomeBudgetWPF
 {
-    
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -57,9 +56,12 @@ namespace HomeBudgetWPF
             List<Dictionary<string, object>> myItems = presenter.GetBudgetItemsListByMonthAndCategory(startDate, endDate, filterFlag, filterCategoryId);
             List<Object> theObjects = myItems.Cast<object>().ToList();
 
+            ViewExpenses.ItemsSource = myItems;
+
             presenter.DataSource = theObjects;
         }
 
+        public List<object> DataSource { get { return presenter.DataSource; } set { DataSource = value; } }
 
         /// <summary>
         /// Initializes grid for getbudgetitems list
@@ -160,7 +162,7 @@ namespace HomeBudgetWPF
         {
             ViewExpenses.Columns.Clear();
 
-            foreach (string key in items[0].Keys) //Goes through each key values
+            foreach (string key in items[1].Keys) //Goes through each key values
             {
                 if (key.Split(':')[0] == "details")
                 {
@@ -577,13 +579,16 @@ namespace HomeBudgetWPF
                 string searchBoxValue = searchBox.Text;
                 var items = ViewExpenses.ItemsSource as List<Budget.BudgetItem>;
 
-              
-                var item = items.FindAll(it => it.ShortDescription == searchBoxValue);
+                var item = items.FindAll(it => it.ShortDescription.StartsWith(searchBoxValue));
 
                 showResults.Text = item.Count + " results found";
 
-
-                if (selectedCouter < item.Count)
+                if (item.Count == 0)
+                {
+                    MessageBox.Show("No match found");
+                    return;
+                }
+                else if (selectedCouter < item.Count)
                 {
                     ViewExpenses.SelectedItem = item[selectedCouter];
                 }
@@ -598,7 +603,6 @@ namespace HomeBudgetWPF
             }
 
             ShowChart();
-
         }
 
         private void RecentlyOpened_Click(object sender, RoutedEventArgs e)
