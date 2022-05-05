@@ -51,6 +51,9 @@ namespace HomeBudgetWPF
             InitializeDataGrid();
         }
 
+        /// <summary>
+        /// Shows the pie chart
+        /// </summary>
         public void ShowChart()
         {
             List<Dictionary<string, object>> myItems = presenter.GetBudgetItemsListByMonthAndCategory(startDate, endDate, filterFlag, filterCategoryId);
@@ -64,8 +67,6 @@ namespace HomeBudgetWPF
             chartView.InitializeByCategoryAndMonthDisplay(presenter.getCategoriesListInString());
             chartView.DataSource = theObjects;
         }
-
-        public List<object> DataSource { get { return presenter.DataSource; } set { DataSource = value; } }
 
         /// <summary>
         /// Initializes grid for getbudgetitems list

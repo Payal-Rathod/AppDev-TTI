@@ -17,7 +17,5 @@ namespace HomeBudgetWPF
         void InitializeDataGridByMonth();
         void InitializeDataGridByCategory();
         void InitializeDataGridByMonthAndCategory(List<Dictionary<string, object>> items);
-        List<object> DataSource { get; set; }
-
     }
 }
