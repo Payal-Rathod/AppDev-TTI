@@ -26,6 +26,7 @@ namespace HomeBudgetWPF
             view = v;
             NewDatabase();
         }
+        public List<object> DataSource { get; set; }
 
         /// <summary>
         /// Logic for finding a database file.
@@ -43,7 +44,7 @@ namespace HomeBudgetWPF
         {
             homeBudget = new HomeBudget(filename, "", newDb);
             cats = homeBudget.categories;
-            
+
             foreach(Expense exp in homeBudget.expenses.List())
             {
                 if (exp.Category == 2)
@@ -214,6 +215,19 @@ namespace HomeBudgetWPF
             OpenDatabase(filepath, false);
             cats = homeBudget.categories;
             return cats.List();
+        }
+
+        public List<String> getCategoriesListInString()
+        {
+            List<String> catsName = new List<String>();
+            OpenDatabase(filepath, false);
+            cats = homeBudget.categories;
+            foreach(Budget.Category cat in cats.List())
+            {
+                catsName.Add(cat.Description);
+            }
+
+            return catsName;
         }
     }
 }

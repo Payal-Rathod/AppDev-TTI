@@ -27,6 +27,7 @@ namespace HomeBudgetWPF
         string filepath;
         ComboBox catsDropDown;
         Budget.BudgetItem selectedItemDataGrid;
+        String windowColorMode;
 
         /// <summary>
         /// Gets selected item, datagrid, filename and categories drop down values and initializes window.
@@ -35,9 +36,13 @@ namespace HomeBudgetWPF
         /// <param name="datagrid"></param>
         /// <param name="filename"></param>
         /// <param name="catdropdown"></param>
-        public UpdateExpense(Budget.BudgetItem selectedItem, DataGrid datagrid, string filename, ComboBox catdropdown)
+        public UpdateExpense(Budget.BudgetItem selectedItem, DataGrid datagrid, string filename, ComboBox catdropdown, object colorMode)
         {
             InitializeComponent();
+            windowColorMode = colorMode as String;
+
+            GenerateWindowColors();
+
             presenter = new UpdatePresenter(this, filename);
             filepath = filename;
             catsDropDown = catdropdown;
@@ -50,6 +55,61 @@ namespace HomeBudgetWPF
             selectedItemDataGrid = selectedItem;
 
             PopulateItemInForm();
+        }
+
+        public void GenerateWindowColors()
+        {
+            if (windowColorMode == "Light Mode")
+            {
+                Color color = (Color)ColorConverter.ConvertFromString("#0C6291");
+
+                var brush = new SolidColorBrush(color);
+
+                mainGridUpdateExpense.Background = Brushes.Black;
+
+                Amount.Background = Brushes.DarkGray;
+                Desc.Background = Brushes.DarkGray;
+                DateTimePicker1.Background = Brushes.DarkGray;
+
+                updateExpense_btn.Background = brush;
+                updateExpense_btn.Foreground = Brushes.DarkGray;
+
+                cancelExpense_btn.Background = brush;
+                cancelExpense_btn.Foreground = Brushes.DarkGray;
+
+                updateExpense_btn.BorderBrush = brush;
+                cancelExpense_btn.BorderBrush = brush;
+
+                DateTimePicker1.BorderBrush = brush;
+
+                CategoriesDropDown.Background = brush;
+                //categoriesDropDown.Foreground = Brushes.DarkGray;
+            }
+            else
+            {
+                Color color = (Color)ColorConverter.ConvertFromString("#C9E4E7");
+                Color darkBlue = (Color)ColorConverter.ConvertFromString("#0C6291");
+
+                mainGridUpdateExpense.Background = Brushes.White;
+
+                var brush = new SolidColorBrush(color);
+                var blueBrush = new SolidColorBrush(darkBlue);
+                Amount.Background = Brushes.White;
+                Desc.Background = Brushes.White;
+                DateTimePicker1.Background = Brushes.White;
+
+                updateExpense_btn.Background = blueBrush;
+                updateExpense_btn.Foreground = Brushes.White;
+
+                cancelExpense_btn.Background = blueBrush;
+                cancelExpense_btn.Foreground = Brushes.White;
+
+                DateTimePicker1.BorderBrush = blueBrush;
+
+                CategoriesDropDown.Background = brush;
+                //categoriesDropDown.Foreground = Brushes.DarkGray;
+            }
+
         }
 
         /// <summary>
@@ -73,6 +133,9 @@ namespace HomeBudgetWPF
 
         private void updateExpense_btn_Click(object sender, RoutedEventArgs e)
         {
+            //myDataGrid.SelectedItem = item;
+            int index = myDataGrid.SelectedIndex;
+
             if (Amount.Text == item.Amount.ToString() && Desc.Text == item.ShortDescription && CategoriesDropDown.SelectedIndex == item.CategoryID && DateTimePicker1.SelectedDate == item.Date)
             {
                 MessageBox.Show("No changes were made");
@@ -90,6 +153,8 @@ namespace HomeBudgetWPF
             catsDropDown.ItemsSource = presenter.getCategoriesList(); //updates drop down list
 
             myDataGrid.ItemsSource = presenter.GetBudgetItemsList(); //updates datagrid items
+
+            myDataGrid.SelectedIndex = index;
 
             this.Close();
 
@@ -123,7 +188,7 @@ namespace HomeBudgetWPF
             if (e.Key == Key.Return)
             {
                 //New category window if new category is written in drop down list
-                Category CategoryWindow = new Category(CategoriesDropDown.Text, filepath, CategoriesDropDown);
+                Category CategoryWindow = new Category(CategoriesDropDown.Text, filepath, CategoriesDropDown, windowColorMode);
                 CategoryWindow.Show();
             }
         }

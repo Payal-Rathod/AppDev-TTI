@@ -5,17 +5,21 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HomeBudgetWPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="725"
+        Title="MainWindow" Height="1000" Width="1800"
         Closing="Window_Closing"  
         >
 
     <Grid Name="mainGrid" Background="#C9E4E7">
         <TextBlock x:Name="Header" Grid.Row="0" Grid.Column="1" Text="HomeBudget" HorizontalAlignment="Center" FontSize="25" Grid.ColumnSpan="1" FontWeight="Bold" Margin="0, 5, 0, 0"/>
-        <TextBlock Grid.Row="1" Grid.Column="0" x:Name="FileNameTextBox" Height="30" Width="Auto" HorizontalAlignment="Center"/>
+        <TextBlock Grid.Row="1" VerticalAlignment="top" Grid.ColumnSpan="2" Grid.Column="0" x:Name="FileNameTextBox" Height="30" Width="Auto" HorizontalAlignment="Center"/>
+        <TextBlock x:Name="showResults" Grid.Row="1" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,0,20"></TextBlock>
+        
+        
         <Menu Name="menu" Background="#C9E4E7" BorderThickness="0">
             <MenuItem Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="20" Header="_File" Background="#FFFFFF">
                 <MenuItem Header="_Open" Click="OpenFile_Click"></MenuItem>
                 <MenuItem Header="_New" Click="NewFile_Click"></MenuItem>
+                <MenuItem x:Name="recentlyOpened" Header="_Recently Opened" Click="RecentlyOpened_Click"></MenuItem>
                 <Separator />
                 <MenuItem Header="_Exit" Click="Exit_Click"></MenuItem>
             </MenuItem>
@@ -30,9 +34,6 @@
         <CheckBox Margin="10,0,10,0" x:Name="monthCheck" Grid.Row="4" Grid.Column="2" Click="MonthCategoryCheck_Click">By month</CheckBox>
         <CheckBox Margin="10,20,10,0" x:Name="categoryCheck" Grid.Row="4" Grid.Column="2" Click="MonthCategoryCheck_Click">By category</CheckBox>
 
-
-
-
         <Button Name="theme" Click="ColorMode_Click" Background="Black" Foreground="White" Grid.Column="3" Grid.Row="6" Width="100" Height="30" Grid.ColumnSpan="2" Margin="0, 5, 0, 0">
             <Button.Resources>
                 <Style TargetType="Border">
@@ -41,8 +42,14 @@
             </Button.Resources> Dark Mode
         </Button>
 
+        <TextBox x:Name="searchBox" Height="22"  Grid.Row="1" Grid.Column="1"/>
+        <Button x:Name="enter" Grid.Row="1" Grid.Column="2" Height="40"  Margin="10,0,10,0" Click="enter_Click">Search</Button>
 
-        <DataGrid Grid.Column="1" Grid.Row="2" Grid.RowSpan="3" x:Name="ViewExpenses" AutoGenerateColumns="False" MouseDoubleClick="updateItem_Click" IsReadOnly="True">
+        <DataGrid Grid.Column="1" Grid.Row="2" Grid.RowSpan="4" x:Name="ViewExpenses" AutoGenerateColumns="False" MouseDoubleClick="updateItem_Click" IsReadOnly="True">
+            <!--<DataGrid.Resources>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" 
+                   Color="AliceBlue"/>
+            </DataGrid.Resources>-->
             <DataGrid.ContextMenu>
                 <ContextMenu>
                     <MenuItem x:Name="deleteItem" Click="deleteItem_Click" Header="Delete"></MenuItem>
@@ -52,9 +59,14 @@
                 </ContextMenu>
             </DataGrid.ContextMenu>
         </DataGrid>
+
+        <Button x:Name="showChart" Click="showChart_Click" Grid.Column="0" Grid.Row="5" Width="100" Height="30">Show chart</Button>
         
+        <local:Chart x:Name="chartView" Grid.Row="1" Grid.RowSpan="3" Grid.Column="3" Visibility="Hidden"></local:Chart>
+
         <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition/>
                 <RowDefinition/>
                 <RowDefinition/>
                 <RowDefinition/>
@@ -66,6 +78,7 @@
             <ColumnDefinition Width="1*" ></ColumnDefinition>
             <ColumnDefinition Width="3*"></ColumnDefinition>
             <ColumnDefinition Width="1*"></ColumnDefinition>
+            <ColumnDefinition Width="4*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
     </Grid>

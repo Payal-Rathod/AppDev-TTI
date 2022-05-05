@@ -3,20 +3,22 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.DataVisualization.Charting;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 
 namespace HomeBudgetWPF
 {
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window, ViewInterface
     {
+        private const int NUMFILESRECENT = 3;
         Presenter presenter;
         public string fileName;
         public string filePath;
@@ -24,11 +26,13 @@ namespace HomeBudgetWPF
         public DateTime? startDate = DateTime.MinValue;
         public DateTime? endDate = DateTime.MaxValue;
         public int filterCategoryId = -1;
+        public string filePathString;
         bool newDb;
         List<Budget.Category> catsList;
+        List<String> recentlyOpenedFile = new List<String>();
         UpdateExpense UpdateWindow;
         AddExpense AddWindow;
-
+        public static string appDataPath = Environment.GetEnvironmentVariable("APPDATA");
         /// <summary>
         /// Initializes application and Presenter.
         /// </summary>
@@ -42,7 +46,26 @@ namespace HomeBudgetWPF
 
             Application.Current.MainWindow.FontFamily = new FontFamily("Cambria");
 
+            ShowRecentlyOpened();
+
             InitializeDataGrid();
+        }
+
+        /// <summary>
+        /// Shows the pie chart
+        /// </summary>
+        public void ShowChart()
+        {
+            List<Dictionary<string, object>> myItems = presenter.GetBudgetItemsListByMonthAndCategory(startDate, endDate, filterFlag, filterCategoryId);
+            List<Object> theObjects = myItems.Cast<object>().ToList();
+
+            ViewExpenses.ItemsSource = myItems;
+
+            presenter.DataSource = theObjects;
+
+            List<String> test = new List<string>();
+            chartView.InitializeByCategoryAndMonthDisplay(presenter.getCategoriesListInString());
+            chartView.DataSource = theObjects;
         }
 
         /// <summary>
@@ -68,12 +91,21 @@ namespace HomeBudgetWPF
             var col4 = new DataGridTextColumn();
             col4.Header = "Amount";
             col4.Binding = new Binding("Amount");
-
             ViewExpenses.Columns.Add(col4);
             var col5 = new DataGridTextColumn();
+            col4.Binding.StringFormat = "F2";
+
+            Style s = new Style();
+            s.Setters.Add(new Setter(TextBlock.TextAlignmentProperty,
+                                    TextAlignment.Right));
+            col4.CellStyle = s;
+
+
             col5.Header = "Balance";
             col5.Binding = new Binding("Balance");
             ViewExpenses.Columns.Add(col5);
+            col5.Binding.StringFormat = "F2";
+
         }
 
         /// <summary>
@@ -92,6 +124,15 @@ namespace HomeBudgetWPF
             col2.Header = "Total";
             col2.Binding = new Binding("Total");
             ViewExpenses.Columns.Add(col2);
+
+            col2.Binding.StringFormat = "F2";
+
+            Style s = new Style();
+            s.Setters.Add(new Setter(TextBlock.TextAlignmentProperty,
+                                    TextAlignment.Right));
+            col2.CellStyle = s;
+
+
         }
 
         /// <summary>
@@ -110,6 +151,13 @@ namespace HomeBudgetWPF
             col2.Header = "Total";
             col2.Binding = new Binding("Total");
             ViewExpenses.Columns.Add(col2);
+
+            col2.Binding.StringFormat = "F2";
+
+            Style s = new Style();
+            s.Setters.Add(new Setter(TextBlock.TextAlignmentProperty,
+                                    TextAlignment.Right));
+            col2.CellStyle = s;
         }
 
         /// <summary>
@@ -119,16 +167,26 @@ namespace HomeBudgetWPF
         {
             ViewExpenses.Columns.Clear();
 
-            foreach (string key in items[0].Keys) //Goes through each key values
+            foreach (string key in items[items.Count-1].Keys) //Goes through each key values
             {
                 if (key.Split(':')[0] == "details")
                 {
                     continue;
                 }
-
                 var column = new DataGridTextColumn();
                 column.Header = key;
                 column.Binding = new Binding($"[{key}]");
+
+                if (key.Split(':')[0] == "Total")
+                {
+                    column.Binding.StringFormat = "F2";
+
+                    Style s = new Style();
+                    s.Setters.Add(new Setter(TextBlock.TextAlignmentProperty,
+                                            TextAlignment.Right));
+                    column.CellStyle = s;
+                }
+
                 ViewExpenses.Columns.Add(column);
             }
         }
@@ -146,8 +204,26 @@ namespace HomeBudgetWPF
             Nullable<bool> result = openFileDlg.ShowDialog();
             if (result == true)
             {
-                ShowDatabase(System.IO.Path.GetFileName(openFileDlg.FileName));
+                ShowDatabase(openFileDlg.FileName);
                 fileName = openFileDlg.FileName;
+                //MessageBox.Show(File.ReadLines(filePathString).Count() + "");
+                if (recentlyOpenedFile.Contains(fileName))
+                {
+
+                }
+                else if (recentlyOpenedFile.Count == NUMFILESRECENT)
+                {
+                    recentlyOpenedFile.RemoveAt(0);
+                    recentlyOpenedFile.Add(fileName);
+                    File.WriteAllLines(filePathString, recentlyOpenedFile);
+
+                }
+                else
+                {
+                    recentlyOpenedFile.Add(fileName);
+                    File.WriteAllLines(filePathString, recentlyOpenedFile);
+                }
+
             }
             else
             {
@@ -168,6 +244,20 @@ namespace HomeBudgetWPF
             ViewExpenses.ItemsSource =  presenter.GetBudgetItemsList(null, null, false, -1);
 
             CategoriesDropDown.ItemsSource = presenter.getCategoriesList();
+
+            recentlyOpened.Items.Clear();
+
+            chartView.Visibility = Visibility.Hidden;
+
+
+            for (int i = 0; i < recentlyOpenedFile.Count; i++)
+            {
+                MenuItem file = new MenuItem();
+                file.Header = recentlyOpenedFile[i];
+                recentlyOpened.Items.Add(file);
+
+                file.Click += OpenRecent_Click;
+            }
         }
 
         /// <summary>
@@ -180,8 +270,25 @@ namespace HomeBudgetWPF
 
             if (saveFileDlg.ShowDialog() == true)
             {
-                ShowDatabase(System.IO.Path.GetFileName(saveFileDlg.FileName));
+                ShowDatabase(saveFileDlg.FileName);
                 fileName = saveFileDlg.FileName;
+
+                if (recentlyOpenedFile.Contains(fileName))
+                {
+
+                }
+                else if (recentlyOpenedFile.Count == NUMFILESRECENT)
+                {
+                    recentlyOpenedFile.RemoveAt(0);
+                    recentlyOpenedFile.Add(fileName);
+                    File.WriteAllLines(filePathString, recentlyOpenedFile);
+
+                }
+                else
+                {
+                    recentlyOpenedFile.Add(fileName);
+                    File.WriteAllLines(filePathString, recentlyOpenedFile);
+                }
             }
             else
             {
@@ -193,6 +300,20 @@ namespace HomeBudgetWPF
             ViewExpenses.ItemsSource = presenter.GetBudgetItemsList(null, null, false, -1);
 
             CategoriesDropDown.ItemsSource = presenter.getCategoriesList();
+
+            recentlyOpened.Items.Clear();
+
+            for (int i = 0; i < recentlyOpenedFile.Count; i++)
+            {
+                MenuItem file = new MenuItem();
+                file.Header = recentlyOpenedFile[i];
+
+                recentlyOpened.Items.Add(file);
+
+                file.Click += OpenRecent_Click;
+            }
+
+            chartView.Visibility = Visibility.Hidden;
 
         }
 
@@ -209,7 +330,7 @@ namespace HomeBudgetWPF
         /// Light color mode.
         /// </summary>
         public void LightMode()
-        { /*
+        { 
             theme.Content = "Dark Mode";
             theme.Foreground = Brushes.White;
             theme.Background = Brushes.Black;
@@ -224,26 +345,16 @@ namespace HomeBudgetWPF
             mainGrid.Background = brush;
             menu.Background = brush;
 
-            Amount.Background = Brushes.White;
-            Desc.Background = Brushes.White;
-            DateTimePicker1.Background = Brushes.White;
             Header.Foreground = blueBrush;
             Header.Foreground = blueBrush;
 
-            addExpense_btn.Background = blueBrush;
-            addExpense_btn.Foreground = Brushes.White;
-
-            cancelExpense_btn.Background = blueBrush;
-            cancelExpense_btn.Foreground = Brushes.White;
-
-            DateTimePicker1.BorderBrush = blueBrush;*/
         }
         /// <summary>
         /// Dark color mode.
         /// </summary>
         public void DarkMode()
         {
-            /*
+            
             Color color = (Color)ColorConverter.ConvertFromString("#0C6291");
 
             var brush = new SolidColorBrush(color);
@@ -254,22 +365,10 @@ namespace HomeBudgetWPF
             mainGrid.Background = Brushes.Black;
             menu.Background = Brushes.Black;
             FileNameTextBox.Foreground = brush;
-
-            Amount.Background = Brushes.DarkGray;
-            Desc.Background = Brushes.DarkGray;
-            DateTimePicker1.Background = Brushes.DarkGray;
+            filterCheck.Foreground = brush;
+            monthCheck.Foreground = brush;
+            categoryCheck.Foreground = brush;
             Header.Foreground = brush;
-
-            addExpense_btn.Background = brush;
-            addExpense_btn.Foreground = Brushes.DarkGray;
-
-            cancelExpense_btn.Background = brush;
-            cancelExpense_btn.Foreground = Brushes.DarkGray;
-
-            addExpense_btn.BorderBrush = brush;
-            cancelExpense_btn.BorderBrush = brush;
-
-            DateTimePicker1.BorderBrush = brush;*/
         }
 
         // =====================================================================================
@@ -299,12 +398,25 @@ namespace HomeBudgetWPF
         private void deleteItem_Click(object sender, RoutedEventArgs e)
         {
             var selected = ViewExpenses.SelectedItem as Budget.BudgetItem;
+            int index = ViewExpenses.SelectedIndex;
 
             if (selected != null)
             {
                 presenter.DeleteExpense(selected.ExpenseID);
                 ViewExpenses.ItemsSource = presenter.GetBudgetItemsList(startDate, endDate, filterFlag, filterCategoryId);
             }
+
+            if(index != ViewExpenses.Items.Count)
+            {
+
+                ViewExpenses.SelectedIndex = index + 1;
+                ViewExpenses.ScrollIntoView(ViewExpenses.SelectedItem);
+            }
+            else
+            {
+                ViewExpenses.SelectedIndex = index -1;
+                ViewExpenses.ScrollIntoView(ViewExpenses.SelectedItem);
+            }                        
         }
 
         private void updateItem_Click(object sender, RoutedEventArgs e)
@@ -312,16 +424,17 @@ namespace HomeBudgetWPF
             var selected = ViewExpenses.SelectedItem as Budget.BudgetItem;
 
             if (selected != null)
-            {
-                UpdateWindow = new UpdateExpense(selected, ViewExpenses, fileName, CategoriesDropDown);
+            {                
+                UpdateWindow = new UpdateExpense(selected, ViewExpenses, fileName, CategoriesDropDown, theme.Content);
                 UpdateWindow.Show();
             }
+
 
         }
 
         private void AddExpense_Click(object sender, RoutedEventArgs e)
         {
-            AddWindow = new AddExpense(ViewExpenses, fileName, CategoriesDropDown);
+            AddWindow = new AddExpense(ViewExpenses, fileName, CategoriesDropDown, theme.Content);
             AddWindow.Show();
 
             ViewExpenses.ItemsSource = presenter.GetBudgetItemsList(startDate, endDate, filterFlag, filterCategoryId);
@@ -441,5 +554,88 @@ namespace HomeBudgetWPF
             }
         }
 
+        int selectedCouter = 0;
+
+        private void enter_Click(object sender, RoutedEventArgs e)
+        {
+            if (searchBox.Text == "")
+            {
+                MessageBox.Show("Please enter a value in the search bar");
+            }
+            else
+            {
+                string searchBoxValue = searchBox.Text.ToLower();
+                var items = ViewExpenses.ItemsSource as List<Budget.BudgetItem>;
+
+                var item = items.FindAll(it => it.ShortDescription.ToLower().Contains(searchBoxValue) || it.Amount.ToString().Contains(searchBoxValue) || it.Balance.ToString().Contains(searchBoxValue) || it.Category.ToLower().Contains(searchBoxValue) || it.Date.ToString().Contains(searchBoxValue) || it.CategoryID.ToString().Contains(searchBoxValue) || it.ExpenseID.ToString().Contains(searchBoxValue));
+
+                showResults.Text = item.Count + " results found";
+
+                if (item.Count == 0)
+                {
+                    MessageBox.Show("No match found");
+                    return;
+                }
+                else if (selectedCouter < item.Count)
+                {
+                    ViewExpenses.SelectedItem = item[selectedCouter];
+                }
+                else
+                {
+                    selectedCouter = 0;
+                    ViewExpenses.SelectedItem = item[selectedCouter];
+                }
+
+                ViewExpenses.ScrollIntoView(item[selectedCouter]);
+                selectedCouter++;
+            }
+
+        }
+
+        private void RecentlyOpened_Click(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private void OpenRecent_Click(object sender, RoutedEventArgs e)
+        {
+            chartView.Visibility = Visibility.Hidden;
+
+            MenuItem file = sender as MenuItem;
+            string path = file.Header.ToString();
+            presenter.OpenDatabase(path, false);
+            ShowDatabase(path);
+
+            ViewExpenses.ItemsSource = presenter.GetBudgetItemsList(null, null, false, -1);
+
+            CategoriesDropDown.ItemsSource = presenter.getCategoriesList();
+
+        }
+
+        public void ShowRecentlyOpened()
+        {
+            string pathString = System.IO.Path.Combine(appDataPath, "Budget");
+
+            if (!System.IO.Directory.Exists(pathString))
+            {
+                System.IO.Directory.CreateDirectory(pathString);
+            }
+
+            filePathString = System.IO.Path.Combine(pathString, "RecentlyOpenedDBFiles.txt");
+
+            if (!System.IO.File.Exists(filePathString))
+            {
+                System.IO.File.CreateText(filePathString);
+            }
+            for (int i = 0; i < File.ReadLines(filePathString).Count(); i++)
+            {
+                recentlyOpenedFile.Add(File.ReadAllLines(filePathString)[i]);
+            }
+        }
+
+        private void showChart_Click(object sender, RoutedEventArgs e)
+        {
+            chartView.Visibility = Visibility.Visible;
+            ShowChart();
+        }
     }
 }
