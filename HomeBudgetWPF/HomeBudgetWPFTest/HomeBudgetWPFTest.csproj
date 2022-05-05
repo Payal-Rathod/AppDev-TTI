@@ -4,6 +4,16 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
 
     <IsPackable>false</IsPackable>
+
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>C:\Users\samue\Source\Repos\AppDev-TTI\HomeBudgetWPF\HomeBudgetWPFTest\HomeBudgetWPFTest.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>C:\Users\samue\Source\Repos\AppDev-TTI\HomeBudgetWPF\HomeBudgetWPFTest\HomeBudgetWPFTest.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
