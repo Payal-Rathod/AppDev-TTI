@@ -6,7 +6,7 @@
              xmlns:toolkit="http://schemas.microsoft.com/winfx/2006/xaml/presentation/toolkit"
              xmlns:local="clr-namespace:HomeBudgetWPF"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="600">
     <Grid>
         <!-- Divide space into two columns, one for title and other stuff, and one for the chart -->
         <Grid.ColumnDefinitions>

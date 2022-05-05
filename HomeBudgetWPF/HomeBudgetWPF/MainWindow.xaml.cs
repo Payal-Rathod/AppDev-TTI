@@ -166,7 +166,7 @@ namespace HomeBudgetWPF
         {
             ViewExpenses.Columns.Clear();
 
-            foreach (string key in items[1].Keys) //Goes through each key values
+            foreach (string key in items[items.Count-1].Keys) //Goes through each key values
             {
                 if (key.Split(':')[0] == "details")
                 {
@@ -585,10 +585,10 @@ namespace HomeBudgetWPF
             }
             else
             {
-                string searchBoxValue = searchBox.Text;
+                string searchBoxValue = searchBox.Text.ToLower();
                 var items = ViewExpenses.ItemsSource as List<Budget.BudgetItem>;
 
-                var item = items.FindAll(it => it.ShortDescription.StartsWith(searchBoxValue));
+                var item = items.FindAll(it => it.ShortDescription.ToLower().Contains(searchBoxValue) || it.Amount.ToString().Contains(searchBoxValue) || it.Balance.ToString().Contains(searchBoxValue) || it.Category.ToLower().Contains(searchBoxValue) || it.Date.ToString().Contains(searchBoxValue) || it.CategoryID.ToString().Contains(searchBoxValue) || it.ExpenseID.ToString().Contains(searchBoxValue));
 
                 showResults.Text = item.Count + " results found";
 
