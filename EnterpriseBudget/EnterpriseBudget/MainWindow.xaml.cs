@@ -608,5 +608,10 @@ namespace EnterpriseBudget
             chartView.Visibility = Visibility.Visible;
             ShowChart();
         }
+
+        private void SaveFile_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
