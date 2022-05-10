@@ -119,20 +119,29 @@ namespace EnterpriseBudget.MainControl
             }
         }
 
-        // 
         private void AdministratorButton_Clicked(object sender, RoutedEventArgs e)
         {
             this.txtStatus.Text = "";
-            // TODO: get employee etc.
 
-            // define view and presenter
-            var manageAllBudgetsView = new ManageAllBudgets.View();
-            manageAllBudgetsView.presenter = new ManageAllBudgets.Presenter((ManageAllBudgets.InterfaceView) manageAllBudgetsView);
-            manageAllBudgetsView.mainControl = this;
-            
-            // show view
-            this.GoAway();
-            manageAllBudgetsView.ShowDialog();
+            var employee = _mainViewPresenter.GetEmployeeForSpecifiedView(txtUserName.Text, txtPassword.Password, ViewType.ReadWrite);
+
+            // user has permission
+            if (employee != null)
+            {
+                // define view and presenter
+                var manageAllBudgetsView = new ManageAllBudgets.View();
+                manageAllBudgetsView.presenter = new ManageAllBudgets.Presenter((ManageAllBudgets.InterfaceView)manageAllBudgetsView);
+                manageAllBudgetsView.mainControl = this;
+
+                // show view
+                this.GoAway();
+                manageAllBudgetsView.ShowDialog();
+            }
+            // user does not have permission
+            else
+            {
+                txtStatus.Text = "Invalid username/password OR not enough privileges for " + ViewType.ReadWrite.ToString() + "View";
+            }
         }
         #endregion
 

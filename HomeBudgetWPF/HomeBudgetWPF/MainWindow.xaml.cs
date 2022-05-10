@@ -30,7 +30,6 @@ namespace HomeBudgetWPF
         bool newDb;
         List<Budget.Category> catsList;
         List<String> recentlyOpenedFile = new List<String>();
-        UpdateExpense UpdateWindow;
         AddExpense AddWindow;
         public static string appDataPath = Environment.GetEnvironmentVariable("APPDATA");
         /// <summary>
@@ -394,43 +393,6 @@ namespace HomeBudgetWPF
             Button btn = sender as Button;
             presenter.ChangeColorMode(btn.Content.ToString());
         }      
-
-        private void deleteItem_Click(object sender, RoutedEventArgs e)
-        {
-            var selected = ViewExpenses.SelectedItem as Budget.BudgetItem;
-            int index = ViewExpenses.SelectedIndex;
-
-            if (selected != null)
-            {
-                presenter.DeleteExpense(selected.ExpenseID);
-                ViewExpenses.ItemsSource = presenter.GetBudgetItemsList(startDate, endDate, filterFlag, filterCategoryId);
-            }
-
-            if(index != ViewExpenses.Items.Count)
-            {
-
-                ViewExpenses.SelectedIndex = index + 1;
-                ViewExpenses.ScrollIntoView(ViewExpenses.SelectedItem);
-            }
-            else
-            {
-                ViewExpenses.SelectedIndex = index -1;
-                ViewExpenses.ScrollIntoView(ViewExpenses.SelectedItem);
-            }                        
-        }
-
-        private void updateItem_Click(object sender, RoutedEventArgs e)
-        {
-            var selected = ViewExpenses.SelectedItem as Budget.BudgetItem;
-
-            if (selected != null)
-            {                
-                UpdateWindow = new UpdateExpense(selected, ViewExpenses, fileName, CategoriesDropDown, theme.Content);
-                UpdateWindow.Show();
-            }
-
-
-        }
 
         private void AddExpense_Click(object sender, RoutedEventArgs e)
         {

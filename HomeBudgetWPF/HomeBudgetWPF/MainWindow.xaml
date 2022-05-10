@@ -45,19 +45,11 @@
         <TextBox x:Name="searchBox" Height="22"  Grid.Row="1" Grid.Column="1"/>
         <Button x:Name="enter" Grid.Row="1" Grid.Column="2" Height="40"  Margin="10,0,10,0" Click="enter_Click">Search</Button>
 
-        <DataGrid Grid.Column="1" Grid.Row="2" Grid.RowSpan="4" x:Name="ViewExpenses" AutoGenerateColumns="False" MouseDoubleClick="updateItem_Click" IsReadOnly="True">
+        <DataGrid Grid.Column="1" Grid.Row="2" Grid.RowSpan="4" x:Name="ViewExpenses" AutoGenerateColumns="False" IsReadOnly="True">
             <!--<DataGrid.Resources>
                 <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" 
                    Color="AliceBlue"/>
             </DataGrid.Resources>-->
-            <DataGrid.ContextMenu>
-                <ContextMenu>
-                    <MenuItem x:Name="deleteItem" Click="deleteItem_Click" Header="Delete"></MenuItem>
-                    <MenuItem x:Name="updateItem" Click="updateItem_Click" Header="Update"></MenuItem>
-                    <Separator />
-                    <MenuItem x:Name="close" Click="close_Click"  Header="Close"></MenuItem>
-                </ContextMenu>
-            </DataGrid.ContextMenu>
         </DataGrid>
 
         <Button x:Name="showChart" Visibility="Hidden" Click="showChart_Click" Grid.Column="0" Grid.Row="5" Width="100" Height="30">Show chart</Button>
