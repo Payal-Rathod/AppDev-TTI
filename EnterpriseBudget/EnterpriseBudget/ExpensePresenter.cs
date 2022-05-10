@@ -44,7 +44,7 @@ namespace EnterpriseBudget
         public void AddExpense(DateTime date, int category, double amount, string description)
         {
             openDatabase(filepath);
-            expenses.Add(date, category, amount, description);
+            expenses.Add(date, category+1, amount, description);
             view.ShowAdded(description);
         }
 

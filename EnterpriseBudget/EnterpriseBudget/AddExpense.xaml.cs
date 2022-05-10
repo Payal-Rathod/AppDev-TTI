@@ -280,6 +280,11 @@ namespace EnterpriseBudget
             presenter.ClearFields();
         }
 
-
+        private void CategoriesDropDown_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBox catComboBox = (ComboBox)sender;
+            var selectedItem = catComboBox.SelectedItem;
+            limit.Text = selectedItem + "";
+        }
     }
 }
