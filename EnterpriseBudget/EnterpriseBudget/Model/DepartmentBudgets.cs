@@ -59,12 +59,13 @@ namespace EnterpriseBudget.Model
                 var path = $"{sPath}\\{appName}\\{sqliteFileName}";
                 ReadAndSaveBlobFromSQLServer(Connection.cnn, "deptBudgets", "sqlitefile", $"deptId={departmentID}",path);
                 homeBudget = new HomeBudget(path, false);
+                
                 return true;
             }
             catch { return false; }
 
             //blob: binary data
-            //open homebudget
+            
         }
 
         // write binary data to SQLServer

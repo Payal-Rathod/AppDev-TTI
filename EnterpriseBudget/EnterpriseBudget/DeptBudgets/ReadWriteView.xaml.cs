@@ -76,14 +76,14 @@ namespace EnterpriseBudget.DeptBudgets
                 {
                     title.Text = "WELCOME TO YOUR HOMEBUDGET";
                     welcome_btn.IsEnabled = true;
-                    create_btn.IsEnabled = true;
+                    //create_btn.IsEnabled = true;
 
                 }
                 else
                 {
                     title.Text = "something went wrong, unable to load home budget";
                     welcome_btn.IsEnabled = false;
-                    create_btn.IsEnabled = false;
+                    //create_btn.IsEnabled = false;
                 }
             }
         }
@@ -98,16 +98,7 @@ namespace EnterpriseBudget.DeptBudgets
             }
         }
 
-        private void CreateFile_Click(object sender, RoutedEventArgs e)
-        {
-            window.NewFile();
-
-            if (!string.IsNullOrEmpty(window.fileName))
-            {
-                this.Close();
-                window.Show();
-            }
-        }
+       
 
 
 

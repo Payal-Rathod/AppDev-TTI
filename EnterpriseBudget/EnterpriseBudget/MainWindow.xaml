@@ -17,10 +17,9 @@
         
         <Menu Name="menu" Background="#C9E4E7" BorderThickness="0">
             <MenuItem Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="20" Header="_File" Background="#FFFFFF">
-                <MenuItem Header="_Open" Click="OpenFile_Click"></MenuItem>
-                <MenuItem Header="_New" Click="NewFile_Click"></MenuItem>
+                
                 <MenuItem Header="_save" Click="SaveFile_Click" ></MenuItem>
-                <MenuItem x:Name="recentlyOpened" Header="_Recently Opened" Click="RecentlyOpened_Click"></MenuItem>
+                
                 <Separator />
                 <MenuItem Header="_Exit" Click="Exit_Click"></MenuItem>
             </MenuItem>
