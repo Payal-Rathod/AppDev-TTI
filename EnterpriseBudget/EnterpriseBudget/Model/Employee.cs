@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data.SqlClient;
+using System.Data;
 
 namespace EnterpriseBudget.Model
 {
@@ -78,21 +79,93 @@ namespace EnterpriseBudget.Model
         public static Employee validateUser(String username, String password)
         {
             Employee person = null;
-            SqlDataReader rdr = null;
             try
             {
-                SqlCommand verifyUser = Connection.cnn.CreateCommand();
+                int deptId = 0, jobId = 0;
 
-                // TODO: FIX THIS 
+                //Employees table
+                SqlCommand verifyUser =  Connection.cnn.CreateCommand();
 
+                verifyUser.CommandText = "SELECT id, name, password, departmentId, jobId FROM employees WHERE name = @name and password = @password";
+                verifyUser.Parameters.AddWithValue("@name", username);
+                verifyUser.Parameters.AddWithValue("@password", password);
+
+                var rdr = verifyUser.ExecuteReader();
+
+                if(rdr.HasRows)
+                {
+
+                    int id = 0;
+                    String name = "", pass = "";
+                    while (rdr.Read())
+                    {
+                        id = rdr.GetInt32(0);
+                        name = rdr.GetString(1);
+                        pass = rdr.GetString(2);
+                        deptId = rdr.GetInt32(3);
+                        jobId = rdr.GetInt32(4);
+                    }
+
+                    person = new Employee();
+
+                    person._deptId = deptId;
+                    person._userName = name;
+                    person._jobType = (JobTypes)jobId;
+                }
+
+                verifyUser.Dispose();
+
+                rdr.Close();
+
+                //Department table
+                SqlCommand verifyDept = Connection.cnn.CreateCommand();
+
+                verifyDept.CommandText = "SELECT name FROM departments WHERE id = @id";
+                verifyDept.Parameters.AddWithValue("@id", deptId);
+
+                var rdr2 = verifyDept.ExecuteReader();
+
+                string nameDept = "";
+                while (rdr2.Read())
+                {
+                    nameDept = rdr2.GetString(0);
+                }
+
+                person._departmentName = nameDept;
+
+                verifyDept.Dispose();
+
+                rdr2.Close();
+
+                //Job table
+                SqlCommand verifyJob = Connection.cnn.CreateCommand();
+
+                verifyJob.CommandText = "SELECT name FROM jobTitles WHERE id = @id";
+                verifyJob.Parameters.AddWithValue("@id", jobId);
+
+                var rdr3 = verifyJob.ExecuteReader();
+
+                string nameJob = "";
+                while (rdr3.Read())
+                {
+                    nameJob = rdr3.GetString(0);
+                }
+
+                person._jobName = nameJob;
+
+                verifyJob.Dispose();
+
+                rdr3.Close();
+
+                //sqlcredential
             }
             catch (Exception e) {
                 var txt = e.Message;
             }
-            if (rdr != null)
-            {
-                try { rdr.Close(); } catch { }
-            }
+            //if (rdr != null)
+           // {
+            //    try { rdr.Close(); } catch { }
+           // }
             return person;
         }
 

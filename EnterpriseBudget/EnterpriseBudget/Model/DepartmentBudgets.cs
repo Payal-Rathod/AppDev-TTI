@@ -45,6 +45,7 @@ namespace EnterpriseBudget.Model
             {
                 homeBudget.CloseDB();
             }
+            //close db
         }
 
         /// <summary>
@@ -61,6 +62,9 @@ namespace EnterpriseBudget.Model
                 return true;
             }
             catch { return false; }
+
+            //blob: binary data
+            //open homebudget
         }
 
         // write binary data to SQLServer
@@ -70,6 +74,8 @@ namespace EnterpriseBudget.Model
             writeBlob.CommandText = $"UPDATE {tableName} set {columnName} = @data where {whereCondition} ";
             writeBlob.Parameters.AddWithValue("@data", File.ReadAllBytes(fileName));
             writeBlob.ExecuteNonQuery();
+
+            //updating
         }
 
         // **** Read BLOB from the Database and save it on the Filesystem
