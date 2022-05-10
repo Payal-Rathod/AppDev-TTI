@@ -19,6 +19,8 @@ namespace EnterpriseBudget.DeptBudgets
     /// </summary>
     public partial class ReadWriteView : Window, InterfaceView
     {
+        MainWindow window;
+        MainPresenter mainPresenter;
         /// <summary>
         /// presenter for the DeptBudgets.ReadWriteView
         /// </summary>
@@ -35,6 +37,10 @@ namespace EnterpriseBudget.DeptBudgets
         public ReadWriteView()
         {
             InitializeComponent();
+            window = new MainWindow();
+
+            mainPresenter = new MainPresenter(window);
+
         }
 
         /// <summary>
@@ -68,14 +74,41 @@ namespace EnterpriseBudget.DeptBudgets
             {
                 if (presenter.LoadData())
                 {
-                    txtWait.Text = "Successfully created home budget... now YOU have to do the rest :)";
+                    title.Text = "WELCOME TO YOUR HOMEBUDGET";
+                    welcome_btn.IsEnabled = true;
+                    create_btn.IsEnabled = true;
+
                 }
                 else
                 {
-                    txtWait.Text = "something went wrong, unable to load home budget";
+                    title.Text = "something went wrong, unable to load home budget";
+                    welcome_btn.IsEnabled = false;
+                    create_btn.IsEnabled = false;
                 }
             }
         }
+
+        private void OpenFile_Click(object sender, RoutedEventArgs e)
+        {
+            window.OpenFile();
+            if (!string.IsNullOrEmpty(window.fileName))
+            {
+                this.Close();
+                window.Show();
+            }
+        }
+
+        private void CreateFile_Click(object sender, RoutedEventArgs e)
+        {
+            window.NewFile();
+
+            if (!string.IsNullOrEmpty(window.fileName))
+            {
+                this.Close();
+                window.Show();
+            }
+        }
+
 
 
     }
