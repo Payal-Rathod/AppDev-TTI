@@ -126,12 +126,16 @@ namespace EnterpriseBudget.Model
                 var rdr2 = verifyDept.ExecuteReader();
 
                 string nameDept = "";
-                while (rdr2.Read())
-                {
-                    nameDept = rdr2.GetString(0);
-                }
 
-                person._departmentName = nameDept;
+                if (rdr2.HasRows)
+                {
+                    while (rdr2.Read())
+                    {
+                        nameDept = rdr2.GetString(0);
+                    }
+
+                    person._departmentName = nameDept;
+                }
 
                 verifyDept.Dispose();
 
@@ -146,12 +150,16 @@ namespace EnterpriseBudget.Model
                 var rdr3 = verifyJob.ExecuteReader();
 
                 string nameJob = "";
-                while (rdr3.Read())
-                {
-                    nameJob = rdr3.GetString(0);
-                }
 
-                person._jobName = nameJob;
+                if (rdr2.HasRows)
+                {
+                    while (rdr3.Read())
+                    {
+                        nameJob = rdr3.GetString(0);
+                    }
+
+                    person._jobName = nameJob;
+                }
 
                 verifyJob.Dispose();
 

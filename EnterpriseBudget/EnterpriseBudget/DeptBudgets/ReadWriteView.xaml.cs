@@ -37,9 +37,6 @@ namespace EnterpriseBudget.DeptBudgets
         public ReadWriteView()
         {
             InitializeComponent();
-            window = new MainWindow();
-
-            mainPresenter = new MainPresenter(window);
 
         }
 
@@ -76,29 +73,24 @@ namespace EnterpriseBudget.DeptBudgets
                 {
                     title.Text = "WELCOME TO YOUR HOMEBUDGET";
                     welcome_btn.IsEnabled = true;
-                    //create_btn.IsEnabled = true;
 
                 }
                 else
                 {
                     title.Text = "something went wrong, unable to load home budget";
-                    welcome_btn.IsEnabled = false;
-                    //create_btn.IsEnabled = false;
+                    //welcome_btn.IsEnabled = false;
+
                 }
             }
         }
 
         private void OpenFile_Click(object sender, RoutedEventArgs e)
         {
-            window.OpenFile();
-            if (!string.IsNullOrEmpty(window.fileName))
-            {
-                this.Close();
-                window.Show();
-            }
-        }
+            MainWindow window = new MainWindow(presenter.GetPath());
 
-       
+            window.Show();
+
+        }
 
 
 
