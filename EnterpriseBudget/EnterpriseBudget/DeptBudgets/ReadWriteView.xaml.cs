@@ -79,6 +79,7 @@ namespace EnterpriseBudget.DeptBudgets
                 {
                     title.Text = "something went wrong, unable to load home budget";
                     //welcome_btn.IsEnabled = false;
+
                 }
             }
         }

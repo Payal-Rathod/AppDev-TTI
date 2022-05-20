@@ -1,4 +1,4 @@
-﻿<Window x:Class="EnterpriseBudget.MainWindow"
+<Window x:Class="EnterpriseBudget.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -19,6 +19,8 @@
             <MenuItem Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="20" Header="_File" Background="#FFFFFF">
 
                 <MenuItem Header="_save" Click="SaveFile_Click" ></MenuItem>
+
+                
 
                 <Separator />
                 <MenuItem Header="_Exit" Click="Exit_Click"></MenuItem>
