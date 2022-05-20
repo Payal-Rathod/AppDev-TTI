@@ -14,10 +14,9 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
+
         </Grid.ColumnDefinitions>
-        <TextBlock  x:Name="title" Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center">WELCOME TO YOUR HOMEBUDGET</TextBlock>
-        <Button  Grid.Row="1" Grid.Column="0" x:Name="welcome_btn" Click="OpenFile_Click">Open Budget File</Button>
-        <Button  x:Name="create_btn" Grid.Row="1" Grid.Column="1" Click="CreateFile_Click">Create Budget File</Button>
+        <TextBlock  x:Name="title" Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center">Welcome to Department Budget</TextBlock>
+        <Button  Grid.Row="1" x:Name="welcome_btn" Click="OpenFile_Click">Open Department Budget File</Button>
     </Grid>
 </Window>

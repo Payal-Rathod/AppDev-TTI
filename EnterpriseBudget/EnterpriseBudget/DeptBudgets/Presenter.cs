@@ -48,7 +48,11 @@ namespace EnterpriseBudget.DeptBudgets
                 budget.Close();
             }
         }
-    }
 
+        public string GetPath()
+        {
+            return budget.GetPath();
+        }
+    }
 
 }

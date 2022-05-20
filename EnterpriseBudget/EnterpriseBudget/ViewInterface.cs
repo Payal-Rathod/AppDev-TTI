@@ -9,7 +9,6 @@ namespace EnterpriseBudget
     public interface ViewInterface
     {
         void OpenFile();
-        void NewFile();
         void ShowDatabase(string filename);
         void LightMode();
         void DarkMode();

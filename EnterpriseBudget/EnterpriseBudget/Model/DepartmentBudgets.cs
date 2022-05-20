@@ -25,6 +25,7 @@ namespace EnterpriseBudget.Model
         private String sqliteFileName = "deptBudget.db";
         private String appName = "EnterpriseBudget";
         private String sPath;
+        private string deptPath;
         private HomeBudget homeBudget;
 
         /// <summary>
@@ -53,18 +54,21 @@ namespace EnterpriseBudget.Model
         /// </summary>
         /// <param name="departmentID">The ID of the department whose budget we want to open</param>
         /// <returns>true if successful, false otherwise</returns>
-        public bool DownLoadAndOpenDepartmentBudgetFile( int departmentID) 
+        public bool DownLoadAndOpenDepartmentBudgetFile(int departmentID)
         {
-            try {
+            try
+            {
                 var path = $"{sPath}\\{appName}\\{sqliteFileName}";
-                ReadAndSaveBlobFromSQLServer(Connection.cnn, "deptBudgets", "sqlitefile", $"deptId={departmentID}",path);
+                deptPath = path;
+                ReadAndSaveBlobFromSQLServer(Connection.cnn, "deptBudgets", "sqlitefile", $"deptId={departmentID}", path);
                 homeBudget = new HomeBudget(path, false);
+
                 return true;
             }
             catch { return false; }
 
             //blob: binary data
-            //open homebudget
+
         }
 
         // write binary data to SQLServer
@@ -132,6 +136,11 @@ namespace EnterpriseBudget.Model
 
             // Close the reader and the connection.
             myReader.Close();
+        }
+
+        public string GetPath()
+        {
+            return deptPath;
         }
 
     }

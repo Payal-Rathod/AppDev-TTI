@@ -24,7 +24,6 @@ namespace EnterpriseBudget
         public MainPresenter(ViewInterface v)
         {
             view = v;
-            NewDatabase();
         }
         public List<object> DataSource { get; set; }
 
@@ -62,14 +61,6 @@ namespace EnterpriseBudget
         public void OpenFile()
         {
             view.OpenFile();
-        }
-
-        /// <summary>
-        /// Opens new file in the application
-        /// </summary>
-        public void NewFile()
-        {
-            view.NewFile();
         }
 
         /// <summary>

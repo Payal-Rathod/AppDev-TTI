@@ -284,7 +284,11 @@ namespace EnterpriseBudget
         {
             ComboBox catComboBox = (ComboBox)sender;
             var selectedItem = catComboBox.SelectedItem;
-            limit.Text = selectedItem + "";
+
+            double limitNum = presenter.GetLimit(catComboBox.SelectedIndex);
+
+            limit.Text = selectedItem + " limit: " + limitNum + ".00";
+
         }
     }
 }

@@ -29,25 +29,31 @@ namespace EnterpriseBudget
         public string filePathString;
         bool newDb;
         List<Budget.Category> catsList;
-        List<String> recentlyOpenedFile = new List<String>();
         AddExpense AddWindow;
         public static string appDataPath = Environment.GetEnvironmentVariable("APPDATA");
+        public string path;
         /// <summary>
         /// Initializes application and Presenter.
         /// </summary>
-        public MainWindow()
+        public MainWindow(string depPath)
         {
             InitializeComponent();
 
             this.DataContext = this;
 
+            path = depPath;
+
+            fileName = depPath;
+
             presenter = new MainPresenter(this);
 
             Application.Current.MainWindow.FontFamily = new FontFamily("Cambria");
 
-            ShowRecentlyOpened();
+            OpenFile();
 
             InitializeDataGrid();
+
+
         }
 
         /// <summary>
@@ -166,7 +172,7 @@ namespace EnterpriseBudget
         {
             ViewExpenses.Columns.Clear();
 
-            foreach (string key in items[items.Count-1].Keys) //Goes through each key values
+            foreach (string key in items[items.Count - 1].Keys) //Goes through each key values
             {
                 if (key.Split(':')[0] == "details")
                 {
@@ -198,123 +204,16 @@ namespace EnterpriseBudget
         /// </summary>
         public void OpenFile()
         {
-            OpenFileDialog openFileDlg = new OpenFileDialog();
-            openFileDlg.Filter = "Database file (.db)|*.db";
-            Nullable<bool> result = openFileDlg.ShowDialog();
-            if (result == true)
-            {
-                ShowDatabase(openFileDlg.FileName);
-                fileName = openFileDlg.FileName;
-                //MessageBox.Show(File.ReadLines(filePathString).Count() + "");
-                if (recentlyOpenedFile.Contains(fileName))
-                {
-
-                }
-                else if (recentlyOpenedFile.Count == NUMFILESRECENT)
-                {
-                    recentlyOpenedFile.RemoveAt(0);
-                    recentlyOpenedFile.Add(fileName);
-                    File.WriteAllLines(filePathString, recentlyOpenedFile);
-
-                }
-                else
-                {
-                    recentlyOpenedFile.Add(fileName);
-                    File.WriteAllLines(filePathString, recentlyOpenedFile);
-                }
-
-            }
-            else
-            {
-                return;
-            }
-
-            if (new FileInfo(fileName).Length == 0)
-            {
-                newDb = true;
-            }
-            else
-            {
-                newDb = false;
-            }
-
-            presenter.OpenDatabase(fileName, newDb);
-            
-            ViewExpenses.ItemsSource =  presenter.GetBudgetItemsList(null, null, false, -1);
-
-            CategoriesDropDown.ItemsSource = presenter.getCategoriesList();
-
-            recentlyOpened.Items.Clear();
-
-            chartView.Visibility = Visibility.Hidden;
-
-
-            for (int i = 0; i < recentlyOpenedFile.Count; i++)
-            {
-                MenuItem file = new MenuItem();
-                file.Header = recentlyOpenedFile[i];
-                recentlyOpened.Items.Add(file);
-
-                file.Click += OpenRecent_Click;
-            }
-        }
-
-        /// <summary>
-        /// Opens databse connection to a new db file
-        /// </summary>
-        public void NewFile()
-        {
-            SaveFileDialog saveFileDlg = new SaveFileDialog();
-            saveFileDlg.Filter = "Database file (.db)|*.db";
-
-            if (saveFileDlg.ShowDialog() == true)
-            {
-                ShowDatabase(saveFileDlg.FileName);
-                fileName = saveFileDlg.FileName;
-
-                if (recentlyOpenedFile.Contains(fileName))
-                {
-
-                }
-                else if (recentlyOpenedFile.Count == NUMFILESRECENT)
-                {
-                    recentlyOpenedFile.RemoveAt(0);
-                    recentlyOpenedFile.Add(fileName);
-                    File.WriteAllLines(filePathString, recentlyOpenedFile);
-
-                }
-                else
-                {
-                    recentlyOpenedFile.Add(fileName);
-                    File.WriteAllLines(filePathString, recentlyOpenedFile);
-                }
-            }
-            else
-            {
-                return;
-            }
-
-            presenter.OpenDatabase(fileName, newDb = true);
+            presenter.OpenDatabase(path, newDb);
 
             ViewExpenses.ItemsSource = presenter.GetBudgetItemsList(null, null, false, -1);
 
             CategoriesDropDown.ItemsSource = presenter.getCategoriesList();
 
-            recentlyOpened.Items.Clear();
-
-            for (int i = 0; i < recentlyOpenedFile.Count; i++)
-            {
-                MenuItem file = new MenuItem();
-                file.Header = recentlyOpenedFile[i];
-
-                recentlyOpened.Items.Add(file);
-
-                file.Click += OpenRecent_Click;
-            }
-
             chartView.Visibility = Visibility.Hidden;
 
         }
+
 
         /// <summary>
         /// Shows database from file.
@@ -329,7 +228,7 @@ namespace EnterpriseBudget
         /// Light color mode.
         /// </summary>
         public void LightMode()
-        { 
+        {
             theme.Content = "Dark Mode";
             theme.Foreground = Brushes.White;
             theme.Background = Brushes.Black;
@@ -353,7 +252,7 @@ namespace EnterpriseBudget
         /// </summary>
         public void DarkMode()
         {
-            
+
             Color color = (Color)ColorConverter.ConvertFromString("#0C6291");
 
             var brush = new SolidColorBrush(color);
@@ -373,16 +272,7 @@ namespace EnterpriseBudget
         // =====================================================================================
         // EVENT HANDLERS
         // =====================================================================================
-        private void OpenFile_Click(object sender, RoutedEventArgs e)
-        {
-            presenter.OpenFile();
-        }
 
-        private void NewFile_Click(object sender, RoutedEventArgs e)
-        {
-            presenter.NewFile();
-        }
-       
         private void exit_Click(object sender, RoutedEventArgs e)
         {
             Close();
@@ -392,7 +282,7 @@ namespace EnterpriseBudget
         {
             Button btn = sender as Button;
             presenter.ChangeColorMode(btn.Content.ToString());
-        }      
+        }
 
         private void AddExpense_Click(object sender, RoutedEventArgs e)
         {
@@ -502,7 +392,7 @@ namespace EnterpriseBudget
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            int windowActiveCount = 0;
+            /*int windowActiveCount = 0;
             foreach (var Window in App.Current.Windows)
             {
                 windowActiveCount++;
@@ -522,7 +412,9 @@ namespace EnterpriseBudget
             else
             {
                 App.Current.Shutdown();
-            }
+            }*/
+            App.Current.Shutdown();
+
         }
 
         int selectedCouter = 0;
@@ -563,46 +455,6 @@ namespace EnterpriseBudget
 
         }
 
-        private void RecentlyOpened_Click(object sender, RoutedEventArgs e)
-        {
-        }
-
-        private void OpenRecent_Click(object sender, RoutedEventArgs e)
-        {
-            chartView.Visibility = Visibility.Hidden;
-
-            MenuItem file = sender as MenuItem;
-            string path = file.Header.ToString();
-            presenter.OpenDatabase(path, false);
-            ShowDatabase(path);
-
-            ViewExpenses.ItemsSource = presenter.GetBudgetItemsList(null, null, false, -1);
-
-            CategoriesDropDown.ItemsSource = presenter.getCategoriesList();
-
-        }
-
-        public void ShowRecentlyOpened()
-        {
-            string pathString = System.IO.Path.Combine(appDataPath, "Budget");
-
-            if (!System.IO.Directory.Exists(pathString))
-            {
-                System.IO.Directory.CreateDirectory(pathString);
-            }
-
-            filePathString = System.IO.Path.Combine(pathString, "RecentlyOpenedDBFiles.txt");
-
-            if (!System.IO.File.Exists(filePathString))
-            {
-                System.IO.File.CreateText(filePathString);
-            }
-            for (int i = 0; i < File.ReadLines(filePathString).Count(); i++)
-            {
-                recentlyOpenedFile.Add(File.ReadAllLines(filePathString)[i]);
-            }
-        }
-
         private void showChart_Click(object sender, RoutedEventArgs e)
         {
             chartView.Visibility = Visibility.Visible;
@@ -611,6 +463,7 @@ namespace EnterpriseBudget
 
         private void SaveFile_Click(object sender, RoutedEventArgs e)
         {
+            Model.DepartmentBudgets departmentBudgets = new Model.DepartmentBudgets();
 
         }
     }

@@ -1,6 +1,7 @@
 ﻿using Budget;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -100,6 +101,34 @@ namespace EnterpriseBudget
         {
             openDatabase(filepath);
             expenses.Delete(expenseId);
+        }
+
+        public double GetLimit(int catId)
+        {
+            //Employees table
+            SqlCommand verifyUser = Model.Connection.cnn.CreateCommand();
+
+            verifyUser.CommandText = "SELECT limit FROM budgetCategoryLimits WHERE catId = @catId and deptId = @deptId";
+            verifyUser.Parameters.AddWithValue("@catId", catId+1);
+            verifyUser.Parameters.AddWithValue("@deptId", 1);
+
+            var rdr = verifyUser.ExecuteReader();
+
+            double limit = 0;
+
+            if (rdr.HasRows)
+            {
+
+                while (rdr.Read())
+                {
+                    limit = rdr.GetDouble(0);
+                }
+            }
+
+            verifyUser.Dispose();
+            rdr.Close();
+
+            return limit;
         }
     }
 }
